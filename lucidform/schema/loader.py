@@ -110,6 +110,36 @@ def load_overlay(path: Path) -> dict[str, Any]:
         return yaml.safe_load(fh)
 
 
+def _resolve_inherits(overlay: dict[str, Any], base_dir: Path) -> dict[str, Any]:
+    """Expand `- inherit: <id>` entries from the overlay named by `inherit_from`."""
+    source = overlay.get("inherit_from")
+    if not source:
+        return overlay
+    parent = {f["id"]: f for f in load_overlay(base_dir / source)["fields"]}
+    fields = []
+    for entry in overlay["fields"]:
+        if "inherit" in entry:
+            base = dict(parent[entry["inherit"]])
+            base.update({k: v for k, v in entry.items() if k != "inherit"})
+            entry = base
+        fields.append(entry)
+    return {**overlay, "fields": fields}
+
+
+def load_official(overlay_path: Path | None = None) -> FormSchema:
+    """The official CKYC form (ISSUES.md LF-001).
+
+    Its PDF is a flat print layout with no AcroForm widgets, so the overlay is
+    the whole schema. Each field's `acroform_name` is its id; nothing in the
+    PDF constrains it, and the writer places values by the layout file.
+    """
+    overlay_path = Path(overlay_path or get_settings().official_overlay)
+    overlay = _resolve_inherits(load_overlay(overlay_path), overlay_path.parent)
+    for entry in overlay["fields"]:
+        entry["acroform_name"] = entry["id"]
+    return _build(overlay, parsed={}, strict=False)
+
+
 def load(
     pdf_path: Path | None = None,
     overlay_path: Path | None = None,
@@ -128,7 +158,10 @@ def load(
 
     parsed = parse_acroform(pdf_path)
     overlay = load_overlay(overlay_path)
+    return _build(overlay, parsed, strict)
 
+
+def _build(overlay: dict[str, Any], parsed: dict[str, dict[str, Any]], strict: bool) -> FormSchema:
     declared = {f["acroform_name"] for f in overlay["fields"]}
     if strict:
         missing = declared - parsed.keys()
@@ -209,12 +242,21 @@ def load(
                     for option, names in (entry.get("suggest_names") or {}).items()
                 },
                 amount_bands=bool(entry.get("amount_bands", False)),
+                ask_if={
+                    dep: tuple(str(v) for v in allowed)
+                    for dep, allowed in (entry.get("ask_if") or {}).items()
+                },
+                date_future=bool(entry.get("date_future", False)),
             )
         )
 
     ids = [f.id for f in fields]
     if len(set(ids)) != len(ids):
         raise SchemaError("duplicate field ids in overlay")
+    for f in fields:
+        unknown = set(f.ask_if) - set(ids)
+        if unknown:
+            raise SchemaError(f"{f.id}: ask_if names unknown field(s) {sorted(unknown)}")
 
     known = set(ids)
     for f in fields:

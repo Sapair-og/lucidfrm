@@ -96,15 +96,24 @@ def city_states(city: str) -> frozenset[str] | None:
     return frozenset(found) or None
 
 
-def propose(field_id: str, committed) -> str | None:
-    """A value to offer for a field, derived from confirmed ones (LF-003).
+def propose(field_id: str, committed) -> tuple[str, dict[str, str]] | None:
+    """A value to offer for a field, derived from confirmed ones (LF-003, LF-001).
 
-    Only the state, from a confirmed PIN in the directory. It is an offer: it
-    is read back and saved only on an explicit yes.
+    Returns (value, message parameters) or None. State and district come from a
+    confirmed PIN in the directory; the place of signing from the confirmed
+    city. Every one is an offer: read back and saved only on an explicit yes.
     """
-    if field_id == "state" and committed.get("pin"):
-        place = pin_place(committed["pin"])
-        return place[0] if place else None
+    prefix = "cur_" if field_id.startswith("cur_") else ""
+    base = field_id[len(prefix):]
+    pin = committed.get(f"{prefix}pin")
+    if base in ("state", "district") and pin:
+        place = pin_place(pin)
+        if place is None or not place[base == "district"]:
+            return None
+        value = place[0] if base == "state" else place[1]
+        return value, {"pin": pin, "place": value}
+    if field_id == "place" and committed.get("city"):
+        return committed["city"], {"place": committed["city"]}
     return None
 
 

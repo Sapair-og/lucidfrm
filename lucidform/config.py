@@ -69,6 +69,18 @@ class Settings(BaseSettings):
         return self.data_dir / "results"
 
     @property
+    def official_overlay(self) -> Path:
+        return Path(__file__).resolve().parent / "schema" / "ckyc_official.yaml"
+
+    @property
+    def official_layout(self) -> Path:
+        return Path(__file__).resolve().parent / "schema" / "ckyc_official_layout.yaml"
+
+    @property
+    def official_pdf(self) -> Path:
+        return self.data_dir / "forms" / "official" / "ckyc_individual_amfi.pdf"
+
+    @property
     def schema_overlay(self) -> Path:
         return Path(__file__).resolve().parent / "schema" / "ckyc_form.yaml"
 

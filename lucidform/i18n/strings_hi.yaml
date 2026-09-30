@@ -65,3 +65,5 @@ review_unclear: >-
 proposal: 'आपका पिन कोड {pin} {place} में है।'
 
 suggestion: 'शायद आपका मतलब {value} था।'
+
+proposal_place: 'हस्ताक्षर के स्थान में मैं {place} लिखूँगा।'

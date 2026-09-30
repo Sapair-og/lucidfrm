@@ -355,6 +355,11 @@ def run_cmd(
         None, "--export", help="Write the completed form to this PDF."
     ),
     quiet: bool = typer.Option(False, help="Suppress the transcript (persona runs)."),
+    form: str = typer.Option(
+        "template",
+        "--form",
+        help="template: the 14-field research form. official: the real CKYC form (LF-001).",
+    ),
 ) -> None:
     """Fill in the form by conversation.
 
@@ -373,7 +378,14 @@ def run_cmd(
     from lucidform.schema import loader
 
     settings = get_settings()
-    schema = loader.load()
+    if form not in ("template", "official"):
+        typer.echo("--form must be 'template' or 'official'")
+        raise typer.Exit(2)
+    if form == "official" and persona:
+        # Personas and their ground truth are written for the template's fields.
+        typer.echo("personas run on the template form only")
+        raise typer.Exit(2)
+    schema = loader.load_official() if form == "official" else loader.load()
     client = _extraction_client(replay)
     helper = _help_agent(replay)
 
@@ -447,6 +459,7 @@ def run_cmd(
                 typer.echo(f"  {field_id}: read back {got!r}, user wanted {truth!r}")
 
     if export_to:
+        from lucidform.formstate.official_writer import export_official
         from lucidform.formstate.writer import export
 
         # LF-006: an unfinished or unapproved form says so on its face.
@@ -456,7 +469,10 @@ def run_cmd(
             stamp = "NOT CONFIRMED BY APPLICANT"
         else:
             stamp = None
-        written = export(state, schema, export_to, stamp=stamp)
+        if form == "official":
+            written = export_official(state, schema, export_to, stamp=stamp)
+        else:
+            written = export(state, schema, export_to, stamp=stamp)
         typer.echo(f"\nwrote {written}" + (f"  [stamped {stamp}]" if stamp else ""))
 
     raise typer.Exit(0 if result.complete else 1)

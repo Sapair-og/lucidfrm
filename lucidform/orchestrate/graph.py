@@ -57,7 +57,7 @@ class TurnState(TypedDict, total=False):
     results: list
     queue: list  # schema indices still to visit
     correcting: bool  # the current field is being changed at the user's request
-    revisited: bool
+    revisited: list  # field ids already revisited at the end
     reviews: int
     approved: bool
     gone: bool  # the input channel ended (hang-up / EOF): nobody to revisit or review with
@@ -136,9 +136,12 @@ class SessionGraph:
         final = self._compiled.invoke(
             {"index": -1, "results": []}, config={"recursion_limit": RECURSION_LIMIT}
         )
+        values = self.s.state.values
         result = SessionResult(
             session_id=self.s.log.session_id,
-            fields=final["results"],
+            # A field that stopped applying (its condition changed at the
+            # review) is not part of the outcome.
+            fields=[r for r in final["results"] if self.s.schema.by_id(r.field_id).applies(values)],
             approved=bool(final.get("approved")),
         )
         self.s._close(result)
@@ -151,7 +154,7 @@ class SessionGraph:
         return {
             "queue": list(range(len(self.s.schema))),
             "correcting": False,
-            "revisited": False,
+            "revisited": [],
             "reviews": 0,
             "approved": False,
             "gone": False,
@@ -166,7 +169,10 @@ class SessionGraph:
             index = queue.pop(0)
             # A field the user asked to change is asked again even though it
             # already holds a value; otherwise resolved fields are skipped.
-            if state.get("correcting") or not self.s.state.is_resolved(fields[index].id):
+            if state.get("correcting") or (
+                not self.s.state.is_resolved(fields[index].id)
+                and fields[index].applies(self.s.state.values)
+            ):
                 return {
                     "index": index,
                     "queue": queue,
@@ -189,7 +195,7 @@ class SessionGraph:
         # falls through to the ordinary question.
         field, outcome = self._field(state), state["current"]
         outcome.proposed = True
-        value = self._proposal(state)
+        value, params = self._proposal(state)
         # A proposal is a turn of its own: the user is asked something.
         self.s.log.emit(
             Event.FIELD_ASKED,
@@ -197,21 +203,19 @@ class SessionGraph:
             turn_idx=outcome.attempts,
             payload={"attempt": outcome.attempts, "proposal": value},
         )
-        self.s.output.say(
-            self.s.strings.say("proposal", pin=self.s.state.get("pin"), place=value),
-            kind=Kind.EXPLANATION,
-        )
+        key = "proposal" if "pin" in params else f"proposal_{field.id}"
+        self.s.output.say(self.s.strings.say(key, **params), kind=Kind.EXPLANATION)
         proposed = Candidate(
             field_id=field.id, value=value, raw_utterance="", confidence=1.0
         )
         return {"proposed": proposed}
 
-    def _proposal(self, state: TurnState) -> str | None:
+    def _proposal(self, state: TurnState) -> tuple[str, dict] | None:
         field = self._field(state)
-        value = regions.propose(field.id, self.s.state.values)
-        if value is None or (field.enum_values and value not in field.enum_values):
+        offer = regions.propose(field.id, self.s.state.values)
+        if offer is None or (field.enum_values and offer[0] not in field.enum_values):
             return None
-        return value
+        return offer
 
     def ask(self, state: TurnState) -> dict:
         field, outcome = self._field(state), state["current"]
@@ -421,11 +425,23 @@ class SessionGraph:
         if state.get("gone"):
             return {"route": "end"}
         fields = list(self.s.schema)
-        missing = [i for i, f in enumerate(fields) if not self.s.state.is_resolved(f.id)]
-        if missing and not state.get("revisited"):
+        values = self.s.state.values
+        seen = state.get("revisited") or []
+        # Fields still missing that apply. A field that newly applies after a
+        # change at the review (a passport number, once the proof became a
+        # passport) is visited too; each field is revisited at most once.
+        missing = [
+            i for i, f in enumerate(fields)
+            if f.applies(values) and not self.s.state.is_resolved(f.id) and f.id not in seen
+        ]
+        if missing:
             labels = ", ".join(fields[i].name(self.s.lang) for i in missing)
             self.s.output.say(self.s.strings.say("revisit", fields=labels), kind=Kind.PROGRESS)
-            return {"queue": missing, "revisited": True, "route": "again"}
+            return {
+                "queue": missing,
+                "revisited": [*seen, *(fields[i].id for i in missing)],
+                "route": "again",
+            }
         if self.s.state.values and state.get("reviews", 0) < self.s.max_reviews:
             return {"route": "review"}
         return {"route": "end"}
@@ -435,13 +451,17 @@ class SessionGraph:
         lines = [
             f"{f.name(lang)}: {readback.render_value(self.s.state.get(f.id), f, lang)}"
             for f in self.s.schema
-            if self.s.state.is_committed(f.id)
+            if self.s.state.is_committed(f.id) and f.applies(self.s.state.values)
         ]
         self.s.log.emit(Event.READBACK, payload={"summary": lines})
         self.s.output.say(self.s.strings.get("review_intro"), kind=Kind.READBACK)
         for line in lines:
             self.s.output.say(line, kind=Kind.READBACK)
-        missing = [f.name(lang) for f in self.s.schema if not self.s.state.is_resolved(f.id)]
+        missing = [
+            f.name(lang)
+            for f in self.s.schema
+            if f.applies(self.s.state.values) and not self.s.state.is_resolved(f.id)
+        ]
         if missing:
             self.s.output.say(
                 self.s.strings.say("incomplete", count=len(missing), fields=", ".join(missing)),

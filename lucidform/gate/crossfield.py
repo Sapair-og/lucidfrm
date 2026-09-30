@@ -17,6 +17,7 @@ Two rules that matter, and one rule about the rules:
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Callable, Mapping
 
@@ -81,13 +82,19 @@ def pan_matches_surname(
 
 
 def pin_matches_confirmed_state(
-    value: str, committed: Mapping[str, str]
+    value: str, committed: Mapping[str, str], p: str = ""
 ) -> CrossFieldResult:
-    """A PIN code's leading digit selects a postal region, which fixes the state."""
+    """A PIN code's leading digit selects a postal region, which fixes the state.
+
+    `p` is the address prefix: "" for the permanent address, "cur_" for the
+    current one on the official form. The two addresses are never compared.
+    """
     name = "pin_matches_state"
-    state = (committed.get("state") or "").strip()
+    state = (committed.get(f"{p}state") or "").strip()
     if not state:
-        return _skipped(name, "state")
+        city = committed.get(f"{p}city")
+        # Skipped, never passed, when there is nothing confirmed to compare.
+        return _city_agrees(name, value, None, city) if city else _skipped(name, f"{p}state")
 
     verdict = pin_matches_state(value, state)
     if verdict is None:
@@ -101,7 +108,7 @@ def pin_matches_confirmed_state(
             detail=f"not checked: no postal region data for {state!r}",
         )
     if verdict:
-        return _city_agrees(name, value, state, committed.get("city"))
+        return _city_agrees(name, value, state, committed.get(f"{p}city"))
 
     place = pin_place(value)
     return CrossFieldResult(
@@ -147,11 +154,13 @@ def _what(pin, place, state) -> str:
     return f"the confirmed state is {state}"
 
 
-def state_matches_pin_and_city(value: str, committed: Mapping[str, str]) -> CrossFieldResult:
+def state_matches_pin_and_city(
+    value: str, committed: Mapping[str, str], p: str = ""
+) -> CrossFieldResult:
     """A state must agree with a confirmed PIN (exactly, via the directory) and city."""
     name = "state_matches_pin"
-    pin = (committed.get("pin") or "").strip()
-    city = (committed.get("city") or "").strip()
+    pin = (committed.get(f"{p}pin") or "").strip()
+    city = (committed.get(f"{p}city") or "").strip()
     if not pin and not city:
         return _skipped(name, "pin")
     if pin:
@@ -172,14 +181,41 @@ def state_matches_pin_and_city(value: str, committed: Mapping[str, str]) -> Cros
     return CrossFieldResult(name, ran=True, passed=True)
 
 
-def city_matches_pin_and_state(value: str, committed: Mapping[str, str]) -> CrossFieldResult:
+def city_matches_pin_and_state(
+    value: str, committed: Mapping[str, str], p: str = ""
+) -> CrossFieldResult:
     """A city the directory knows must lie in the confirmed PIN's / state's state."""
     name = "city_matches_pin"
-    pin = (committed.get("pin") or "").strip()
-    state = (committed.get("state") or "").strip()
+    pin = (committed.get(f"{p}pin") or "").strip()
+    state = (committed.get(f"{p}state") or "").strip()
     if not pin and not state:
         return _skipped(name, "pin")
     return _city_agrees(name, pin, state or None, value)
+
+
+# Document number shapes (official form, LF-001). Only the two with a single
+# national format are checked; licence, NREGA and NPR numbers vary by state, so
+# they are bounded by length only rather than risk rejecting a real number.
+DOC_PATTERNS = {
+    "Passport": (re.compile(r"^[A-Z][0-9]{7}$"), "a passport number is one letter then seven digits"),
+    "Voter ID": (re.compile(r"^[A-Z]{3}[0-9]{7}$"), "a voter ID (EPIC) number is three letters then seven digits"),
+}
+
+
+def doc_number_matches_type(
+    value: str, committed: Mapping[str, str], type_field: str = "poi_type"
+) -> CrossFieldResult:
+    name = "doc_number_matches_type"
+    doc = (committed.get(type_field) or "").strip()
+    if not doc:
+        return _skipped(name, type_field)
+    rule = DOC_PATTERNS.get(doc)
+    if rule is None:
+        return CrossFieldResult(name, ran=True, passed=True)
+    compact = re.sub(r"[\s\-/]+", "", value).upper()
+    if rule[0].match(compact):
+        return CrossFieldResult(name, ran=True, passed=True)
+    return CrossFieldResult(name, ran=True, passed=False, detail=rule[1])
 
 
 # field id -> the check that applies to it
@@ -188,6 +224,11 @@ CHECKS: dict[str, Callable[[str, Mapping[str, str]], CrossFieldResult]] = {
     "pin": pin_matches_confirmed_state,
     "state": state_matches_pin_and_city,
     "city": city_matches_pin_and_state,
+    "cur_pin": lambda v, c: pin_matches_confirmed_state(v, c, "cur_"),
+    "cur_state": lambda v, c: state_matches_pin_and_city(v, c, "cur_"),
+    "cur_city": lambda v, c: city_matches_pin_and_state(v, c, "cur_"),
+    "poi_number": doc_number_matches_type,
+    "cur_poa_number": lambda v, c: doc_number_matches_type(v, c, "cur_poa_type"),
 }
 
 

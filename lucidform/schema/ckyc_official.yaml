@@ -1,0 +1,330 @@
+# The official CKYC Individual form (AMFI copy of the CERSAI template), pages 1-2.
+# docs/ISSUES.md LF-001.
+#
+# The official PDF is a flat print layout with no AcroForm widgets, so this
+# overlay is the whole schema: loader.load_official() builds FieldSpecs from it
+# alone, and formstate/official_writer.py draws the confirmed values into the
+# printed boxes using ckyc_official_layout.yaml.
+#
+# `inherit: <id>` copies that field from ckyc_form.yaml (prompts, glosses,
+# enum names, rules), so the two forms never drift apart. Keys given here
+# override the inherited ones.
+#
+# `ask_if: {field: [values]}` asks a field only when a confirmed field holds
+# one of the values (e.g. a passport number only if the proof is a passport).
+# A field that does not apply is neither asked, reviewed nor printed.
+
+form_id: ckyc_official
+version: 1
+title: Know Your Customer (KYC) Application Form | Individual (CKYC)
+pdf: data/forms/official/ckyc_individual_amfi.pdf
+inherit_from: ckyc_form.yaml
+
+fields:
+  # -- 1. Personal details ----------------------------------------------------
+  - id: prefix
+    label: Title
+    aliases: [title, prefix, mr, mrs]
+    labels:
+      hi: संबोधन
+    type: enum
+    required: true
+    enum_values: [Mr, Mrs, Ms, Dr]
+    enum_names:
+      Mr: [श्री, shri, shree, mister]
+      Mrs: [श्रीमती, shrimati, missus]
+      Ms: [सुश्री, sushri, miss, kumari]
+      Dr: [डॉक्टर, doctor]
+    prompt:
+      en: How should your name be written — Mr, Mrs, Ms, or Dr?
+      hi: आपके नाम से पहले क्या लिखें — श्री, श्रीमती, सुश्री, या डॉक्टर?
+    gloss:
+      en: The title printed before your name on the form, such as Mr or Mrs.
+      hi: फॉर्म पर आपके नाम से पहले लिखा जाने वाला संबोधन, जैसे श्री या श्रीमती।
+
+  - inherit: full_name
+  - inherit: father_name
+  - inherit: dob
+  - inherit: gender
+  - inherit: pan
+
+  - id: marital_status
+    label: Marital status
+    aliases: [marital status, married, shaadi, vivah]
+    labels:
+      hi: वैवाहिक स्थिति
+    type: enum
+    required: true
+    enum_values: [Married, Unmarried, Others]
+    enum_names:
+      Married: [विवाहित, vivahit, shaadi shuda]
+      Unmarried: [अविवाहित, avivahit, kunwara, kunwari]
+    suggest_names:
+      Unmarried: [single, not married, shaadi nahi hui]
+      Others: [divorced, widow, widower, separated, talaak, vidhwa]
+    prompt:
+      en: Are you married, unmarried, or other?
+      hi: क्या आप विवाहित हैं, अविवाहित हैं, या अन्य?
+    gloss:
+      en: Whether you are married. Choose Others if you are divorced, widowed, or separated.
+      hi: आप विवाहित हैं या नहीं। तलाकशुदा, विधवा/विधुर, या अलग रहने पर अन्य चुनें।
+
+  - id: citizenship
+    label: Citizenship
+    aliases: [citizenship, citizen, nagrikta]
+    labels:
+      hi: नागरिकता
+    type: enum
+    required: true
+    enum_values: [Indian, Other]
+    enum_names:
+      Indian: [भारतीय, bhartiya, bharatiya]
+    suggest_names:
+      Indian: [india, bharat, hindustani]
+    prompt:
+      en: Are you an Indian citizen?  Say Indian, or other.
+      hi: क्या आप भारतीय नागरिक हैं? भारतीय या अन्य कहें।
+    gloss:
+      en: The country you are a citizen of. Most people filling this form are Indian citizens.
+      hi: आप किस देश के नागरिक हैं। यह फॉर्म भरने वाले अधिकतर लोग भारतीय नागरिक होते हैं।
+
+  - id: residential_status
+    label: Residential status
+    aliases: [residential status, resident, residence]
+    labels:
+      hi: निवास की स्थिति
+    type: enum
+    required: true
+    enum_values: [Resident Individual, Non Resident Indian, Foreign National, Person of Indian Origin]
+    suggest_names:
+      Resident Individual: [resident, india mein rehta, india mein rehti, yahin rehta, i live in india]
+      Non Resident Indian: [nri, abroad, videsh mein]
+      Person of Indian Origin: [pio, indian origin]
+      Foreign National: [foreigner, videshi]
+    prompt:
+      en: Do you live in India? If yes, say resident. Otherwise say NRI, foreign national, or person of Indian origin.
+      hi: क्या आप भारत में रहते हैं? हाँ तो "रेज़िडेंट" कहें। वरना एनआरआई, विदेशी नागरिक, या भारतीय मूल के व्यक्ति कहें।
+    gloss:
+      en: Where you normally live. A resident individual lives in India; an NRI is an Indian citizen living abroad.
+      hi: आप आमतौर पर कहाँ रहते हैं। रेज़िडेंट भारत में रहता है; एनआरआई विदेश में रहने वाला भारतीय नागरिक है।
+
+  # -- 2. Proof of identity and address ------------------------------------
+  - id: poi_type
+    label: Proof of identity
+    aliases: [proof, document, id proof, proof of identity]
+    labels:
+      hi: पहचान का प्रमाण
+    type: enum
+    required: true
+    enum_values: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter, Aadhaar]
+    enum_names:
+      Aadhaar: [आधार, aadhar, adhaar]
+      Voter ID: [वोटर आईडी, voter card]
+    suggest_names:
+      Voter ID: [election card, epic, voter id card, chunav card]
+      Driving Licence: [driving license, dl, licence, license]
+      NREGA Job Card: [job card, nrega, mgnrega, manrega]
+      NPR Letter: [npr, population register]
+      Aadhaar: [aadhaar card, aadhar card, uid]
+    prompt:
+      en: Which document will you give as proof of identity — passport, voter ID, driving licence, NREGA job card, NPR letter, or Aadhaar?
+      hi: पहचान के प्रमाण के लिए आप कौन सा दस्तावेज़ देंगे — पासपोर्ट, वोटर आईडी, ड्राइविंग लाइसेंस, नरेगा जॉब कार्ड, एनपीआर पत्र, या आधार?
+    gloss:
+      en: One official document that proves who you are and where you live. A copy is attached to the form.
+      hi: एक सरकारी दस्तावेज़ जो आपकी पहचान और पता साबित करे। इसकी कॉपी फॉर्म के साथ लगती है।
+
+  - id: poi_number
+    label: Document number
+    aliases: [document number, passport number, voter id number, licence number]
+    labels:
+      hi: दस्तावेज़ संख्या
+    type: text
+    required: true
+    max_length: 25
+    depends_on: [poi_type]
+    ask_if: {poi_type: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter]}
+    prompt:
+      en: What is the number printed on that document?
+      hi: उस दस्तावेज़ पर छपा नंबर क्या है?
+    gloss:
+      en: The identification number on the document you chose, for example the passport number or the voter ID (EPIC) number.
+      hi: आपके चुने दस्तावेज़ पर लिखा पहचान नंबर, जैसे पासपोर्ट नंबर या वोटर आईडी (एपिक) नंबर।
+
+  - id: poi_expiry
+    label: Document expiry date
+    aliases: [expiry, expiry date, valid till]
+    labels:
+      hi: समाप्ति तिथि
+    type: date
+    required: true
+    date_future: true
+    ask_if: {poi_type: [Passport, Driving Licence]}
+    prompt:
+      en: Until what date is that document valid?
+      hi: वह दस्तावेज़ किस तारीख तक मान्य है?
+    gloss:
+      en: The expiry date printed on your passport or driving licence. An expired document is not accepted.
+      hi: आपके पासपोर्ट या ड्राइविंग लाइसेंस पर छपी समाप्ति तिथि। समाप्त हो चुका दस्तावेज़ मान्य नहीं है।
+
+  - inherit: address_line
+    max_length: 128
+  - inherit: pin
+
+  - id: district
+    label: District
+    aliases: [district, zila, jila]
+    labels:
+      hi: ज़िला
+    type: text
+    required: true
+    max_length: 40
+    prompt:
+      en: Which district do you live in?
+      hi: आप किस ज़िले में रहते हैं?
+    gloss:
+      en: The district your address is in. It is usually printed on your address proof.
+      hi: आपका पता जिस ज़िले में है। यह आमतौर पर पते के प्रमाण पर छपा होता है।
+
+  - inherit: city
+    label: City, town or village
+    aliases: [city, town, village, gaon, shahar]
+    prompt:
+      en: Which city, town, or village do you live in?
+      hi: आप किस शहर, कस्बे, या गाँव में रहते हैं?
+  - inherit: state
+
+  # -- 3. Current address ---------------------------------------------------
+  - id: same_address
+    label: Current address same as above
+    aliases: [current address, same address, abhi ka pata]
+    labels:
+      hi: वर्तमान पता वही
+    type: enum
+    required: true
+    enum_values: ["Yes", "No"]
+    enum_names:
+      "Yes": [हाँ, haan, han, same, wahi]
+      "No": [नहीं, nahi, nahin, different, alag]
+    prompt:
+      en: Do you live at this same address now? Say yes or no.
+      hi: क्या आप अभी इसी पते पर रहते हैं? हाँ या नहीं कहें।
+    gloss:
+      en: If you now live somewhere else, the form needs that current address too.
+      hi: अगर आप अभी किसी और जगह रहते हैं, तो फॉर्म में वह वर्तमान पता भी चाहिए।
+
+  - id: cur_poa_type
+    label: Current address proof
+    aliases: [current address proof, current proof]
+    labels:
+      hi: वर्तमान पते का प्रमाण
+    type: enum
+    required: true
+    ask_if: {same_address: ["No"]}
+    enum_values: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter, Aadhaar, Utility Bill, Property Tax Receipt, Pension Order, Employer Letter]
+    enum_names:
+      Aadhaar: [आधार, aadhar, adhaar]
+    suggest_names:
+      Utility Bill: [electricity bill, bijli bill, gas bill, water bill, phone bill]
+      Voter ID: [election card, voter card, epic]
+      Driving Licence: [driving license, dl, license]
+      Property Tax Receipt: [property tax, house tax]
+    prompt:
+      en: Which document proves your current address — for example Aadhaar, voter ID, passport, or an electricity bill?
+      hi: आपके वर्तमान पते का प्रमाण कौन सा दस्तावेज़ है — जैसे आधार, वोटर आईडी, पासपोर्ट, या बिजली का बिल?
+    gloss:
+      en: A document showing where you live now. A recent electricity, water, gas or phone bill is accepted.
+      hi: एक दस्तावेज़ जो दिखाए कि आप अभी कहाँ रहते हैं। हाल का बिजली, पानी, गैस या फोन बिल भी मान्य है।
+
+  - id: cur_poa_number
+    label: Current address document number
+    aliases: [current document number]
+    labels:
+      hi: वर्तमान पते के दस्तावेज़ की संख्या
+    type: text
+    required: true
+    max_length: 25
+    depends_on: [cur_poa_type]
+    ask_if: {cur_poa_type: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter]}
+    prompt:
+      en: What is the number on that document?
+      hi: उस दस्तावेज़ पर लिखा नंबर क्या है?
+    gloss:
+      en: The identification number printed on the document you chose for your current address.
+      hi: वर्तमान पते के लिए चुने दस्तावेज़ पर छपा पहचान नंबर।
+
+  - inherit: address_line
+    id: cur_address_line
+    label: Current address
+    aliases: [current address line]
+    labels:
+      hi: वर्तमान पता
+    max_length: 128
+    ask_if: {same_address: ["No"]}
+    prompt:
+      en: What is your current address — house number, street, and area?
+      hi: आपका वर्तमान पता क्या है — मकान नंबर, गली, और इलाका?
+  - inherit: pin
+    id: cur_pin
+    label: Current PIN code
+    aliases: [current pin]
+    labels:
+      hi: वर्तमान पिन कोड
+    ask_if: {same_address: ["No"]}
+    prompt:
+      en: What is the six-digit PIN code of your current address?
+      hi: आपके वर्तमान पते का छह अंकों का पिन कोड क्या है?
+  - id: cur_district
+    label: Current district
+    aliases: [current district]
+    labels:
+      hi: वर्तमान ज़िला
+    type: text
+    required: true
+    max_length: 40
+    ask_if: {same_address: ["No"]}
+    prompt:
+      en: Which district is your current address in?
+      hi: आपका वर्तमान पता किस ज़िले में है?
+    gloss:
+      en: The district of the address where you live now.
+      hi: जहाँ आप अभी रहते हैं उस पते का ज़िला।
+  - inherit: city
+    id: cur_city
+    label: Current city, town or village
+    aliases: [current city]
+    labels:
+      hi: वर्तमान शहर
+    ask_if: {same_address: ["No"]}
+    prompt:
+      en: Which city, town, or village is your current address in?
+      hi: आपका वर्तमान पता किस शहर, कस्बे, या गाँव में है?
+  - inherit: state
+    id: cur_state
+    label: Current state
+    aliases: [current state]
+    labels:
+      hi: वर्तमान राज्य
+    ask_if: {same_address: ["No"]}
+    prompt:
+      en: Which state is your current address in?
+      hi: आपका वर्तमान पता किस राज्य में है?
+
+  # -- 4. Contact -------------------------------------------------------------
+  - inherit: mobile
+  - inherit: email
+
+  # -- 6. Declaration ---------------------------------------------------------
+  - id: place
+    label: Place of signing
+    aliases: [place, sthan, jagah]
+    labels:
+      hi: स्थान
+    type: text
+    required: true
+    max_length: 30
+    prompt:
+      en: In which town or city are you signing this form?
+      hi: आप यह फॉर्म किस शहर या कस्बे में भर रहे हैं?
+    gloss:
+      en: The place where you sign the declaration, usually your town or city.
+      hi: जहाँ आप घोषणा पर हस्ताक्षर करते हैं, आमतौर पर आपका शहर या कस्बा।

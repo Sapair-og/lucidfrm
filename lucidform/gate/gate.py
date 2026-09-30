@@ -102,6 +102,17 @@ class ValidationGate:
                 offer = suggest.suggest(candidate.value, field)
                 if offer is not None and offer == value:
                     offer = None
+            elif (
+                reason in (Reason.AMBIGUOUS_EXTRACTION, Reason.LOW_CONFIDENCE)
+                and field.type is FieldType.ENUM
+                and value in field.enum_values
+            ):
+                # Every structural check passed: the value is exactly one of
+                # the options (e.g. "voter card" is a declared name of Voter
+                # ID). Only the model's own certainty failed, so the option is
+                # offered for an explicit yes instead of asking again blind.
+                # Enums only: an ambiguous date or number is still re-asked.
+                offer = value
             return ValidationReport(
                 status=Status.REJECT,
                 candidate_id=candidate.candidate_id,

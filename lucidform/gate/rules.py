@@ -241,6 +241,11 @@ def range_error(value: str, field: FieldSpec, *, today: dt.date | None = None) -
         return None  # already reported as a format error
 
     today = today or dt.date.today()
+    if field.date_future:
+        # A document's expiry: an expired document is not accepted.
+        if parsed <= today:
+            return "that date has already passed, so the document has expired"
+        return None
     if parsed > today:
         return "that date is in the future"
 

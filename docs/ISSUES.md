@@ -22,7 +22,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 ## Summary
 | ID | Problem | Phase | Status |
 |---|---|---|---|
-| LF-001 | Can't fill the official CKYC form | 5 | OPEN |
+| LF-001 | Can't fill the official CKYC form | 5 | FIXED |
 | LF-002 | Weak Aadhaar validation (`999999999999` accepted) | 1 | FIXED |
 | LF-003 | PIN / city / state mismatch accepted | 2 | FIXED |
 | LF-004 | Email only syntax-checked | 3 | FIXED |
@@ -31,6 +31,8 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-007 | Model silently drops/changes digits; grounding doesn't catch it | 1 | FIXED |
 | LF-008 | "I don't have a PAN" skips a required field | 1 | FIXED |
 | LF-009 | Near-miss answers (`kerela`, `housewife`) rejected with no suggestion | 3 | FIXED |
+| LF-010 | A valid option the model was unsure of ("voter card") is re-asked blindly | 5 | FIXED |
+| LF-011 | Follow-ups found while fixing the above | — | OPEN |
 
 ---
 
@@ -45,7 +47,37 @@ Source of the first batch: manual live run on 2026-09-30, session log
   mandatory section 1–3 fields (prefix, first/middle/last name, mother's name, marital
   status, citizenship, residential status, POI type + number, district, state code,
   current-address-same flag, declaration place/date). Template export kept as a fallback.
-- **Status:** OPEN
+- **Fix (branch `fix-5-official-form`):**
+  - The official PDF is committed at `data/forms/official/ckyc_individual_amfi.pdf` (source:
+    portal.amfiindia.com/spages/ckyc-kra-kyc-formforindividuals.pdf).
+  - `lucidform/schema/ckyc_official.yaml`: 28 fields for sections 1–4 + declaration place.
+    `inherit: <id>` pulls a field from `ckyc_form.yaml`, so prompts and rules stay in one place.
+    New overlay keys: `ask_if` (conditional fields: `poi_number` only for Passport/Voter
+    ID/DL/NREGA/NPR, `poi_expiry` only for Passport/DL, the `cur_*` current-address block only
+    if `same_address: No`) and `date_future` (expiry must be after today).
+    `FieldSpec.applies(values)` is the single test used by the graph, review, result and writer.
+  - `loader.load_official()` builds the schema from the overlay alone (no AcroForm).
+  - `tools/build_official_layout.py` measures every printed box from the PDF's vector lines
+    (pdfplumber, dev-only) → `lucidform/schema/ckyc_official_layout.yaml` (cells as [x0,x1]).
+    Tick boxes, state codes (the form's own page-4 list: OR, TS, UA…) and deemed-PoA codes are
+    in the same file.
+  - `formstate/official_writer.export_official`: reportlab overlay merged onto a copy of the
+    4-page form. One character per box, BLOCK letters (email keeps its case), and anything too
+    long is shrunk across the span, never truncated. Presentation only: name split
+    first/middle/last, address wrapped 49/49/30, DD-MM-YYYY, state → code. The only
+    constants are Application Type New, Account Type Normal, country IN, and today's
+    declaration date. Values whose field no longer applies are not printed.
+  - Cross-field: the PIN/city/state checks take an address prefix (`cur_*` is checked against its own
+    PIN). Passport `^[A-Z][0-9]{7}$` and Voter ID `^[A-Z]{3}[0-9]{7}$` are checked against the chosen
+    type. DL/NREGA/NPR are length-only because formats vary by state.
+  - Proposals: district and state from the PIN (and `cur_*` from `cur_pin`), and place of signing from city.
+  - Graph: skips fields that don't apply. The end revisit now covers fields that start to apply
+    after a change at the review (each field revisited at most once).
+  - CLI: `run --form official`. The `lucidform` launcher now fills the official form.
+- **Verified live (2026-10-01):** a full Gemini session → 20 answers, approved, clean PDF.
+  Pages were rendered and checked by eye; tests assert the positions of drawn text.
+- **Tests:** `tests/test_issues_phase5.py`.
+- **Status:** FIXED
 
 ## LF-002 — Weak Aadhaar validation
 - **Symptom:** `999999999999` was saved as a valid Aadhaar.
@@ -220,3 +252,30 @@ Source of the first batch: manual live run on 2026-09-30, session log
     now resolve via the offer (two fewer turns each).
 - **Tests:** `tests/test_issues_phase3.py`.
 - **Status:** FIXED
+
+## LF-010 — A valid option the model was unsure of is re-asked blindly
+- **Symptom (live, 2026-10-01):** "voter card" for proof of identity was rejected: "the utterance
+  had more than one reading".
+- **Root cause:** "voter card" is a declared `enum_name` of Voter ID, so every structural check
+  passed. But Gemini marked its own reading ambiguous (confidence 0.4), and the gate's
+  AMBIGUOUS_EXTRACTION check rejected it with nothing to offer.
+- **Fix (branch `fix-5-official-form`):** for an **enum** field whose normalized value is exactly an
+  option, a rejection for AMBIGUOUS_EXTRACTION or LOW_CONFIDENCE offers that option
+  (read back, explicit yes). Other types, e.g. an ambiguous "5/1/87" date, are still re-asked.
+- **Tests:** `tests/test_issues_phase5.py`.
+- **Status:** FIXED
+
+## LF-011 — Follow-ups (open)
+- Document numbers (`poi_number`, type text) are read back as a word, not spelled out
+  character by character like PAN/Aadhaar. Add a spell-out flag in the overlay.
+- The Hindi strings added in LF-003..LF-001 (proposal, suggestion, review, the new official-form
+  prompts) need a native-speaker review, as `CLAUDE.md` already notes for older prompts.
+- The official form marks Email as mandatory. Here it stays optional (inherited), because
+  many target users have none.
+- Citizenship "Other" ticks the box, but the country name/code is not asked yet.
+- The official form doesn't take the Aadhaar number (only "proof of possession", masked),
+  so the official flow doesn't ask it. The template form still does.
+- The PIN directory predates 2020 and omits NE states and some UTs. Their PINs fall back to
+  the region check (LF-003).
+- Paper/README numbers: offline Table II is unchanged, but live figures predate these fixes
+  and should be re-measured (`replay --live`).

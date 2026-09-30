@@ -11,6 +11,7 @@ import enum
 import hashlib
 import uuid
 from dataclasses import dataclass, field
+from typing import Mapping
 from datetime import datetime, timezone
 
 
@@ -102,6 +103,15 @@ class FieldSpec:
     suggest_names: dict[str, tuple[str, ...]] = field(default_factory=dict)
     # LF-005: the options are amount ranges; a stated amount suggests one.
     amount_bands: bool = False
+    # LF-001: ask only when a confirmed field holds one of these values, e.g.
+    # {"poi_type": ("Passport",)}. A field that does not apply is not asked,
+    # reviewed or printed.
+    ask_if: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    # A date that must lie in the future (a document's expiry), not the past.
+    date_future: bool = False
+
+    def applies(self, values: Mapping[str, str]) -> bool:
+        return all(values.get(dep) in allowed for dep, allowed in self.ask_if.items())
 
     def name(self, lang: str) -> str:
         """What to call this field out loud.

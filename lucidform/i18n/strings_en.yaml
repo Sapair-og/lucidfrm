@@ -67,3 +67,5 @@ review_unclear: >-
 proposal: 'Your PIN code {pin} is in {place}.'
 
 suggestion: 'I think you meant {value}.'
+
+proposal_place: 'I will write {place} as the place where you sign.'

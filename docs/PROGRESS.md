@@ -56,3 +56,16 @@ Append-only. Newest entry at the bottom. Each entry: who, phase, done, left, got
   cover transport errors and 429 hints; help-eval scorer uses exact gold matching and excludes errored
   controls (recorded numbers unchanged); enum-name validation hardened; help-isolation test closed.
 - **Next:** optional `/code-review ultra`; push once the team repo location is decided.
+
+## 2026-10-01 — Review fixes LF-001..LF-010 (Yashvardhan, with Claude Code)
+- **Done:** a manual live run surfaced 9 problems, now tracked in `docs/ISSUES.md` with root cause,
+  fix, tests and branch. Fixed in five stacked branches: `fix-1-safety` (placeholder Aadhaar, model-altered
+  digits, Form 60), `fix-4-session-end` (revisit + final review + INCOMPLETE stamp),
+  `fix-2-address` (India Post PIN directory, PIN-first with proposed state),
+  `fix-3-email-income` (MX check, amount→band, near-miss offers), `fix-5-official-form`
+  (fill the real CKYC PDF). Tests 489 → 587 offline, all green; live official-form run verified.
+- **Left:** LF-011 follow-ups; re-measure live figures for the paper; Hindi review.
+- **Gotchas:** golden sessions were re-recorded 3 times; each time I checked that commits were
+  identical and that the diff was only the intended tail or turns. Persona p02's mis-hearing is now
+  Kollam (Kolhapur is caught by the gate now). `dnspython` is a new runtime dependency;
+  `pdfplumber`/`pypdfium2` are dev-only (layout tool).
