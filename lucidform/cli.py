@@ -360,6 +360,12 @@ def run_cmd(
         "--form",
         help="template: the 14-field research form. official: the real CKYC form (LF-001).",
     ),
+    pdf: Path = typer.Option(
+        None, "--pdf", help="Fill your own PDF form instead of a built-in one (LF-014)."
+    ),
+    ask_pdf: bool = typer.Option(
+        False, "--ask-pdf", help="Start by asking whether to use your own PDF form."
+    ),
 ) -> None:
     """Fill in the form by conversation.
 
@@ -378,6 +384,7 @@ def run_cmd(
     from lucidform.schema import loader
 
     settings = get_settings()
+    custom = None  # a user-supplied PDF (LF-014)
     if form not in ("template", "official"):
         typer.echo("--form must be 'template' or 'official'")
         raise typer.Exit(2)
@@ -410,8 +417,15 @@ def run_cmd(
     else:
         from lucidform.netcheck import email_domain_ok
 
-        log = EventLog(settings.runs_dir, meta={"lang": lang or settings.lang})
         channel = ConsoleChannel()
+        if pdf or ask_pdf:
+            custom = _choose_pdf(channel, pdf, lang or settings.lang)
+            if custom is not None:
+                schema, form = custom.schema, custom.kind
+        log = EventLog(
+            settings.runs_dir,
+            meta={"lang": lang or settings.lang, "form": schema.form_id},
+        )
         state = FormState(log=log)
         session = Session(
             schema=schema,
@@ -469,13 +483,63 @@ def run_cmd(
             stamp = "NOT CONFIRMED BY APPLICANT"
         else:
             stamp = None
+        source = custom.pdf if custom is not None else None
         if form == "official":
-            written = export_official(state, schema, export_to, stamp=stamp)
+            written = export_official(state, schema, export_to, stamp=stamp, template=source)
         else:
-            written = export(state, schema, export_to, stamp=stamp)
+            written = export(
+                state, schema, export_to, stamp=stamp, template=source,
+                date_format="%d/%m/%Y" if custom is not None else None,
+            )
         typer.echo(f"\nwrote {written}" + (f"  [stamped {stamp}]" if stamp else ""))
 
     raise typer.Exit(0 if result.complete else 1)
+
+
+def _choose_pdf(channel, pdf: Path | None, lang: str):
+    """Ask whether to use the user's own PDF and read it (ISSUES.md LF-014).
+
+    Returns a CustomForm, or None to carry on with the built-in form. A path is
+    asked for at most three times; each failure says why, in plain words.
+    """
+    from lucidform.channels.base import Kind, Purpose
+    from lucidform.i18n import Strings
+    from lucidform.orchestrate.confirm import parse_affirmation
+    from lucidform.schema.custom import open_form
+    from lucidform.schema.loader import SchemaError
+
+    strings = Strings(lang)
+    if pdf is None:
+        channel.say(strings.get("own_pdf_ask"), kind=Kind.PROMPT)
+        answer = channel.listen("own_pdf", Purpose.CONFIRMATION)
+        if answer is None or not parse_affirmation(answer).explicit:
+            return None
+    for attempt in range(3):
+        if pdf is None or attempt:
+            channel.say(strings.get("own_pdf_path"), kind=Kind.PROMPT)
+            said = channel.listen("own_pdf", Purpose.VALUE)
+            if said is None:
+                return None
+        else:
+            said = str(pdf)
+        try:
+            custom = open_form(said)
+        except SchemaError as exc:
+            channel.say(strings.say("own_pdf_bad", reason=str(exc)), kind=Kind.PROBLEM)
+            continue
+        asked = sum(1 for _ in custom.schema.fields)
+        channel.say(
+            strings.say("own_pdf_ok", count=asked, title=custom.schema.title), kind=Kind.PROGRESS
+        )
+        if custom.skipped:
+            channel.say(
+                strings.say("own_pdf_skipped", fields=", ".join(custom.skipped)), kind=Kind.PROGRESS
+            )
+        if custom.note:
+            channel.say(custom.note, kind=Kind.PROGRESS)
+        return custom
+    channel.say(strings.get("own_pdf_fallback"), kind=Kind.PROGRESS)
+    return None
 
 
 def _help_agent(replay: bool):

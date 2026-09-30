@@ -35,6 +35,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-011 | Follow-ups found while fixing the above | — | OPEN |
 | LF-012 | User has a PAN/Aadhaar but can't find the number; no guidance | 6 | FIXED |
 | LF-013 | Model quotes a shortened number, so LF-007's digit check passes | 6 | FIXED |
+| LF-014 | Only the built-in PDFs can be filled; users can't bring their own form | 7 | FIXED (fillable PDFs) |
 
 ---
 
@@ -325,3 +326,32 @@ Source of the first batch: manual live run on 2026-09-30, session log
 - **Verified live:** `98390124577` → "expected exactly 10 characters, got 11".
 - **Tests:** `tests/test_issues_phase1.py` (LF-013 section).
 - **Status:** FIXED
+
+## LF-014 — Users can't bring their own PDF form
+- **Request (2026-10-01):** at start, ask whether to use your own PDF. If yes, the user pastes a
+  path and the session continues on that form.
+- **Fix (branch `feat-own-pdf`):**
+  - `lucidform/schema/custom.py` `open_form(path)` decides from the file itself:
+    **official CKYC** (same file as the bundled copy, or the CKYC title + 4 pages) → official flow;
+    **fillable PDF** (AcroForm) → a schema built from its fields; **flat/scanned** → refused
+    ("needs OCR and layout detection, not built"). Also refuses missing, non-PDF and encrypted files.
+    Windows "Copy as path" quotes are stripped.
+  - A field's **name, tooltip (/TU) and printed label** (text just left of the box, else just above it,
+    via pypdf text positions) are matched by keyword (`KNOWN`) to template fields: name, father,
+    DOB, gender, PAN, Aadhaar, mobile, email, PIN, city, state, occupation, address. A match takes
+    the template's prompts and **all its gate rules**, re-keyed to the PDF's widget. A PDF dropdown's
+    own options become the choices, and the question lists them. Names of other people (nominee,
+    mother, bank, branch, first/middle/last) are never matched. Unmatched boxes are asked by their
+    label as plain text, optional ("What should I write for "Nominee Name"?"). Tick boxes and
+    signatures are listed for the user to do by hand.
+  - CLI: `run --pdf PATH` or `run --ask-pdf`. The launcher passes `--ask-pdf`, so plain `lucidform`
+    asks first. Three bad paths → the built-in form. Export writes onto the user's own file
+    (`writer.export(template=...)`), with dates as DD/MM/YYYY on custom forms.
+  - Sample: `data/forms/samples/sample_bank_form.pdf` (built by `tests/make_custom_form.py`).
+- **Verified live:** the sample bank form (11 fields, 1 tick box) was filled end to end with Gemini.
+  The fields were read back from the output PDF.
+- **Limits:** flat or scanned PDFs need the OCR stage from the original design (not built). Keyword
+  recognition covers common English field names only. Custom-form fields other than the recognised
+  ones are unvalidated free text, by design (nothing is known about them).
+- **Tests:** `tests/test_issues_phase7.py`.
+- **Status:** FIXED for fillable PDFs; flat PDFs remain open

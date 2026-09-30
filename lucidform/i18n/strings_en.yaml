@@ -69,3 +69,20 @@ proposal: 'Your PIN code {pin} is in {place}.'
 suggestion: 'I think you meant {value}.'
 
 proposal_place: 'I will write {place} as the place where you sign.'
+
+own_pdf_ask: >-
+  Do you want to fill your own PDF form? Say yes to give its location, or no to
+  use the built-in KYC form.
+
+own_pdf_path: >-
+  Paste the full path of your PDF file. In File Explorer, right-click the file
+  and choose "Copy as path", then paste it here.
+
+own_pdf_bad: 'I cannot use that file: {reason}'
+
+own_pdf_ok: 'I have opened "{title}". I will ask you about {count} items on it.'
+
+own_pdf_skipped: >-
+  These parts need to be ticked or signed by hand after printing: {fields}.
+
+own_pdf_fallback: All right, we will use the built-in KYC form instead.

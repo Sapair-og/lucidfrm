@@ -18,6 +18,7 @@ Two properties it must have, both tested:
 
 from __future__ import annotations
 
+import datetime as dt
 from pathlib import Path
 from typing import Mapping
 
@@ -25,6 +26,7 @@ from pypdf import PdfReader, PdfWriter
 
 from lucidform.config import get_settings
 from lucidform.formstate.state import FormState
+from lucidform.models import FieldType
 from lucidform.schema.loader import FormSchema
 
 
@@ -38,6 +40,7 @@ def export(
     out: Path,
     template: Path | None = None,
     stamp: str | None = None,
+    date_format: str | None = None,
 ) -> Path:
     """Write the confirmed values into a copy of the blank form.
 
@@ -63,8 +66,18 @@ def export(
         raise ExportError(f"confirmed values for unknown fields: {sorted(unknown)}")
 
     # Map our stable field ids onto the PDF's widget names.
+    def shown(field_id: str, value: str) -> str:
+        # Presentation only: a user's own form gets dates the Indian way
+        # (DD/MM/YYYY). The stored, confirmed value is unchanged.
+        if date_format and schema.by_id(field_id).type is FieldType.DATE:
+            try:
+                return dt.date.fromisoformat(value).strftime(date_format)
+            except ValueError:
+                return value
+        return value
+
     by_widget = {
-        schema.by_id(field_id).acroform_name: value
+        schema.by_id(field_id).acroform_name: shown(field_id, value)
         for field_id, value in values.items()
     }
 
