@@ -94,6 +94,10 @@ fields:
     required: true
     max_length: 10
     depends_on: [full_name]
+    decline_value: Form 60
+    decline_offer:
+      en: If you do not have a PAN, you can give Form 60 instead. It is a signed declaration that you do not have a PAN, and the bank accepts it in place of the number.
+      hi: अगर आपके पास पैन नहीं है, तो आप उसकी जगह फॉर्म 60 दे सकते हैं। यह एक हस्ताक्षरित घोषणा है कि आपके पास पैन नहीं है, और बैंक इसे पैन नंबर की जगह स्वीकार करता है।
     prompt:
       en: What is your PAN number?
       hi: आपका पैन नंबर क्या है?

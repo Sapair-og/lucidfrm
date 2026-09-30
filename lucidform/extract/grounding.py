@@ -26,6 +26,7 @@ import re
 from dataclasses import dataclass
 
 from lucidform.extract.schema import Extraction
+from lucidform.models import FieldType
 
 # Comparison is whitespace- and case-insensitive. A model that reflows spacing
 # or changes case is still quoting; one that supplies words the user never said
@@ -42,6 +43,10 @@ class Grounding:
     grounded: bool
     span: tuple[int, int] | None
     detail: str = ""
+    # Set when the model's value disagreed with the digits the user said, for a
+    # field made only of digits: the pipeline uses the user's digits instead,
+    # so the gate judges what was said rather than what the model wrote.
+    replacement: str | None = None
 
 
 def locate(quote: str, utterance: str) -> Grounding:
@@ -75,15 +80,120 @@ def locate(quote: str, utterance: str) -> Grounding:
     )
 
 
-def check(extraction: Extraction, utterance: str) -> Grounding:
+# -- digit consistency (ISSUES.md LF-007) -----------------------------------
+#
+# A quote can be honest while the value is not: the user said thirteen nines,
+# the model quoted all thirteen, and returned twelve. For identifier fields the
+# digits are the whole value, so the digits in the value must be exactly the
+# digits in the quote. Number words are read one digit per word; anything that
+# is not a single-digit word ("twenty", "hundred") makes the quote unreadable
+# as a digit string, and the check declines to run rather than guess.
+
+_DIGIT_WORDS = {
+    "zero": "0", "shunya": "0", "shoonya": "0", "sunya": "0", "sifar": "0",
+    "one": "1", "ek": "1",
+    "two": "2", "do": "2", "doh": "2",
+    "three": "3", "teen": "3", "tin": "3",
+    "four": "4", "char": "4", "chaar": "4",
+    "five": "5", "paanch": "5", "panch": "5", "pach": "5",
+    "six": "6", "chhe": "6", "chhah": "6", "chah": "6", "che": "6", "chheh": "6", "cheh": "6",
+    "seven": "7", "saat": "7", "sat": "7",
+    "eight": "8", "aath": "8", "ath": "8", "aat": "8",
+    "nine": "9", "nau": "9", "nao": "9",
+}
+# "oh" is a zero only where letters cannot occur; in a PAN it may be the letter O.
+_ZERO_LETTER_WORDS = {"oh": "0", "o": "0"}
+_REPEAT = {"double": 2, "triple": 3}
+# Words that denote a multi-digit number. A quote containing one cannot be read
+# digit by digit, so the check is skipped rather than risk a false reject.
+_COMPOUND = re.compile(
+    r"^(ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|"
+    r"nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|"
+    r"thousand|lakh|lac|crore|das|bees|sau|hazaar|hazar)$"
+)
+_TOKEN = re.compile(r"[0-9]+|[a-z]+")
+
+DIGIT_FIELDS = {FieldType.AADHAAR, FieldType.PHONE, FieldType.PIN, FieldType.PAN}
+_PHONE_PREFIXES = ("0091", "91", "0")
+
+
+def spoken_digits(text: str, *, letters_possible: bool) -> str | None:
+    """The digit string a quote spells out, or None if it cannot be read that way."""
+    words = dict(_DIGIT_WORDS)
+    if not letters_possible:
+        words.update(_ZERO_LETTER_WORDS)
+    out: list[str] = []
+    repeat = 1
+    for token in _TOKEN.findall((text or "").casefold()):
+        if token.isdigit():
+            out.append(token[0] * repeat + token[1:])
+            repeat = 1
+        elif token in _REPEAT:
+            repeat = _REPEAT[token]
+        elif token in words:
+            out.append(words[token] * repeat)
+            repeat = 1
+        elif _COMPOUND.match(token):
+            return None
+        else:
+            repeat = 1  # a letter or filler word
+    return "".join(out)
+
+
+def _strip_phone_prefix(digits: str) -> str:
+    for prefix in _PHONE_PREFIXES:
+        if digits.startswith(prefix) and len(digits) - len(prefix) == 10:
+            return digits[len(prefix):]
+    return digits
+
+
+def digits_agree(value: str, quote: str, field_type: FieldType) -> Grounding | None:
+    """None when consistent or not checkable; a failed Grounding otherwise."""
+    if field_type not in DIGIT_FIELDS:
+        return None
+    heard = spoken_digits(quote, letters_possible=field_type is FieldType.PAN)
+    if heard is None:
+        return None
+    written = "".join(re.findall(r"[0-9]", value or ""))
+    if field_type is FieldType.PHONE:
+        heard, written = _strip_phone_prefix(heard), _strip_phone_prefix(written)
+    if heard == written:
+        return None
+    if field_type is not FieldType.PAN:
+        return Grounding(
+            True,
+            None,
+            f"the model wrote digits {written!r} but the user said {heard!r}; "
+            "using what the user said",
+            replacement=heard,
+        )
+    return Grounding(
+        False,
+        None,
+        f"the value has digits {written!r} but the user said {heard!r} "
+        f"({len(heard)} digits); the model changed the number",
+    )
+
+
+def check(
+    extraction: Extraction, utterance: str, field_type: FieldType | None = None
+) -> Grounding:
     """Ground an extraction against the utterance it claims to come from.
 
     Only value-bearing extractions are grounded. A question or a decline has no
-    value and therefore nothing to anchor.
+    value and therefore nothing to anchor. For identifier fields the value's
+    digits must also match the quote's (LF-007).
     """
     if not extraction.is_value:
         return Grounding(True, None, "no value to ground")
-    return locate(extraction.quote, utterance)
+    located = locate(extraction.quote, utterance)
+    if located.grounded and field_type is not None:
+        mismatch = digits_agree(extraction.value, extraction.quote, field_type)
+        if mismatch is not None:
+            if mismatch.replacement is not None:
+                return Grounding(True, located.span, mismatch.detail, mismatch.replacement)
+            return mismatch
+    return located
 
 
 def clamp_confidence(extraction: Extraction, grounding: Grounding) -> float:

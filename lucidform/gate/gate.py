@@ -100,6 +100,19 @@ class ValidationGate:
                 checks=tuple(checks),
             )
 
+        if field.decline_value and value == field.decline_value:
+            # The declared alternative for a required field (PAN -> Form 60).
+            # It is a fixed string from the overlay, so the identifier rules
+            # do not apply; the read-back and explicit yes still do.
+            checks.append(Check("decline_alternative", passed=True))
+            return ValidationReport(
+                status=Status.PASS,
+                candidate_id=candidate.candidate_id,
+                field_id=field.id,
+                normalized_value=value,
+                checks=tuple(checks),
+            )
+
         for reason in CHECK_ORDER:
             outcome = self._run(reason, value, field, candidate, committed, checks)
             if outcome is not None:

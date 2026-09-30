@@ -91,6 +91,10 @@ def strip_invisible(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def _squash(text: str) -> str:
+    return re.sub(r"[\s\-.]+", "", text).casefold()
+
+
 def parse_date(value: str) -> dt.date | None:
     """Parse an accepted date input. Returns None if it is not a real date.
 
@@ -116,6 +120,9 @@ def normalize(value: str, field: FieldSpec) -> str:
     text = strip_invisible(value)
     if not text:
         return ""
+
+    if field.decline_value and _squash(text) == _squash(field.decline_value):
+        return field.decline_value
 
     ftype = field.type
 
@@ -178,8 +185,10 @@ def format_error(value: str, field: FieldSpec) -> str | None:
         return None if parse_date(value) else "not a recognisable date"
 
     pattern = PATTERNS.get(field.type)
-    if pattern is None or pattern.match(value):
+    if pattern is None:
         return None
+    if pattern.match(value):
+        return placeholder_error(value, field)
 
     return {
         FieldType.PAN: "a PAN is five letters, four digits, then one letter",
@@ -190,6 +199,30 @@ def format_error(value: str, field: FieldSpec) -> str | None:
         FieldType.NAME: "a name may contain only letters, spaces, apostrophes and hyphens",
         FieldType.TEXT: "contains characters that are not allowed in this field",
     }.get(field.type, "does not match the expected format")
+
+
+def is_placeholder_number(digits: str) -> bool:
+    """All one digit, or a straight run up or down (wrapping 9->0).
+
+    Such numbers pass length, shape and even Verhoeff by chance (999999999999
+    does), but UIDAI does not issue them; they are what people type when they
+    do not know or do not want to give the number (ISSUES.md LF-002).
+    """
+    if len(set(digits)) == 1:
+        return True
+    steps = {(int(b) - int(a)) % 10 for a, b in zip(digits, digits[1:])}
+    return steps in ({1}, {9})
+
+
+def placeholder_error(value: str, field: FieldSpec) -> str | None:
+    """Well-shaped but obviously not a real issued number. Aadhaar only.
+
+    Mobile numbers are deliberately excluded: repeated-digit "fancy" numbers
+    are really sold by operators, so rejecting them would be a false positive.
+    """
+    if field.type is FieldType.AADHAAR and is_placeholder_number(value):
+        return "that looks like a placeholder, not a real Aadhaar number"
+    return None
 
 
 def enum_error(value: str, field: FieldSpec) -> str | None:

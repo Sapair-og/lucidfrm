@@ -136,14 +136,16 @@ class Extractor:
             )
         extraction = reply.extraction
 
-        grounded = ground.check(extraction, utterance)
+        grounded = ground.check(extraction, utterance, field.type)
         confidence = ground.clamp_confidence(extraction, grounded)
 
         candidate: Candidate | None = None
         if extraction.is_value:
             candidate = Candidate(
                 field_id=field.id,
-                value=extraction.value,
+                # LF-007: where the model changed the digits the user said, the
+                # user's digits are what the gate judges and the user hears.
+                value=grounded.replacement or extraction.value,
                 raw_utterance=utterance,
                 confidence=confidence,
                 span=grounded.span,

@@ -183,15 +183,16 @@ def test_declining_an_optional_field_is_recorded_not_committed(schema, tmp_path)
 def test_declining_a_required_field_is_refused(schema, tmp_path):
     """The form is rejected without it, so the user is told rather than
     silently allowed to skip."""
+    # Aadhaar: required, and with no declared alternative (PAN has Form 60).
     result, state, channel, _ = one_field(
         schema,
-        "pan",
-        [Extraction(intent=Intent.DECLINE), value(value="AKQPS3417M", quote="akqps3417m")],
-        ["i don't have one", "akqps3417m", "yes"],
+        "aadhaar",
+        [Extraction(intent=Intent.DECLINE), value(value="234123412346", quote="234123412346")],
+        ["i don't have one", "234123412346", "yes"],
         tmp_path,
     )
     assert result.fields[0].committed
-    assert "pan" not in state.declined
+    assert "aadhaar" not in state.declined
     assert any("cannot be left out" in t for _, t in channel.said)
 
 

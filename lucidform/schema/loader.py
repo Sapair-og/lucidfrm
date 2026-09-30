@@ -201,6 +201,8 @@ def load(
                 enum_values=enum_values,
                 enum_names=enum_names,
                 depends_on=tuple(entry.get("depends_on", ())),
+                decline_value=entry.get("decline_value"),
+                decline_offer=dict(entry.get("decline_offer", {})),
             )
         )
 

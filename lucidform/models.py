@@ -88,6 +88,11 @@ class FieldSpec:
     enum_names: dict[str, tuple[str, ...]] = field(default_factory=dict)
     # Field ids this one is validated against (e.g. pan -> name, pin -> state).
     depends_on: tuple[str, ...] = ()
+    # What a required field records when the user says they do not have one,
+    # e.g. PAN -> "Form 60" (ISSUES.md LF-008). Offered, read back, and
+    # committed only on an explicit yes, like any other value.
+    decline_value: str | None = None
+    decline_offer: dict[str, str] = field(default_factory=dict)  # lang -> offer text
 
     def name(self, lang: str) -> str:
         """What to call this field out loud.

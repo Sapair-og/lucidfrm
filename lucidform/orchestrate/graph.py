@@ -32,7 +32,7 @@ from langgraph.graph import END, START, StateGraph
 
 from lucidform.channels.base import Kind, Purpose
 from lucidform.eval.events import Event
-from lucidform.models import Status
+from lucidform.models import Candidate, Status
 from lucidform.orchestrate import readback
 from lucidform.orchestrate.confirm import confirm
 
@@ -47,6 +47,7 @@ class TurnState(TypedDict, total=False):
     current: Any  # FieldResult for the field in progress
     said: str | None
     extraction: Any
+    proposed: Any  # candidate offered to the gate: extracted, or a decline alternative
     candidate: Any
     report: Any
     receipt: Any
@@ -66,7 +67,7 @@ ROUTES: dict[str, dict[str, str]] = {
         "value": "gate",
     },
     "explain": {"retry": "budget"},
-    "decline": {"retry": "budget", "finish": "finish"},
+    "decline": {"retry": "budget", "finish": "finish", "alternative": "gate"},
     "gate": {"pass": "readback", "retry": "budget"},
     "listen_confirm": {"heard": "confirm", "gone": "finish"},
     "confirm": {"affirmed": "commit", "retry": "budget"},
@@ -180,7 +181,7 @@ class SessionGraph:
             route = "unclear"
         else:
             route = "value"
-        return {"extraction": extraction, "route": route}
+        return {"extraction": extraction, "proposed": extraction.candidate, "route": route}
 
     def explain(self, state: TurnState) -> dict:
         outcome = state["current"]
@@ -195,6 +196,20 @@ class SessionGraph:
 
     def decline(self, state: TurnState) -> dict:
         field, outcome = self._field(state), state["current"]
+        if field.decline_value:
+            # LF-008: offer the declared alternative (PAN -> Form 60). It goes
+            # through the gate, the read-back and the explicit yes like any
+            # value; the user can still say no.
+            offer = field.decline_offer.get(self.s.lang) or field.decline_offer.get("en")
+            if offer:
+                self.s.output.say(offer, kind=Kind.EXPLANATION)
+            proposed = Candidate(
+                field_id=field.id,
+                value=field.decline_value,
+                raw_utterance=state["said"],
+                confidence=1.0,
+            )
+            return {"proposed": proposed, "route": "alternative"}
         if field.required:
             self.s.output.say(self.s.strings.get("required"), kind=Kind.PROBLEM)
             outcome.attempts += 1
@@ -211,7 +226,7 @@ class SessionGraph:
 
     def gate(self, state: TurnState) -> dict:
         field, outcome = self._field(state), state["current"]
-        candidate = state["extraction"].candidate
+        candidate = state["proposed"]
         report = self.s.gate.check(candidate, self.s.state.values)
         self.s.log.emit(
             Event.VALIDATION, field_id=field.id, turn_idx=outcome.attempts, payload=report

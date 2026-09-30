@@ -110,6 +110,8 @@ def spell_email(value: str) -> str:
 
 def render_value(value: str, field: FieldSpec, lang: str = "en") -> str:
     """The value, as it should be heard."""
+    if field.decline_value and value == field.decline_value:
+        return value
     if field.type is FieldType.DATE:
         try:
             parsed = dt.date.fromisoformat(value)

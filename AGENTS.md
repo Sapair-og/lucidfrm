@@ -1,6 +1,6 @@
 # AGENTS.md — handoff for any AI agent (Claude, Codex, Cursor, Gemini…) or new teammate
 
-Read this file, then `ROADMAP.md`, then the last two entries of `docs/PROGRESS.md`.
+Read this file, then `ROADMAP.md`, then `docs/ISSUES.md` (known problems + fixes), then the last two entries of `docs/PROGRESS.md`.
 If `graphify-out/GRAPH_REPORT.md` exists, prefer `graphify query "<question>"` /
 `graphify explain "<Symbol>"` over opening files. Design intent lives in `SPEC.md`;
 the reasoning behind each decision in `METHODOLOGY.md`; the paper in `docs/paper-draft.md`.
