@@ -1,0 +1,81 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction so the checksum path
+# is exercised; it was generated algorithmically. See METHODOLOGY M0.8.
+# ============================================================================
+
+persona_id: p03
+name: Abdul (code-mixes Hindi and English, asks what fields mean)
+lang: en
+
+profile:
+  literacy: low
+  speech_style: code-mixed
+  notes: >
+    Switches between Hindi and English mid-sentence, which is the normal
+    register for this user group and the hardest case for both extraction and
+    speech recognition. Asks what PAN means before answering, which exercises
+    the jargon-explanation path. Gives his income as an exact figure when the
+    form wants a band, so the extractor has to map a number onto an enum -- a
+    place where a plausible wrong answer is easy to produce and must be caught
+    at read-back rather than assumed.
+
+ground_truth:
+  full_name: Abdul Rahim Khan
+  father_name: Mohammad Yusuf Khan
+  dob: "1979-06-21"
+  gender: Male
+  pan: CJMPK1953R
+  aadhaar: "771740876250"
+  address_line: 15 Hazratganj, Near Post Office
+  city: Lucknow
+  state: Uttar Pradesh
+  pin: "226001"
+  mobile: "8299170453"
+  email: ""
+  occupation: Self-employed
+  income_band: 1-5 Lakh
+
+turns:
+  full_name:
+    - mera naam abdul rahim khan hai
+  father_name:
+    - mohammad yusuf khan
+  dob:
+    - twenty one june nineteen seventy nine
+  gender:
+    - male, aadmi
+  pan:
+    # Asks for the gloss before answering. The orchestrator must recognise this
+    # as a request for explanation, not as a value -- extracting "pan kya hota
+    # hai" as a PAN would be a silent failure of the worst kind.
+    - pan kya hota hai
+    - C J M P K one nine five three R
+  aadhaar:
+    - seven seven one seven four zero eight seven six two five zero
+  address_line:
+    - pandrah hazratganj, post office ke paas
+  city:
+    - lucknow
+  state:
+    - uttar pradesh
+  pin:
+    - two two six zero zero one
+  mobile:
+    - eight two nine nine one seven zero four five three
+  email:
+    # Optional field, explicitly declined. Must be recorded as skipped, not as
+    # an empty value that failed validation.
+    - mera email nahi hai
+  occupation:
+    - apna kaam karta hoon
+    - self employed
+  income_band:
+    - teen lakh ke aas paas
+    - one to five lakh
+
+responses:
+  affirm: haan, sahi hai
+  deny: nahi, galat hai

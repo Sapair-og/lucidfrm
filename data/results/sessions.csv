@@ -1,0 +1,4 @@
+session_id,persona_id,lang,model,client,turns,committed,declined,abandoned,escaped_errors,blocked_writes
+0980bffb8fdd44629207e7c74104e321,p03,en,expected,ReplayClient,17,13,1,0,0,0
+8740529ffa17414792dee28a1761ef84,p01,en,expected,ReplayClient,16,14,0,0,0,0
+8c2e690bc8b64e94bd0a6175dd7a55a3,p02,en,expected,ReplayClient,16,14,0,0,0,0

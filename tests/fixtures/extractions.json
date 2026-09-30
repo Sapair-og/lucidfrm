@@ -1,0 +1,734 @@
+{
+  "note": "Expected model responses, not recordings. Derived from persona ground truth plus hand-written overrides. Offline replay against this corpus verifies pipeline behaviour; it cannot measure extraction accuracy. See lucidform/eval/fixtures.py.",
+  "model": "expected",
+  "recordings": [
+    {
+      "persona_id": "p01",
+      "field_id": "full_name",
+      "utterance": "my name is ramesh kumar sharma",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Ramesh Kumar Sharma",
+        "quote": "my name is ramesh kumar sharma",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "father_name",
+      "utterance": "my father is suresh kumar sharma",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Suresh Kumar Sharma",
+        "quote": "my father is suresh kumar sharma",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "dob",
+      "utterance": "fourteenth march nineteen eighty seven",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "1987-03-14",
+        "quote": "fourteenth march nineteen eighty seven",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "dob",
+      "utterance": "14 03 1987",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "1987-03-14",
+        "quote": "14 03 1987",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "gender",
+      "utterance": "male",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Male",
+        "quote": "male",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "pan",
+      "utterance": "my pan card number is A K Q P S three four one seven M",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "AKQPS3417M",
+        "quote": "my pan card number is A K Q P S three four one seven M",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "pan",
+      "utterance": "A K Q P S 3 4 1 7 M",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "AKQPS3417M",
+        "quote": "A K Q P S 3 4 1 7 M",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "aadhaar",
+      "utterance": "seven four seven nine one zero nine eight four nine nine two",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "747910984992",
+        "quote": "seven four seven nine one zero nine eight four nine nine two",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "aadhaar",
+      "utterance": "747910984992",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "747910984992",
+        "quote": "747910984992",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "address_line",
+      "utterance": "forty two nehru marg bapu nagar",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "42 Nehru Marg, Bapu Nagar",
+        "quote": "forty two nehru marg bapu nagar",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "city",
+      "utterance": "jaipur",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Jaipur",
+        "quote": "jaipur",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "state",
+      "utterance": "rajasthan",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Rajasthan",
+        "quote": "rajasthan",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "pin",
+      "utterance": "three zero two zero one five",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "302015",
+        "quote": "three zero two zero one five",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "mobile",
+      "utterance": "nine eight one two three four five six zero seven",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "9812345607",
+        "quote": "nine eight one two three four five six zero seven",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "email",
+      "utterance": "ramesh dot sharma at example dot invalid",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "ramesh.sharma@example.invalid",
+        "quote": "ramesh dot sharma at example dot invalid",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "occupation",
+      "utterance": "i have my own shop",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "shop owner",
+        "quote": "i have my own shop",
+        "confidence": 0.5,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "occupation",
+      "utterance": "business",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "Business",
+        "quote": "business",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "income_band",
+      "utterance": "about seven lakh a year",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "7 lakh",
+        "quote": "about seven lakh a year",
+        "confidence": 0.5,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p01",
+      "field_id": "income_band",
+      "utterance": "five to ten lakh",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "5-10 Lakh",
+        "quote": "five to ten lakh",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "full_name",
+      "utterance": "lakshmi devi nair",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Lakshmi Devi Nair",
+        "quote": "lakshmi devi nair",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "father_name",
+      "utterance": "krishnan nair",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Krishnan Nair",
+        "quote": "krishnan nair",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "dob",
+      "utterance": "second november nineteen ninety four",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "1994-11-02",
+        "quote": "second november nineteen ninety four",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "gender",
+      "utterance": "female",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Female",
+        "quote": "female",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "pan",
+      "utterance": "B F T P N eight two O six C",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "BFTPN82O6C",
+        "quote": "B F T P N eight two O six C",
+        "confidence": 0.88,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "pan",
+      "utterance": "B F T P N 8 2 0 6 C",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "BFTPN8206C",
+        "quote": "B F T P N 8 2 0 6 C",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "aadhaar",
+      "utterance": "five four four two one one zero three three six six zero",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "544211033660",
+        "quote": "five four four two one one zero three three six six zero",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "address_line",
+      "utterance": "seven B marine drive ernakulam",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "7B Marine Drive, Ernakulam",
+        "quote": "seven B marine drive ernakulam",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "city",
+      "utterance": "kochi",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "Kolhapur",
+        "quote": "kochi",
+        "confidence": 0.71,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "city",
+      "utterance": "kochi, K O C H I",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "Kochi",
+        "quote": "kochi, K O C H I",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "state",
+      "utterance": "kerala",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Kerala",
+        "quote": "kerala",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "pin",
+      "utterance": "six eight two zero one six",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "682016",
+        "quote": "six eight two zero one six",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "mobile",
+      "utterance": "seven seven three six five four zero nine one two",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "7736540912",
+        "quote": "seven seven three six five four zero nine one two",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "email",
+      "utterance": "l dot nair at example dot invalid",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "l.nair@example.invalid",
+        "quote": "l dot nair at example dot invalid",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "occupation",
+      "utterance": "salaried",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Salaried",
+        "quote": "salaried",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
+      "field_id": "income_band",
+      "utterance": "ten to twenty five lakh",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "10-25 Lakh",
+        "quote": "ten to twenty five lakh",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "full_name",
+      "utterance": "mera naam abdul rahim khan hai",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Abdul Rahim Khan",
+        "quote": "mera naam abdul rahim khan hai",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "father_name",
+      "utterance": "mohammad yusuf khan",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Mohammad Yusuf Khan",
+        "quote": "mohammad yusuf khan",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "dob",
+      "utterance": "twenty one june nineteen seventy nine",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "1979-06-21",
+        "quote": "twenty one june nineteen seventy nine",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "gender",
+      "utterance": "male, aadmi",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Male",
+        "quote": "male, aadmi",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "pan",
+      "utterance": "pan kya hota hai",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "question",
+        "value": "",
+        "quote": "",
+        "confidence": 0.0,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "pan",
+      "utterance": "C J M P K one nine five three R",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "CJMPK1953R",
+        "quote": "C J M P K one nine five three R",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "aadhaar",
+      "utterance": "seven seven one seven four zero eight seven six two five zero",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "771740876250",
+        "quote": "seven seven one seven four zero eight seven six two five zero",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "address_line",
+      "utterance": "pandrah hazratganj, post office ke paas",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "15 Hazratganj, Near Post Office",
+        "quote": "pandrah hazratganj, post office ke paas",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "city",
+      "utterance": "lucknow",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Lucknow",
+        "quote": "lucknow",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "state",
+      "utterance": "uttar pradesh",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "Uttar Pradesh",
+        "quote": "uttar pradesh",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "pin",
+      "utterance": "two two six zero zero one",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "226001",
+        "quote": "two two six zero zero one",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "mobile",
+      "utterance": "eight two nine nine one seven zero four five three",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "8299170453",
+        "quote": "eight two nine nine one seven zero four five three",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "email",
+      "utterance": "mera email nahi hai",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "decline",
+        "value": "",
+        "quote": "",
+        "confidence": 0.0,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "occupation",
+      "utterance": "apna kaam karta hoon",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "apna kaam",
+        "quote": "apna kaam karta hoon",
+        "confidence": 0.4,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "occupation",
+      "utterance": "self employed",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "Self-employed",
+        "quote": "self employed",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "income_band",
+      "utterance": "teen lakh ke aas paas",
+      "attempt": 0,
+      "extraction": {
+        "alternatives": [],
+        "intent": "value",
+        "value": "teen lakh",
+        "quote": "teen lakh ke aas paas",
+        "confidence": 0.45,
+        "ambiguous": false
+      }
+    },
+    {
+      "persona_id": "p03",
+      "field_id": "income_band",
+      "utterance": "one to five lakh",
+      "attempt": 1,
+      "extraction": {
+        "intent": "value",
+        "value": "1-5 Lakh",
+        "quote": "one to five lakh",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    }
+  ]
+}

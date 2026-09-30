@@ -1,0 +1,45 @@
+# Everything the system says that is not a field prompt or a jargon gloss.
+# Field-specific wording lives in lucidform/schema/ckyc_form.yaml.
+#
+# Written to be heard, not read. Short sentences, no nested clauses, and the
+# important word early -- a listener cannot re-read a sentence they missed.
+
+greeting: >-
+  I will help you fill in this form. I will ask you one question at a time.
+  After each answer I will read it back to you, and it is only saved once you
+  say it is correct. If you do not understand a question, say "what does that
+  mean" and I will explain it.
+
+readback: 'I have {label} as: {value}. Is that correct?'
+
+confirmed: Saved.
+
+denied: All right, let us try that again.
+
+not_understood: >-
+  Sorry, I did not catch a value in that. Could you say it again?
+
+problem: 'There is a problem with that: {detail}'
+
+retry: Let us try that one more time.
+
+required: >-
+  I am sorry, this one cannot be left out. The form will be rejected without it.
+
+declined: All right, I will leave that blank.
+
+abandoned: >-
+  We will come back to {label} later.
+
+out_of_attempts: >-
+  Let us move on for now and come back to {label} at the end.
+
+progress: '{done} of {total} done.'
+
+closing: >-
+  That is everything. {committed} answers saved{declined_note}.
+
+declined_note_some: ', {count} left blank at your request'
+
+incomplete: >-
+  {count} still need answers: {fields}.

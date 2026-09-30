@@ -1,0 +1,42 @@
+persona_id,field_id,category,spoken_text,truth,transcript,decoded,cer,survived,gate_status,gate_reason,asr_confidence,model
+p01,full_name,name,Ramesh Kumar Sharma,Ramesh Kumar Sharma,Ramesh Kumar Sharma,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,father_name,name,Suresh Kumar Sharma,Suresh Kumar Sharma,Suresh Kumar Sharma,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,dob,date,14 March 1987,1987-03-14,14 March 1987,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,gender,prose,Male,Male,Male,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,pan,identifier,A K Q P S ... three four one seven M,AKQPS3417M,A K Q S ... three four one seven n,AKQS3417N,0.0833,False,reject,type_mismatch,0.62,simulated/every-7-tokens
+p01,aadhaar,identifier,seven four seven nine ... one zero nine eight ... four nine nine two,747910984992,seven four seven nine ... one o nine eight ... four nine nine to,747910984992,0.0588,True,pass,,0.62,simulated/every-7-tokens
+p01,address_line,prose,"42 Nehru Marg, Bapu Nagar","42 Nehru Marg, Bapu Nagar","42 Nehru Marg, Bapu Nagar",,0.0,True,,,0.62,simulated/every-7-tokens
+p01,city,prose,Jaipur,Jaipur,Jaipur,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,state,prose,Rajasthan,Rajasthan,Rajasthan,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,pin,identifier,three zero two ... zero one five,302015,three zero two ... zero one,30201,0.1562,False,reject,type_mismatch,0.62,simulated/every-7-tokens
+p01,mobile,identifier,nine eight one two three ... four five six zero seven,9812345607,nine eight one two three ... for five six zero seven,9812345607,0.0189,True,pass,,0.62,simulated/every-7-tokens
+p01,email,prose,R A M E S H dot S H A R M A at example dot invalid,ramesh.sharma@example.invalid,R A n E S H dot S H R M A at example dot,,0.22,False,,,0.62,simulated/every-7-tokens
+p01,occupation,prose,Business,Business,Business,,0.0,True,,,0.62,simulated/every-7-tokens
+p01,income_band,prose,5-10 Lakh,5-10 Lakh,5-10 Lakh,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,full_name,name,Lakshmi Devi Nair,Lakshmi Devi Nair,Lakshmi Devi Nair,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,father_name,name,Krishnan Nair,Krishnan Nair,Krishnan Nair,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,dob,date,2 November 1994,1994-11-02,2 November 1994,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,gender,prose,Female,Female,Female,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,pan,identifier,B F T P N ... eight two zero six C,BFTPN8206C,B T P N ... eight two o six C,BTPN8206C,0.1471,False,reject,type_mismatch,0.62,simulated/every-7-tokens
+p02,aadhaar,identifier,five four four two ... one one zero three ... three six six zero,544211033660,five four four two one one zero three ... three six zero,54421103360,0.125,False,reject,type_mismatch,0.62,simulated/every-7-tokens
+p02,address_line,prose,"7B Marine Drive, Ernakulam","7B Marine Drive, Ernakulam","7B Marine Drive, Ernakulam",,0.0,True,,,0.62,simulated/every-7-tokens
+p02,city,prose,Kochi,Kochi,Kochi,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,state,prose,Kerala,Kerala,Kerala,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,pin,identifier,six eight two ... zero one six,682016,six eight two ... zero won six,682016,0.0667,True,pass,,0.62,simulated/every-7-tokens
+p02,mobile,identifier,seven seven three six five ... four zero nine one two,7736540912,seven seven three six five four zero nine one two,7736540912,0.0755,True,pass,,0.62,simulated/every-7-tokens
+p02,email,prose,L dot N A I R at example dot invalid,l.nair@example.invalid,L N A I R at example invalid,,0.2222,False,,,0.62,simulated/every-7-tokens
+p02,occupation,prose,Salaried,Salaried,Salaried,,0.0,True,,,0.62,simulated/every-7-tokens
+p02,income_band,prose,10-25 Lakh,10-25 Lakh,10-25 Lakh,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,full_name,name,Abdul Rahim Khan,Abdul Rahim Khan,Abdul Rahim,,0.3125,False,,,0.62,simulated/every-7-tokens
+p03,father_name,name,Mohammad Yusuf Khan,Mohammad Yusuf Khan,Mohammad Yusuf Khan,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,dob,date,21 June 1979,1979-06-21,21 June 1979,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,gender,prose,Male,Male,Male,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,pan,identifier,C J M P K ... one nine five three R,CJMPK1953R,C J M P K ... won nine five three R,CJMPK1953R,0.0571,True,pass,,0.62,simulated/every-7-tokens
+p03,aadhaar,identifier,seven seven one seven ... four zero eight seven ... six two five zero,771740876250,seven seven won seven ... four zero eight seven six two five zero,771740876250,0.087,True,pass,,0.62,simulated/every-7-tokens
+p03,address_line,prose,"15 Hazratganj, Near Post Office","15 Hazratganj, Near Post Office","15 Hazratganj, Post Office",,0.1613,False,,,0.62,simulated/every-7-tokens
+p03,city,prose,Lucknow,Lucknow,Lucknow,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,state,prose,Uttar Pradesh,Uttar Pradesh,Uttar Pradesh,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,pin,identifier,two two six ... zero zero one,226001,two to six ... zero zero one,226001,0.0345,True,pass,,0.62,simulated/every-7-tokens
+p03,mobile,identifier,eight two nine nine one ... seven zero four five three,8299170453,eight to nine nine one ... seven zero for five three,8299170453,0.037,True,pass,,0.62,simulated/every-7-tokens
+p03,occupation,prose,Self-employed,Self-employed,Self-employed,,0.0,True,,,0.62,simulated/every-7-tokens
+p03,income_band,prose,1-5 Lakh,1-5 Lakh,1-5 Lakh,,0.0,True,,,0.62,simulated/every-7-tokens

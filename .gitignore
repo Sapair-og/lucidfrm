@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+
+# Generated artefacts
+data/forms/*.pdf
+data/runs/
+*.db
+# Rebuildable with `lucidform help build`; chunks + source manifest are committed
+data/help/index.npz
+
+# graphify: commit only the queryable outputs
+graphify-out/*
+!graphify-out/graph.json
+!graphify-out/GRAPH_REPORT.md
+!graphify-out/manifest.json
+
+.firecrawl/
+
+# Teammate's repo, cloned for reference
+Capstone/
+
+# personal Claude Code permissions
+.claude/settings.local.json

@@ -1,0 +1,9 @@
+# keep the graph about the system, not generated artefacts
+graphify-out/
+.venv/
+Capstone/
+data/runs/
+data/results/
+data/forms/
+.pytest_cache/
+.firecrawl/

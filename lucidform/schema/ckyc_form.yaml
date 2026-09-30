@@ -1,0 +1,259 @@
+# CKYC-equivalent individual KYC form -- semantic overlay.
+#
+# The PDF's field dictionary supplies structure (name, widget type, max length).
+# It cannot supply meaning: that a field holds a PAN, that a PAN's fifth
+# character must match the surname, that a postal code must agree with the
+# stated state. Those constraints are authored here, once per form type, and
+# merged with the parsed structure by schema/loader.py.
+#
+# This file is the "human-verified" half of the parser-assisted schema described
+# in METHODOLOGY M0.4. It is deliberately readable: a reviewer should be able to
+# audit every constraint the gate enforces without reading Python.
+#
+# `depends_on` declares which other fields a cross-field check reads. The gate
+# refuses to run a cross-field check whose dependency is not yet committed,
+# rather than validating against a value the user has not confirmed.
+
+form_id: ckyc_individual
+version: 1
+title: Individual KYC Application (CKYC-equivalent)
+
+fields:
+  - id: full_name
+    acroform_name: full_name
+    label: Full name
+    labels:
+      hi: पूरा नाम
+    type: name
+    required: true
+    max_length: 60
+    prompt:
+      en: What is your full name, as it appears on your PAN card?
+      hi: आपका पूरा नाम क्या है, जैसा आपके पैन कार्ड पर लिखा है?
+    gloss:
+      en: Your complete name — first name, any middle name, and surname. It must match your PAN card exactly, otherwise the form will be rejected.
+      hi: आपका पूरा नाम — पहला नाम, बीच का नाम, और उपनाम। यह आपके पैन कार्ड से बिल्कुल मेल खाना चाहिए, वरना फॉर्म अस्वीकार हो जाएगा।
+
+  - id: father_name
+    acroform_name: father_name
+    label: Father's or spouse's name
+    labels:
+      hi: पिता या जीवनसाथी का नाम
+    type: name
+    required: true
+    max_length: 60
+    prompt:
+      en: What is your father's name? If you would rather give your spouse's name, that is also accepted.
+      hi: आपके पिता का नाम क्या है? यदि आप पति या पत्नी का नाम देना चाहें, वह भी स्वीकार है।
+    gloss:
+      en: Banks ask for this to tell apart people who share a name. Either your father's name or your spouse's name is acceptable.
+      hi: बैंक यह इसलिए पूछते हैं ताकि एक ही नाम वाले लोगों में अंतर किया जा सके। पिता या जीवनसाथी, दोनों में से कोई भी नाम चलेगा।
+
+  - id: dob
+    acroform_name: dob
+    label: Date of birth
+    labels:
+      hi: जन्म तिथि
+    type: date
+    required: true
+    max_length: 10
+    prompt:
+      en: What is your date of birth?
+      hi: आपकी जन्म तिथि क्या है?
+    gloss:
+      en: The day, month, and year you were born. You must be at least 18 years old to complete this form yourself.
+      hi: आपके जन्म का दिन, महीना और वर्ष। यह फॉर्म स्वयं भरने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए।
+
+  - id: gender
+    acroform_name: gender
+    label: Gender
+    labels:
+      hi: लिंग
+    type: enum
+    required: true
+    enum_values: [Male, Female, Transgender]
+    prompt:
+      en: What is your gender — male, female, or transgender?
+      hi: आपका लिंग क्या है — पुरुष, महिला, या ट्रांसजेंडर?
+    gloss:
+      en: The form allows male, female, or transgender.
+      hi: इस फॉर्म में पुरुष, महिला, या ट्रांसजेंडर का विकल्प है।
+
+  - id: pan
+    acroform_name: pan
+    label: PAN
+    labels:
+      hi: पैन
+    type: pan
+    required: true
+    max_length: 10
+    depends_on: [full_name]
+    prompt:
+      en: What is your PAN number?
+      hi: आपका पैन नंबर क्या है?
+    gloss:
+      en: PAN stands for Permanent Account Number. It is the ten-character code on your PAN card — five letters, then four digits, then one letter. The fifth letter is the first letter of your surname.
+      hi: पैन का अर्थ है स्थायी खाता संख्या। यह आपके पैन कार्ड पर लिखा दस अक्षरों का कोड है — पहले पाँच अक्षर, फिर चार अंक, फिर एक अक्षर। पाँचवाँ अक्षर आपके उपनाम का पहला अक्षर होता है।
+
+  - id: aadhaar
+    acroform_name: aadhaar
+    label: Aadhaar number
+    labels:
+      hi: आधार नंबर
+    type: aadhaar
+    required: true
+    max_length: 12
+    prompt:
+      en: What is your Aadhaar number?
+      hi: आपका आधार नंबर क्या है?
+    gloss:
+      en: The twelve-digit number on your Aadhaar card. The last digit is a check digit, so a single mistyped digit is detected automatically.
+      hi: आपके आधार कार्ड पर लिखा बारह अंकों का नंबर। अंतिम अंक जाँच अंक होता है, इसलिए एक अंक की गलती अपने आप पकड़ी जाती है।
+
+  - id: address_line
+    acroform_name: address_line
+    label: Address
+    labels:
+      hi: पता
+    type: text
+    required: true
+    max_length: 120
+    prompt:
+      en: What is your address — house number, street, and area?
+      hi: आपका पता क्या है — मकान नंबर, गली, और इलाका?
+    gloss:
+      en: Where you currently live. House or flat number, the street or road, and the locality.
+      hi: आप अभी कहाँ रहते हैं। मकान या फ्लैट नंबर, गली या सड़क, और मोहल्ला।
+
+  - id: city
+    acroform_name: city
+    label: City or town
+    labels:
+      hi: शहर या कस्बा
+    type: text
+    required: true
+    max_length: 40
+    prompt:
+      en: Which city or town do you live in?
+      hi: आप किस शहर या कस्बे में रहते हैं?
+    gloss:
+      en: The name of your city, town, or village.
+      hi: आपके शहर, कस्बे, या गाँव का नाम।
+
+  - id: state
+    acroform_name: state
+    label: State
+    labels:
+      hi: राज्य
+    type: enum
+    required: true
+    enum_values:
+      - Andhra Pradesh
+      - Assam
+      - Bihar
+      - Chhattisgarh
+      - Delhi
+      - Goa
+      - Gujarat
+      - Haryana
+      - Himachal Pradesh
+      - Jharkhand
+      - Karnataka
+      - Kerala
+      - Madhya Pradesh
+      - Maharashtra
+      - Odisha
+      - Punjab
+      - Rajasthan
+      - Tamil Nadu
+      - Telangana
+      - Uttar Pradesh
+      - Uttarakhand
+      - West Bengal
+    prompt:
+      en: Which state do you live in?
+      hi: आप किस राज्य में रहते हैं?
+    gloss:
+      en: The state your address is in. Your postal code must match this state.
+      hi: वह राज्य जिसमें आपका पता है। आपका पिन कोड इसी राज्य से मेल खाना चाहिए।
+
+  - id: pin
+    acroform_name: pin
+    label: PIN code
+    labels:
+      hi: पिन कोड
+    type: pin
+    required: true
+    max_length: 6
+    depends_on: [state]
+    prompt:
+      en: What is your six-digit PIN code?
+      hi: आपका छह अंकों का पिन कोड क्या है?
+    gloss:
+      en: The six-digit postal code for your area. The first digit tells the postal service which region you are in, so it must agree with the state you gave.
+      hi: आपके इलाके का छह अंकों का डाक कोड। इसका पहला अंक क्षेत्र बताता है, इसलिए यह आपके बताए राज्य से मेल खाना चाहिए।
+
+  - id: mobile
+    acroform_name: mobile
+    label: Mobile number
+    labels:
+      hi: मोबाइल नंबर
+    type: phone
+    required: true
+    max_length: 10
+    prompt:
+      en: What is your ten-digit mobile number?
+      hi: आपका दस अंकों का मोबाइल नंबर क्या है?
+    gloss:
+      en: Your ten-digit Indian mobile number, without the country code. It must begin with 6, 7, 8, or 9.
+      hi: आपका दस अंकों का भारतीय मोबाइल नंबर, देश कोड के बिना। यह 6, 7, 8, या 9 से शुरू होना चाहिए।
+
+  - id: email
+    acroform_name: email
+    label: Email address
+    labels:
+      hi: ईमेल पता
+    type: email
+    required: false
+    max_length: 60
+    prompt:
+      en: What is your email address? You may skip this if you do not have one.
+      hi: आपका ईमेल पता क्या है? यदि आपके पास नहीं है तो आप इसे छोड़ सकते हैं।
+    gloss:
+      en: Your email address, if you have one. This field is optional.
+      hi: आपका ईमेल पता, यदि हो। यह खाना वैकल्पिक है।
+
+  - id: occupation
+    acroform_name: occupation
+    label: Occupation
+    labels:
+      hi: व्यवसाय
+    type: enum
+    required: true
+    enum_values: [Salaried, Self-employed, Business, Student, Homemaker, Retired, Agriculture, Other]
+    prompt:
+      en: What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.
+      hi: आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।
+    gloss:
+      en: How you earn a living. Choose the closest option — if none fit, choose Other.
+      hi: आप जीविका कैसे कमाते हैं। सबसे नज़दीकी विकल्प चुनें — कोई मेल न खाए तो अन्य चुनें।
+
+  - id: income_band
+    acroform_name: income_band
+    label: Annual income band
+    labels:
+      hi: वार्षिक आय
+    type: enum
+    required: true
+    enum_values:
+      - Below 1 Lakh
+      - 1-5 Lakh
+      - 5-10 Lakh
+      - 10-25 Lakh
+      - Above 25 Lakh
+    prompt:
+      en: Roughly what is your yearly income — below one lakh, one to five lakh, five to ten lakh, ten to twenty-five lakh, or above twenty-five lakh?
+      hi: आपकी वार्षिक आय लगभग कितनी है — एक लाख से कम, एक से पाँच लाख, पाँच से दस लाख, दस से पच्चीस लाख, या पच्चीस लाख से अधिक?
+    gloss:
+      en: Your total earnings in a year, before tax. You choose a range, not an exact number.
+      hi: एक वर्ष में आपकी कुल कमाई, कर से पहले। आपको सटीक राशि नहीं, बस एक सीमा चुननी है।

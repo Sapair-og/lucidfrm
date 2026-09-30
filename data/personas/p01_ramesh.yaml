@@ -1,0 +1,88 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. The name, PAN, Aadhaar number, address, phone
+# number, and email are all fabricated. The Aadhaar number is constructed to
+# satisfy the Verhoeff checksum so that the checksum validation path is
+# genuinely exercised; it was generated algorithmically and corresponds to no
+# issued number. See METHODOLOGY M0.8.
+# ============================================================================
+
+persona_id: p01
+name: Ramesh (low literacy, spells things out loud)
+lang: en
+
+profile:
+  literacy: low
+  # Reads identifiers aloud digit by digit rather than as whole numbers, which
+  # is how the target users actually read a card they are holding. This is the
+  # input shape the extractor has to cope with.
+  speech_style: digit-by-digit
+  notes: >
+    Comfortable speaking, cannot reliably read the form. Refers to his PAN card
+    while answering. Occasionally supplies extra words around the value
+    ("my pan card number is..."), which the extractor must strip without
+    guessing at the value itself.
+
+ground_truth:
+  full_name: Ramesh Kumar Sharma
+  father_name: Suresh Kumar Sharma
+  dob: "1987-03-14"
+  gender: Male
+  pan: AKQPS3417M
+  aadhaar: "747910984992"
+  address_line: 42 Nehru Marg, Bapu Nagar
+  city: Jaipur
+  state: Rajasthan
+  pin: "302015"
+  mobile: "9812345607"
+  email: ramesh.sharma@example.invalid
+  occupation: Business
+  income_band: 5-10 Lakh
+
+# Utterances are consumed in order: index 0 is the first attempt, index 1 the
+# retry after a rejection or a denied read-back, and so on. A field that runs
+# out of utterances is recorded as abandoned rather than silently retried, so
+# the turns-to-commit metric cannot be inflated by an infinite loop.
+turns:
+  full_name:
+    - my name is ramesh kumar sharma
+  father_name:
+    - my father is suresh kumar sharma
+  dob:
+    - fourteenth march nineteen eighty seven
+    - 14 03 1987
+  gender:
+    - male
+  pan:
+    - my pan card number is A K Q P S three four one seven M
+    - A K Q P S 3 4 1 7 M
+  aadhaar:
+    - seven four seven nine one zero nine eight four nine nine two
+    - "747910984992"
+  address_line:
+    - forty two nehru marg bapu nagar
+  city:
+    - jaipur
+  state:
+    - rajasthan
+  pin:
+    - three zero two zero one five
+  mobile:
+    - nine eight one two three four five six zero seven
+  email:
+    - ramesh dot sharma at example dot invalid
+  occupation:
+    - i have my own shop
+    - business
+  income_band:
+    - about seven lakh a year
+    - five to ten lakh
+
+# How this persona responds to a read-back. The replay driver affirms only when
+# the read-back value matches ground truth, so a wrong value is denied exactly
+# as a real user would deny it -- that is what makes the read-back correction
+# rate a measurement rather than a constant.
+responses:
+  affirm: yes that is correct
+  deny: no that is not right

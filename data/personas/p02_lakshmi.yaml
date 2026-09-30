@@ -1,0 +1,82 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction so the checksum path
+# is exercised; it was generated algorithmically. See METHODOLOGY M0.8.
+# ============================================================================
+
+persona_id: p02
+name: Lakshmi (visually impaired, precise, corrects the system)
+lang: en
+
+profile:
+  literacy: high
+  speech_style: precise
+  notes: >
+    Cannot see the screen or the form. Reads identifiers from memory and states
+    them cleanly, but has no way to visually verify what was written -- so the
+    read-back is her only channel for catching an error. This persona is the
+    reason read-back is a pipeline stage rather than a courtesy: she denies a
+    misheard value on the first attempt for two fields, which exercises the
+    correction path.
+
+ground_truth:
+  full_name: Lakshmi Devi Nair
+  father_name: Krishnan Nair
+  dob: "1994-11-02"
+  gender: Female
+  pan: BFTPN8206C
+  aadhaar: "544211033660"
+  address_line: 7B Marine Drive, Ernakulam
+  city: Kochi
+  state: Kerala
+  pin: "682016"
+  mobile: "7736540912"
+  email: l.nair@example.invalid
+  occupation: Salaried
+  income_band: 10-25 Lakh
+
+turns:
+  full_name:
+    - lakshmi devi nair
+  father_name:
+    - krishnan nair
+  dob:
+    - second november nineteen ninety four
+  gender:
+    - female
+  pan:
+    # First attempt is deliberately homoglyph-corrupted: the letter O in place
+    # of the digit 0. This is the single most common speech-recognition error
+    # on alphanumeric identifiers and must be caught by format validation, not
+    # by the user noticing it.
+    - B F T P N eight two O six C
+    - B F T P N 8 2 0 6 C
+  aadhaar:
+    - five four four two one one zero three three six six zero
+  address_line:
+    - seven B marine drive ernakulam
+  city:
+    # Deliberately misheard the first time as a different real city. It is
+    # well-formed text, so every check the gate performs passes it -- only the
+    # read-back can catch it, and only because Lakshmi is listening. This is
+    # the case that justifies the read-back stage existing at all.
+    - kochi
+    - kochi, K O C H I
+  state:
+    - kerala
+  pin:
+    - six eight two zero one six
+  mobile:
+    - seven seven three six five four zero nine one two
+  email:
+    - l dot nair at example dot invalid
+  occupation:
+    - salaried
+  income_band:
+    - ten to twenty five lakh
+
+responses:
+  affirm: yes that is right
+  deny: no, that is wrong, let me say it again

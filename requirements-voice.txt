@@ -1,0 +1,23 @@
+# Optional: the voice channel (Phase 7).
+#
+# Deliberately NOT in requirements.txt. These pull roughly a gigabyte of
+# libraries and model weights, and the validation gate -- the part this project
+# is actually about -- must stay installable and testable without them. Every
+# import of these is inside a function; the core suite passes with none of them
+# present.
+#
+#   pip install -r requirements-voice.txt
+#
+# Speech recognition. CTranslate2 build of Whisper: runs on CPU, downloads the
+# model on first use (~150MB for "small", ~1.5GB for "medium").
+faster-whisper>=1.0
+
+# Speech synthesis is Piper, which is a standalone binary rather than a Python
+# package, so it is not listed here. Install it and a voice model separately:
+#
+#   https://github.com/rhasspy/piper
+#   en_US-lessac-medium   (~60MB)   English
+#   hi_IN-pratham-medium  (~60MB)   Hindi
+#
+# Then point the synthesizer at the .onnx file:
+#   lucidform asr-probe --voice path/to/en_US-lessac-medium.onnx

@@ -1,0 +1,43 @@
+# Hindi strings. Phase 6 reviews these with a native speaker and evaluates them;
+# they are in place now so the language boundary is exercised from the start
+# rather than retro-fitted, and so a missing key shows up as a test failure
+# instead of a silent fallback to English mid-conversation.
+
+greeting: >-
+  मैं आपको यह फॉर्म भरने में मदद करूँगा। मैं एक-एक करके सवाल पूछूँगा।
+  हर जवाब के बाद मैं उसे आपको दोहराकर सुनाऊँगा, और वह तभी सेव होगा जब आप कहेंगे
+  कि सही है। कोई सवाल समझ न आए तो कहिए "इसका मतलब क्या है", मैं समझा दूँगा।
+
+readback: 'आपका {label} है: {value}। क्या यह सही है?'
+
+confirmed: सेव हो गया।
+
+denied: ठीक है, फिर से कोशिश करते हैं।
+
+not_understood: >-
+  माफ़ कीजिए, मुझे उसमें कोई जवाब नहीं मिला। क्या आप फिर से बता सकते हैं?
+
+problem: 'इसमें एक दिक्कत है: {detail}'
+
+retry: एक बार और कोशिश करते हैं।
+
+required: >-
+  माफ़ कीजिए, यह खाली नहीं छोड़ सकते। इसके बिना फॉर्म अस्वीकार हो जाएगा।
+
+declined: ठीक है, मैं इसे खाली छोड़ देता हूँ।
+
+abandoned: >-
+  {label} पर हम बाद में वापस आएँगे।
+
+out_of_attempts: >-
+  अभी आगे बढ़ते हैं, {label} पर अंत में वापस आएँगे।
+
+progress: '{total} में से {done} हो गए।'
+
+closing: >-
+  बस इतना ही। {committed} जवाब सेव हो गए{declined_note}।
+
+declined_note_some: ', {count} आपके कहने पर खाली छोड़े गए'
+
+incomplete: >-
+  {count} अभी बाकी हैं: {fields}।

@@ -1,0 +1,196 @@
+# ============================================================================
+# ADVERSARIAL CASES FOR THE CONFIRMATION STEP
+#
+# The read-back is the last thing standing between a candidate value and the
+# form. These cases test the one question it asks: did the user actually say
+# yes?
+#
+# The naive implementation searches the utterance for an affirmative token, and
+# it is wrong in a way that is easy to miss and severe when it happens. Several
+# cases below pass that implementation and commit a value the user has just
+# said is wrong. They are the reason the parser is a whitelist over the whole
+# utterance rather than a search within it.
+#
+# `expect: confirm` cases are the control group. A parser that refused
+# everything would satisfy every rejection case here while making the system
+# unusable -- so the false-negative rate is measured, not assumed to be zero.
+#
+# All utterances are in the romanised form a transcriber or speech recogniser
+# actually emits for Hindi-English code-mixed speech.
+# ============================================================================
+
+categories:
+
+  # ------------------------------------------------------------------------
+  - name: plain_affirmation
+    rationale: >
+      The control group. These must confirm, or the system asks the same
+      question forever and no form is ever completed.
+    cases:
+      - utterance: "yes"
+        expect: confirm
+      - utterance: Yes.
+        expect: confirm
+        note: punctuation and capitalisation are not meaning
+      - utterance: yes that is correct
+        expect: confirm
+      - utterance: that's right
+        expect: confirm
+      - utterance: correct
+        expect: confirm
+      - utterance: yes please
+        expect: confirm
+        note: politeness is stripped before matching
+      - utterance: haan
+        expect: confirm
+      - utterance: haan ji
+        expect: confirm
+      - utterance: ji haan
+        expect: confirm
+      - utterance: sahi hai
+        expect: confirm
+      - utterance: haan, sahi hai
+        expect: confirm
+      - utterance: bilkul sahi
+        expect: confirm
+      - utterance: theek hai
+        expect: confirm
+
+  # ------------------------------------------------------------------------
+  - name: affirmation_spoofing
+    rationale: >
+      The core case. Each of these contains an affirmative token and none of
+      them is a confirmation. A substring check accepts every one, writing a
+      value into a legal document immediately after the user said it was
+      wrong -- and doing so for a user who, by the premise of this project,
+      cannot read the form to discover it later.
+    cases:
+      - utterance: yes I know that's wrong
+        expect: reject
+        note: >
+          The clearest failure. Contains "yes", explicitly states the value is
+          wrong, and a substring check commits it.
+      - utterance: yes but the last digit should be a three
+        expect: reject
+        note: agreement with the read-back, correction of the value
+      - utterance: yes, no wait
+        expect: reject
+      - utterance: yes that's what I said but it's not right
+        expect: reject
+      - utterance: haan lekin galat hai
+        expect: reject
+        note: the same construction in Hindi -- yes, but it is wrong
+      - utterance: haan wo galat likha hai
+        expect: reject
+      - utterance: yes change it
+        expect: reject
+      - utterance: correct it please
+        expect: reject
+        note: >
+          Contains "correct" as a verb, not as agreement. A keyword parser
+          reads a request to fix the value as approval of it.
+
+  # ------------------------------------------------------------------------
+  - name: substring_traps
+    rationale: >
+      Affirmative tokens occurring inside unrelated words. These break any
+      implementation that searches without word boundaries, and the words
+      involved are ones a user filling a form genuinely says.
+    cases:
+      - utterance: yesterday I gave you the wrong number
+        expect: reject
+        note: '"yes" inside "yesterday"'
+      - utterance: my address is Yesvantpur
+        expect: reject
+        note: a real Bengaluru locality beginning with "yes"
+      - utterance: nahin
+        expect: reject
+        note: contains "ha" -- must not match the Hindi affirmative
+      - utterance: mahanagar
+        expect: reject
+        note: contains "haan" as a substring across syllables
+
+  # ------------------------------------------------------------------------
+  - name: hedged_confirmation
+    rationale: >
+      Uncertainty is not consent. The correct response to a hedge is to read
+      the value back again, not to resolve the user's doubt on their behalf.
+      The user is being asked to attest to a legal document.
+    cases:
+      - utterance: I think that's right
+        expect: reject
+      - utterance: maybe
+        expect: reject
+      - utterance: probably correct
+        expect: reject
+      - utterance: yes if that's what you heard
+        expect: reject
+        note: conditional agreement -- defers the judgement back to the system
+      - utterance: it's about right
+        expect: reject
+      - utterance: shayad sahi hai
+        expect: reject
+      - utterance: almost correct
+        expect: reject
+        note: >
+          "Almost" is a rejection wearing agreement's clothes -- an almost
+          correct identifier is a wrong identifier.
+
+  # ------------------------------------------------------------------------
+  - name: acknowledgement_not_agreement
+    rationale: >
+      These signal that the user heard the read-back, not that they agree with
+      it. Treating them as consent would convert every conversational
+      back-channel into a committed value. Excluding them is a deliberate
+      strictness choice, recorded as such: it costs a re-ask.
+    cases:
+      - utterance: ok
+        expect: reject
+      - utterance: okay
+        expect: reject
+      - utterance: acha
+        expect: reject
+      - utterance: hmm
+        expect: reject
+      - utterance: next
+        expect: reject
+      - utterance: aage
+        expect: reject
+
+  # ------------------------------------------------------------------------
+  - name: plain_denial
+    rationale: >
+      Must never confirm. These are the straightforward negatives, included so
+      the obvious path is covered as well as the adversarial one.
+    cases:
+      - utterance: "no"
+        expect: reject
+      - utterance: no that's wrong
+        expect: reject
+      - utterance: nahi
+        expect: reject
+      - utterance: nahi galat hai
+        expect: reject
+      - utterance: that is incorrect
+        expect: reject
+      - utterance: say it again
+        expect: reject
+
+  # ------------------------------------------------------------------------
+  - name: empty_and_noise
+    rationale: >
+      Silence, and transcription artefacts. A speech recogniser emits an empty
+      string for silence, and silence is not consent -- a user who has stepped
+      away, or not understood the question, must not have a value committed on
+      their behalf.
+    cases:
+      - utterance: ""
+        expect: reject
+      - utterance: "   "
+        expect: reject
+      - utterance: "..."
+        expect: reject
+      - utterance: "[inaudible]"
+        expect: reject
+      - utterance: uh
+        expect: reject

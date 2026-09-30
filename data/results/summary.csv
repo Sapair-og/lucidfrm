@@ -1,0 +1,2 @@
+sessions,scored_sessions,fields_committed,fields_declined,fields_abandoned,proposals,extraction_accuracy,gate_recall,gate_false_positive_rate,gate_precision,readback_correction_rate,readback_caught_wrong,escaped_errors,blocked_writes,log_inconsistencies,mean_turns_to_commit,extraction_ms_p50,extraction_ms_p95,clients,offline_only
+3,3,41,1,0,47,0.8723,0.8333,0.0,1.0,0.0238,1,0,0,0,1.171,0.044,0.067,ReplayClient,True

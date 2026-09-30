@@ -1,0 +1,25 @@
+# Core
+pydantic>=2.9
+pydantic-settings>=2.6
+pyyaml>=6.0
+
+# Form parsing / generation (AcroForm round-trip)
+pypdf>=5.1
+reportlab>=4.2
+
+# Extraction layer
+anthropic>=0.116
+google-genai>=2.25
+
+# Orchestrator
+langgraph>=1.2
+
+# Help agent (retrieval)
+rank-bm25>=0.2.2
+numpy>=2.0
+
+# CLI
+typer>=0.15
+
+# Tests
+pytest>=8.3
