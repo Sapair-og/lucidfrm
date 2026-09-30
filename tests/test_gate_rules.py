@@ -228,3 +228,28 @@ def test_range_is_silent_on_unparseable_dates(field):
 
 def test_range_does_not_apply_to_non_date_fields(field):
     assert rules.range_error("AKQPS3417M", field("pan")) is None
+
+
+# -- declared enum names (review findings) --------------------------------------
+
+
+def _enum_field(names):
+    from lucidform.models import FieldSpec, FieldType
+
+    return FieldSpec(
+        id="g", acroform_name="g", label="G", type=FieldType.ENUM,
+        enum_values=("Male", "Female"), enum_names=names,
+    )
+
+
+def test_a_declared_name_is_compared_after_the_same_unicode_normalisation():
+    """U+095B (precomposed ज़) is NFKC-decomposed in the value; the name must be too."""
+    field = _enum_field({"Male": ("ज़",)})
+    assert rules.normalize("ज़", field) == "Male"
+    assert rules.normalize("ज़", field) == "Male"
+
+
+def test_a_declared_name_does_not_leak_across_options():
+    field = _enum_field({"Male": ("purush",)})
+    assert rules.normalize("purush", field) == "Male"
+    assert rules.normalize("mahila", field) == "mahila"  # undeclared: left for the enum check

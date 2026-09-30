@@ -86,11 +86,9 @@ class GeminiEmbedder:
         self.dims = dims
         self.name = f"{self.model}-{dims}"
         if sdk is None:
-            from google import genai
+            from lucidform.llm import make_genai_client
 
-            sdk = genai.Client(
-                **({"api_key": settings.gemini_api_key} if settings.gemini_api_key else {})
-            )
+            sdk = make_genai_client()
         self._sdk = sdk
         if sleep is None:
             import time

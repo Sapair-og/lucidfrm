@@ -166,3 +166,36 @@ def test_missing_pdf_names_the_fix():
     """The error should tell you the command to run, not just fail."""
     with pytest.raises(loader.SchemaError, match="make_form"):
         loader.load(pdf_path="does/not/exist.pdf")
+
+
+@pytest.mark.parametrize(
+    "names, message",
+    [
+        ({"Male": "purush"}, "must be a list"),        # a scalar would be iterated letter by letter
+        ({"Male": ["Female"]}, "another option"),      # a name that is another option's value
+    ],
+)
+def test_malformed_enum_names_are_fatal(built_pdf, tmp_path, overlay, names, message):
+    import copy
+
+    bad = copy.deepcopy(overlay)
+    next(f for f in bad["fields"] if f["id"] == "gender")["enum_names"] = names
+    path = tmp_path / "bad_overlay.yaml"
+    path.write_text(yaml.safe_dump(bad, allow_unicode=True), encoding="utf-8")
+    with pytest.raises(loader.SchemaError, match=message):
+        loader.load(pdf_path=built_pdf, overlay_path=path)
+
+
+def test_every_devanagari_option_name_is_one_the_hindi_prompt_says(schema):
+    """The rule in CLAUDE.md, enforced: declared names are the prompt's own words."""
+    import unicodedata
+
+    for field in schema:
+        prompt = unicodedata.normalize("NFKC", field.ask("hi"))
+        for option, names in field.enum_names.items():
+            devanagari = [n for n in names if any("ऀ" <= ch <= "ॿ" for ch in n)]
+            assert devanagari, f"{field.id}/{option}: a romanised name with no Devanagari original"
+            for name in devanagari:
+                assert unicodedata.normalize("NFKC", name) in prompt, (
+                    f"{field.id}/{option}: {name!r} is not offered by the Hindi prompt"
+                )

@@ -81,7 +81,7 @@ def help_eval(
         typer.echo(f"{r.qid} {flag} {r.source:5s} {r.fallback_reason:24s} {r.question[:60]}")
     typer.echo("")
     for key in ("retrieval_hit_at_k", "answer_rate", "gold_citation_rate", "control_refusal_rate",
-                "latency_ms_p50", "latency_ms_p95"):
+                "controls_scored", "errors", "latency_ms_p50", "latency_ms_p95"):
         typer.echo(f"  {key:22s} {summary[key]}")
     typer.echo(f"  fallbacks              {summary['fallbacks']}")
     typer.echo(f"\n  {rows_path}\n  {summary_path}")
@@ -210,7 +210,9 @@ def replay_cmd(
                 typer.echo(f"    {field_id}: expected {truth!r}, committed {got!r}")
 
     typer.echo(f"\nlogs in {out_dir}")
-    typer.echo(f"reduce them with: lucidform metrics --runs {out_dir}")
+    # --out keeps a live run's tables out of the offline results the paper cites.
+    results = settings.results_dir / out_dir.name if runs_dir else settings.results_dir
+    typer.echo(f"reduce them with: lucidform metrics --runs {out_dir} --out {results}")
     raise typer.Exit(1 if escaped_total else 0)
 
 

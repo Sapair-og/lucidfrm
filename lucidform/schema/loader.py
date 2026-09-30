@@ -148,10 +148,21 @@ def load(
         structure = parsed.get(entry["acroform_name"], {})
         ftype = FieldType(entry["type"])
         enum_values = tuple(entry.get("enum_values", ()))
-        enum_names = {
-            option: tuple(str(n) for n in names)
-            for option, names in (entry.get("enum_names") or {}).items()
-        }
+        raw_names = entry.get("enum_names") or {}
+        for option, names in raw_names.items():
+            if not isinstance(names, list):
+                # `Male: purush` would otherwise be iterated letter by letter,
+                # declaring every single character a name for the option.
+                raise SchemaError(f"{entry['id']}: enum_names for {option!r} must be a list")
+        enum_names = {option: tuple(str(n) for n in names) for option, names in raw_names.items()}
+        canonical = {v.casefold(): v for v in enum_values}
+        for option, names in enum_names.items():
+            for name in names:
+                other = canonical.get(name.casefold())
+                if other is not None and other != option:
+                    raise SchemaError(
+                        f"{entry['id']}: {name!r} declared for {option!r} is another option's value"
+                    )
         unknown = set(enum_names) - set(enum_values)
         if unknown:
             raise SchemaError(f"{entry['id']}: enum_names for non-options {sorted(unknown)}")

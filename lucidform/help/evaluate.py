@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -26,6 +27,16 @@ from pathlib import Path
 import yaml
 
 from lucidform.help.answer import HelpAgent
+
+
+_NUMBERED = re.compile(r"Q\d+$")
+
+
+def gold_matches(gold: str, label: str) -> bool:
+    """A numbered gold ("RBI KYC FAQ, Q1") must equal the label -- a substring
+    test would also accept Q10-Q19. A phrase gold (a UIDAI question) may sit
+    inside a longer label."""
+    return label == gold if _NUMBERED.search(gold) else gold in label
 
 
 @dataclass
@@ -45,11 +56,15 @@ class Row:
 
     @property
     def hit(self) -> bool:
-        return any(g in label for g in self.gold for label in self.retrieved)
+        return any(gold_matches(g, label) for g in self.gold for label in self.retrieved)
 
     @property
     def cited_gold(self) -> bool:
-        return any(g in label for g in self.gold for label in self.cited)
+        return any(gold_matches(g, label) for g in self.gold for label in self.cited)
+
+    @property
+    def errored(self) -> bool:
+        return self.fallback_reason.startswith("error")
 
 
 def load_set(path: Path) -> list[dict]:
@@ -90,7 +105,9 @@ def run(agent: HelpAgent, schema, items: list[dict], pause_s: float = 0.0) -> li
 
 def summarise(rows: list[Row]) -> dict:
     qs = [r for r in rows if r.kind == "question"]
-    cs = [r for r in rows if r.kind == "control"]
+    # A control that hit an API error was never asked; counting its fallback as
+    # a refusal would report an outage as perfect behaviour.
+    cs = [r for r in rows if r.kind == "control" and not r.errored]
     answered = [r for r in qs if r.source == "rag"]
     lat = sorted(r.latency_ms for r in rows)
 
@@ -99,7 +116,9 @@ def summarise(rows: list[Row]) -> dict:
 
     return {
         "questions": len(qs),
-        "controls": len(cs),
+        "controls": sum(r.kind == "control" for r in rows),
+        "controls_scored": len(cs),
+        "errors": sum(r.errored for r in rows),
         "retrieval_hit_at_k": pct(sum(r.hit for r in qs), len(qs)),
         "answer_rate": pct(len(answered), len(qs)),
         "gold_citation_rate": pct(sum(r.cited_gold for r in answered), len(answered)),

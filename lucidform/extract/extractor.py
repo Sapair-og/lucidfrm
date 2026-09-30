@@ -47,6 +47,8 @@ class ExtractionOutcome:
     model: str
     candidate: Candidate | None = None
     usage: Mapping[str, int] | None = None
+    # Set when the model call itself failed; the turn is then UNCLEAR.
+    error: str | None = None
 
     @property
     def has_candidate(self) -> bool:
@@ -102,13 +104,36 @@ class Extractor:
                         "alternatives": outcome.extraction.alternatives,
                         "model": outcome.model,
                         "usage": dict(outcome.usage or {}),
+                        "error": outcome.error,
                     }
                 )
             return outcome
         return self._extract(field, utterance)
 
     def _extract(self, field: FieldSpec, utterance: str) -> ExtractionOutcome:
-        reply = self._reply(field, utterance)
+        try:
+            reply = self._reply(field, utterance)
+        except (KeyError, AssertionError):
+            # A replay-corpus miss is a broken fixture and an AssertionError is
+            # a test double's over-call check; neither is a model failure, and
+            # both must stay loud.
+            raise
+        except Exception as exc:  # noqa: BLE001 - a failed call costs one attempt, not the session
+            # An empty or safety-blocked reply, an off-schema reply, exhausted
+            # retries or a dead network all mean the same thing to the user:
+            # nothing usable was heard. UNCLEAR routes to "please say that
+            # again" and spends one attempt; no candidate can exist.
+            failed = Extraction(intent=Intent.UNCLEAR)
+            return ExtractionOutcome(
+                field_id=field.id,
+                utterance=utterance,
+                intent=Intent.UNCLEAR,
+                extraction=failed,
+                grounding=ground.check(failed, utterance),
+                confidence=0.0,
+                model=getattr(self.client, "model", ""),
+                error=f"{type(exc).__name__}: {exc}"[:300],
+            )
         extraction = reply.extraction
 
         grounded = ground.check(extraction, utterance)

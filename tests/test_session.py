@@ -443,3 +443,32 @@ def test_a_persona_run_produces_a_readable_transcript(runs):
     assert "What is your full name" in dialogue
     assert "Is that correct?" in dialogue
     assert dialogue.count(">") >= 14, "the user should speak at least once per field"
+
+
+def test_a_model_that_always_fails_ends_the_session_cleanly(schema, tmp_path):
+    """Every turn costs an attempt; the field is abandoned; the session still closes."""
+
+    class Down:
+        model = "down"
+
+        def complete(self, system, user):
+            raise ConnectionError("network unreachable")
+
+    single = type(schema)(
+        form_id=schema.form_id, version=schema.version, title=schema.title,
+        fields=(schema.by_id("city"),),
+    )
+    log = EventLog(tmp_path, session_id="down")
+    channel = Puppet(["jaipur", "jaipur", "jaipur"])
+    state = FormState(log=log)
+    result = Session(
+        schema=single, extractor=Extractor(Down(), single, log=log),
+        gate=ValidationGate(single), state=state, input_channel=channel,
+        output_channel=channel, log=log,
+    ).run()
+
+    events = [r["event"] for r in read_log(log.path)]
+    assert result.fields[0].abandoned and result.fields[0].attempts == 3
+    assert "city" not in state
+    assert events[-1] == Event.SESSION_END.value
+    assert channel.kinds().count(Kind.PROBLEM.value) == 3

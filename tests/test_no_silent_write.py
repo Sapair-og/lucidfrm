@@ -55,7 +55,14 @@ FORBIDDEN_IMPORTS = (
 # The help agent explains; it must have no route to the form. It may not import
 # the write path or the receipt issuer, and may not build a Candidate.
 HELP_PACKAGE = "help"
-HELP_FORBIDDEN_IMPORTS = ("lucidform.formstate", "lucidform.orchestrate", "lucidform.gate")
+HELP_FORBIDDEN_IMPORTS = (
+    "lucidform.formstate",
+    "lucidform.orchestrate",
+    "lucidform.gate",
+    "lucidform.extract",  # the Extractor builds Candidates
+)
+# Names whose mere presence in help/ is a route to a value, however imported or aliased.
+HELP_FORBIDDEN_NAMES = ("Candidate", "ConfirmationReceipt")
 
 RECEIPT_ISSUER = PACKAGE / "orchestrate" / "confirm.py"
 STATE_MODULE = PACKAGE / "formstate" / "state.py"
@@ -159,22 +166,63 @@ def test_the_gate_and_write_path_load_no_model_even_transitively() -> None:
     assert not bad, f"importing the gate / write path loads: {sorted(set(bad))}"
 
 
+def _help_violations(tree: ast.Module, where: str = "<src>") -> list[str]:
+    found = [f"{where} imports {name}" for name in _violations(tree, HELP_FORBIDDEN_IMPORTS)]
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom):
+            for alias in node.names:
+                if alias.name in HELP_FORBIDDEN_NAMES:
+                    found.append(f"{where}:{node.lineno} imports {alias.name}")
+                if node.module == "dataclasses" and alias.name == "replace":
+                    found.append(f"{where}:{node.lineno} imports dataclasses.replace")
+        elif isinstance(node, ast.Name) and node.id in HELP_FORBIDDEN_NAMES:
+            found.append(f"{where}:{node.lineno} references {node.id}")
+        elif isinstance(node, ast.Attribute):
+            if node.attr in HELP_FORBIDDEN_NAMES:
+                found.append(f"{where}:{node.lineno} references .{node.attr}")
+            if node.attr == "replace" and isinstance(node.value, ast.Name) and node.value.id == "dataclasses":
+                found.append(f"{where}:{node.lineno} uses dataclasses.replace")
+    return found
+
+
 def test_the_help_agent_has_no_route_to_the_form() -> None:
     violations: list[str] = []
     for path in _python_files(PACKAGE / HELP_PACKAGE):
-        tree = _parse(path)
-        for name in _violations(tree, HELP_FORBIDDEN_IMPORTS):
-            violations.append(f"{_rel(path)} imports {name}")
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Call):
-                func = node.func
-                name = func.id if isinstance(func, ast.Name) else getattr(func, "attr", None)
-                if name in ("Candidate", "ConfirmationReceipt"):
-                    violations.append(f"{_rel(path)}:{node.lineno} constructs {name}")
+        violations += _help_violations(_parse(path), _rel(path))
     assert not violations, (
         "lucidform/help/ explains fields; it must not be able to produce or "
         "commit a value. Found:\n  " + "\n  ".join(violations)
     )
+
+
+def test_the_help_agent_loads_no_write_path_even_transitively() -> None:
+    import json
+    import subprocess
+    import sys
+
+    probe = (
+        "import sys, json\n"
+        "import lucidform.help.answer, lucidform.help.index, lucidform.help.corpus, lucidform.help.evaluate\n"
+        "print(json.dumps(sorted(sys.modules)))\n"
+    )
+    out = subprocess.run(
+        [sys.executable, "-c", probe], cwd=PACKAGE.parent, capture_output=True, text=True, check=True
+    )
+    loaded = json.loads(out.stdout)
+    bad = [m for m in loaded for f in HELP_FORBIDDEN_IMPORTS if m == f or m.startswith(f + ".")]
+    assert not bad, f"importing the help agent loads: {sorted(set(bad))}"
+
+
+def test_the_help_rules_fire_on_the_bypasses_found_in_review() -> None:
+    for src in (
+        "from lucidform.models import Candidate as C\n",
+        "import lucidform.models as m\nm.Candidate(field_id='x')\n",
+        "from dataclasses import replace\n",
+        "import dataclasses\ndataclasses.replace(x, value='y')\n",
+        "from lucidform.extract.extractor import Extractor\n",
+    ):
+        assert _help_violations(ast.parse(src)), src
+    assert _help_violations(ast.parse("from lucidform.models import FieldSpec\n")) == []
 
 
 def test_the_new_rules_fire_on_deliberate_violations() -> None:

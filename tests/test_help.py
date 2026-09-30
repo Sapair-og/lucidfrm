@@ -244,3 +244,51 @@ def test_the_hindi_fallback_uses_the_hindi_gloss(index, schema):
         field, "pan kya hota hai", "hi"
     )
     assert field.explain("hi") in reply.spoken
+
+
+def test_a_retrieval_failure_never_breaks_the_session(index, schema):
+    """The embedding call is a live API call too; it sits inside the fallback."""
+
+    class BrokenEmbedder:
+        name = index.embedder.name
+        dims = index.embedder.dims
+
+        def embed_query(self, text):
+            raise RuntimeError("embedding quota")
+
+    broken = HelpIndex(index.chunks, index.vectors, BrokenEmbedder())
+    field = schema.by_id("pan")
+    reply = HelpAgent(broken, ScriptedAnswerClient([])).answer(field, "pan kya hota hai", "en")
+    assert reply.source == "gloss"
+    assert reply.fallback_reason == "error:RuntimeError"
+    assert reply.retrieved_ids == []
+
+
+def test_a_numbered_gold_label_matches_only_that_number():
+    """'RBI KYC FAQ, Q1' is not a hit for Q10-Q19 (found in review)."""
+    from lucidform.help.evaluate import Row
+
+    def row(retrieved, cited=()):
+        return Row("x", "question", "pan", "en", "q", ["RBI KYC FAQ, Q1"], list(retrieved), list(cited), "rag", "", "", 1.0)
+
+    assert not row(["RBI KYC FAQ, Q10", "RBI KYC FAQ, Q12"]).hit
+    assert row(["RBI KYC FAQ, Q12", "RBI KYC FAQ, Q1"]).hit
+    assert not row([], ["RBI KYC FAQ, Q17"]).cited_gold
+    # Phrase golds (UIDAI questions) still match inside a longer label.
+    phrase = Row("y", "question", "aadhaar", "en", "q", ["Will my Aadhaar number get changed"],
+                 ["UIDAI Aadhaar Update FAQ: Will my Aadhaar number get changed after updation?"], [], "rag", "", "", 1.0)
+    assert phrase.hit
+
+
+def test_an_error_on_a_control_is_not_a_refusal():
+    """An outage must not read as perfect refusal behaviour (found in review)."""
+    from lucidform.help.evaluate import Row, summarise
+
+    rows = [
+        Row("c1", "control", "pan", "en", "q", [], [], [], "gloss", "not_answerable", "", 1.0),
+        Row("c2", "control", "pan", "en", "q", [], [], [], "gloss", "error:ClientError", "", 1.0),
+    ]
+    s = summarise(rows)
+    assert s["control_refusal_rate"] == 100.0  # 1 of 1 scorable control
+    assert s["errors"] == 1
+    assert s["controls_scored"] == 1

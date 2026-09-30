@@ -371,3 +371,39 @@ def test_every_persona_utterance_has_a_recorded_response(schema, replay):
         for field in schema:
             for utterance in persona.utterances(field.id):
                 ex.extract(field.id, utterance)  # raises KeyError if missing
+
+
+# -- a failing model call costs an attempt, never the session --------------------
+
+
+class FailingClient:
+    model = "failing"
+
+    def __init__(self, exc):
+        self.exc = exc
+
+    def complete(self, system, user):
+        raise self.exc
+
+
+@pytest.mark.parametrize(
+    "exc",
+    [RuntimeError("network down"), ValueError("empty or blocked reply"), TimeoutError("read timeout")],
+)
+def test_a_failed_model_call_is_an_unclear_turn_not_a_crash(schema, exc, tmp_path):
+    from lucidform.eval.events import EventLog, read_log
+
+    log = EventLog(tmp_path, session_id="fail")
+    outcome = Extractor(FailingClient(exc), schema, log=log).extract("pan", "A K Q P S 3 4 1 7 M")
+
+    assert outcome.intent is Intent.UNCLEAR
+    assert not outcome.has_candidate
+    assert outcome.error and type(exc).__name__ in outcome.error
+    logged = [r for r in read_log(log.path) if r["event"] == "extraction"][-1]
+    assert logged["payload"]["error"] == outcome.error
+
+
+def test_a_replay_corpus_miss_still_raises(schema, replay):
+    """A missing fixture is a broken corpus, not a model failure -- it must be loud."""
+    with pytest.raises(KeyError):
+        Extractor(replay, schema).extract("pan", "an utterance nobody recorded")

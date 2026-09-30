@@ -245,7 +245,7 @@ fields:
       Homemaker: [गृहिणी, grihini]
       Retired: [सेवानिवृत्त, sevanivritt]
       Agriculture: [कृषि, krishi]
-      Other: [अन्य, anya]
+      # No name for Other: the Hindi prompt does not offer it by name.
     prompt:
       en: What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.
       hi: आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।

@@ -163,3 +163,66 @@ def test_the_factory_picks_the_configured_provider(monkeypatch):
 def test_an_unknown_provider_is_refused():
     with pytest.raises(UnknownProvider):
         make_client("gpt-something")
+
+
+# -- the shared retry policy -------------------------------------------------------
+
+
+def test_transport_errors_are_retried():
+    import httpx
+
+    from lucidform.llm import with_retries
+
+    calls, sleeps = [], []
+
+    def flaky():
+        calls.append(1)
+        if len(calls) < 3:
+            raise httpx.ReadTimeout("slow")
+        return "ok"
+
+    assert with_retries(flaky, sleep=sleeps.append) == "ok"
+    assert len(calls) == 3 and len(sleeps) == 2
+
+
+def test_a_rate_limit_retry_delay_hint_is_honoured():
+    from google.genai import errors
+
+    from lucidform.llm import with_retries
+
+    hinted = errors.ClientError(
+        429,
+        {"error": {"code": 429, "message": "q", "status": "RESOURCE_EXHAUSTED",
+                   "details": [{"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "37s"}]}},
+    )
+    outcomes = [hinted, "ok"]
+    sleeps = []
+
+    def call():
+        o = outcomes.pop(0)
+        if isinstance(o, Exception):
+            raise o
+        return o
+
+    assert with_retries(call, base_delay=2.0, sleep=sleeps.append) == "ok"
+    assert sleeps == [37.0]
+
+
+def test_a_huge_retry_hint_is_capped():
+    from google.genai import errors
+
+    from lucidform.llm import MAX_DELAY_S, with_retries
+
+    hinted = errors.ClientError(
+        429, {"error": {"code": 429, "details": [{"@type": "x.RetryInfo", "retryDelay": "3600s"}]}}
+    )
+    outcomes, sleeps = [hinted, "ok"], []
+
+    def call():
+        o = outcomes.pop(0)
+        if isinstance(o, Exception):
+            raise o
+        return o
+
+    with_retries(call, sleep=sleeps.append)
+    assert sleeps == [MAX_DELAY_S]

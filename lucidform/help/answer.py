@@ -64,11 +64,9 @@ class GeminiAnswerClient:
         settings = get_settings()
         self.model = model or settings.help_model
         if sdk is None:
-            from google import genai
+            from lucidform.llm import make_genai_client
 
-            sdk = genai.Client(
-                **({"api_key": settings.gemini_api_key} if settings.gemini_api_key else {})
-            )
+            sdk = make_genai_client()
         self._sdk = sdk
         self._sleep = sleep
 
@@ -136,7 +134,10 @@ class HelpAgent:
         strings = Strings(lang)
         # The field's own name anchors a terse question ("ye kya hai?") to the
         # right topic without rewriting what the user asked.
-        hits = self.index.search(f"{question}\n{field.label}", k=self.k)
+        try:
+            hits = self.index.search(f"{question}\n{field.label}", k=self.k)
+        except Exception as exc:  # noqa: BLE001 - retrieval is a live API call too
+            return self._fallback(field, lang, strings, [], f"error:{type(exc).__name__}")
         retrieved = [h.chunk_id for h in hits]
         user = (
             f"Form field: {field.name(lang)} ({field.label})\n"

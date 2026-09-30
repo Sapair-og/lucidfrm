@@ -70,7 +70,7 @@ embedded prompt injection, two runs — logs in `data/runs_live_v1/`, `data/runs
 Run 1 exposed a real defect (Hindi option names offered by the prompt, rejected by the gate);
 it was fixed with adversarial cases before run 2. **Help agent** (30 questions + 6 controls):
 correct passage retrieved 28/30, correct source cited in 26/28 answers, 6/6 controls refused.
-Reproduce: `replay --live --extended --runs-dir data/runs_live`, `metrics --runs data/runs_live`,
+Reproduce: `replay --live --extended --runs-dir data/runs_live`, `metrics --runs data/runs_live --out data/results/live`,
 `help eval`. The paper is `docs/paper-draft.md` (build: `node tools/paper/build.js`).
 
 **Offline** (core personas, replayed): six wrong values were proposed; all six were stopped.

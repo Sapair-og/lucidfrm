@@ -4,6 +4,8 @@
   "k": 4,
   "questions": 30,
   "controls": 6,
+  "controls_scored": 6,
+  "errors": 0,
   "retrieval_hit_at_k": 93.3,
   "answer_rate": 93.3,
   "gold_citation_rate": 92.9,
@@ -12,5 +14,6 @@
     "not_answerable": 8
   },
   "latency_ms_p50": 1936.5,
-  "latency_ms_p95": 8478.7
+  "latency_ms_p95": 8478.7,
+  "rescored": "exact gold matching + error-aware controls (review fix); same recorded rows"
 }

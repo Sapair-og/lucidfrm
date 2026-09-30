@@ -108,17 +108,11 @@ class GeminiExtractionClient:
         self.model = model or settings.gemini_model
         self.max_retries = max_retries
         self.base_delay = base_delay
-        if sleep is None:
-            import time
-
-            sleep = time.sleep
-        self._sleep = sleep
+        self._sleep = sleep  # None -> with_retries uses time.sleep
         if sdk is None:
-            from google import genai  # imported here so the package is optional offline
+            from lucidform.llm import make_genai_client
 
-            sdk = genai.Client(
-                **({"api_key": settings.gemini_api_key} if settings.gemini_api_key else {})
-            )
+            sdk = make_genai_client()
         self._sdk = sdk
 
     def complete(self, system: str, user: str) -> ModelReply:

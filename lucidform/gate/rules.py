@@ -151,7 +151,10 @@ def normalize(value: str, field: FieldSpec) -> str:
             # A declared name of the option in the user's language is the
             # option, not a guess at it: exact match only, and only names a
             # human wrote into the overlay for this field.
-            if any(name.casefold() == folded for name in field.enum_names.get(option, ())):
+            # The name gets the same cleaning as the value, or a precomposed
+            # character in the overlay could never match its NFKC form.
+            names = field.enum_names.get(option, ())
+            if any(strip_invisible(name).casefold() == folded for name in names):
                 return option
         return text
 
