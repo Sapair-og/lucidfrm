@@ -35,8 +35,8 @@ echo Checking the install with the offline test suite ...
 
 echo.
 echo Next steps:
-echo   1. Save your key in .env (Notepad should be open).
+echo   1. Paste your Gemini key into .env after GEMINI_API_KEY= and save it.
 echo   2. Build the help agent's index once:  .venv\Scripts\python -m lucidform.cli help build
-echo   3. Fill a form:                        bin\lucidform
+echo   3. Fill a form:                        .\bin\lucidform
 echo      (or add %CD%\bin to your PATH and just type: lucidform)
 endlocal

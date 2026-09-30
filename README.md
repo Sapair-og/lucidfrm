@@ -125,13 +125,13 @@ with real users — that study hasn't been done yet.
 
 ## Quickstart
 
-**Windows, one step:** clone, then run `setup.cmd`. It creates `.venv`, installs everything,
+**Windows, one step:** clone, then run `.\setup.cmd` (PowerShell or Command Prompt). It creates `.venv`, installs everything,
 runs the offline tests, and creates your `.env` from `.env.example` (opening it in Notepad so
 you can paste your key).
 
 ```bat
 git clone https://github.com/Sapair-og/lucidfrm && cd lucidfrm
-setup.cmd
+.\setup.cmd
 ```
 
 **Your API key.** The key is never in the repo. Get a free
@@ -156,10 +156,10 @@ cp .env.example .env                                                    # then p
 
 ```bat
 .venv\Scripts\python -m lucidform.cli help build     :: embed the official sources (~5 min, once)
-bin\lucidform                                         :: fill the official CKYC form (or your own PDF)
+.\bin\lucidform                                       :: fill the official CKYC form (or your own PDF)
 ```
 
-`bin\lucidform` first asks whether to fill **your own PDF** (paste its path) or the built-in official
+`.\bin\lucidform` first asks whether to fill **your own PDF** (paste its path) or the built-in official
 CKYC form, then saves the filled PDF in `dataorms\` and opens it. Add the `bin` folder to your
 PATH to just type `lucidform`. Other options:
 
