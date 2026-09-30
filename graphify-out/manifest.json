@@ -144,8 +144,8 @@
     "semantic_hash": ""
   },
   "lucidform/formstate/writer.py": {
-    "mtime": 1788716892.3830748,
-    "seen": 1790759907.5909262,
+    "mtime": 1790772463.840202,
+    "seen": 1790772635.4846973,
     "ast_hash": "469a8032b9ab63b7025ce8306a2343be",
     "semantic_hash": ""
   },
@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "lucidform/gate/rules.py": {
-    "mtime": 1788716956.1857858,
-    "seen": 1790759907.590933,
+    "mtime": 1790772462.8360686,
+    "seen": 1790772635.4847074,
     "ast_hash": "b49778185730834b99596fab0002ea4a",
     "semantic_hash": ""
   },
@@ -324,9 +324,9 @@
     "semantic_hash": ""
   },
   "tests/test_no_silent_write.py": {
-    "mtime": 1788714618.802002,
-    "seen": 1790759907.5909626,
-    "ast_hash": "eb842b91d5258e3d7ee63e5642ff6ad0",
+    "mtime": 1790772445.839692,
+    "seen": 1790772635.4847596,
+    "ast_hash": "a4a4aa8345e1a882a58589d12f752f7d",
     "semantic_hash": ""
   },
   "tests/test_personas.py": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1790759902.178486,
-    "seen": 1790759907.5909839,
-    "ast_hash": "58c3348fbb1310f67622e25333466fc9",
+    "mtime": 1790772478.657468,
+    "seen": 1790772635.4847844,
+    "ast_hash": "0e3ea5fddcfdc809dd401241f84ab2e6",
     "semantic_hash": ""
   },
   "METHODOLOGY.md": {
@@ -606,8 +606,8 @@
     "semantic_hash": ""
   },
   "lucidform/help/answer.py": {
-    "mtime": 1790766890.4093904,
-    "seen": 1790771951.7124095,
+    "mtime": 1790772464.840061,
+    "seen": 1790772635.4847102,
     "ast_hash": "24ed4f2f5fb73542cbf57a6243ce38b6",
     "semantic_hash": ""
   },

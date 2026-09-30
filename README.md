@@ -32,13 +32,17 @@ python -m venv .venv
 .venv/Scripts/pip install -r requirements.txt   # Windows
 # .venv/bin/pip install -r requirements.txt     # POSIX
 
-cp .env.example .env    # only needed for the extraction layer
+cp .env.example .env    # GEMINI_API_KEY, only needed for live runs
 ```
 
 ## Run
 
 ```bash
 .venv/Scripts/python -m pytest                                  # full suite (no credentials needed)
+.venv/Scripts/python -m pytest -m live                          # live Gemini contract tests
+.venv/Scripts/python -m lucidform.cli help build                # embed the official sources (once)
+.venv/Scripts/python -m lucidform.cli help ask -f pan -q "pan kya hota hai"
+.venv/Scripts/python -m lucidform.cli graph                     # the LangGraph orchestrator as Mermaid
 .venv/Scripts/python -m lucidform.schema.make_form              # generate the target PDF
 .venv/Scripts/python -m lucidform.cli schema show               # inspect parsed fields
 .venv/Scripts/python -m lucidform.cli gate-check -f pan -v ABCDE1234F
@@ -80,17 +84,10 @@ gate decided — separately, because the design turns on them being separate.
 
 ## Status
 
-| Phase | | |
-|---|---|---|
-| 0 | Scaffold, schema, event log, architecture test, synthetic corpus | **done** |
-| 1 | Validation gate + adversarial suite | **done** |
-| 2 | FormState, receipts, commit invariant, export | **done** |
-| 3 | Extraction layer | **done** |
-| 4 | Orchestrator — full text pipeline | **done** |
-| 5 | Eval harness and first results | **done** |
-| 6 | Hindi | next |
-| 7 | Voice channel (faster-whisper + Piper) | |
-| 8 | Accessible web UI (optional) | |
+Phases, owners and status live in [`ROADMAP.md`](ROADMAP.md). Done so far: gate, write path,
+Gemini extraction, LangGraph orchestrator, eval harness, and the RAG help agent. Team workflow:
+[`CONTRIBUTING.md`](CONTRIBUTING.md) and [`docs/TEAM_GUIDE.md`](docs/TEAM_GUIDE.md); agent handoff:
+[`AGENTS.md`](AGENTS.md).
 
 ## Layout
 
