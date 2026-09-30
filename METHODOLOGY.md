@@ -936,6 +936,89 @@ number detached from how it was produced is precisely how a circular result
 enters a paper, and the offline accuracy figure of 87% is exactly the sort of
 number that would survive into a results table unchallenged.
 
+## M7. The orchestrator as a state graph
+
+### M7.1 Why replace a working loop
+
+The procedural loop was correct; it was replaced because a declared graph makes
+its control flow inspectable. "Commit is reachable only through confirmation"
+was previously something a reader verified by tracing branches; in the LangGraph
+version it is an assertion over the graph's edge list. The graph's nodes are
+wrappers only -- every judgement still belongs to the gate, the confirmation
+parser and the write path.
+
+### M7.2 Parity, not intuition
+
+Before the substitution, every persona session (three personas, English and
+Hindi) was recorded from the original loop: each event with its payload, and
+everything said to the user, with only identifiers, clocks and timings
+scrubbed. The graph is required to reproduce that record exactly. This is the
+evidence behind the paper's statement that replacing the orchestrator did not
+change behaviour, and it surfaced one real defect in the original: after a
+hang-up during read-back, the loop asked the question again. The graph ends the
+field instead, and a test pins it.
+
+### M7.3 No checkpoint-resume
+
+LangGraph offers checkpointing, and resuming an interrupted session is a real
+need for this population. It is not enabled, because resuming would mean
+restoring form values from a checkpoint -- a write that did not pass through
+`commit()` with a fresh receipt. A safe design exists (replay the commit
+receipts recorded in the append-only event log, re-verifying each) and is on the
+roadmap; restoring values directly would reintroduce the silent write.
+
+## M8. The help agent
+
+### M8.1 Scope: explanation, never a value
+
+The system's purpose has two halves: explain the form, and fill it safely. The
+help agent serves the first. It is invoked only when the extractor classifies
+an utterance as a question, and its output reaches the user as an explanation
+and the log as an event -- nothing else. Even "what should I write here?" gets
+an explanation, and the prompt forbids stating or guessing the user's value.
+The architecture test enforces the boundary in both directions.
+
+### M8.2 Corpus and chunking
+
+Six public documents, each pinned by SHA-256 in a manifest checked by test:
+the RBI KYC Master Direction and FAQ, the Income Tax PAN FAQ, two UIDAI FAQ
+pages, and the CERSAI CKYC operating guidelines. Two could not be fetched
+directly (HTTP 403 and a moved page) and were retrieved through a reader
+service; their text is stored verbatim with navigation removed, and the
+manifest records how each was obtained.
+
+Chunks follow document structure, not a token count, so that every passage is
+something a citation can point at. Long legal paragraphs are windowed at
+sentence boundaries and keep their label.
+
+### M8.3 Hybrid retrieval
+
+Dense embeddings and BM25 are fused by reciprocal rank fusion because they fail
+on different inputs: BM25 on paraphrase and code-mixing, embeddings on exact
+terms. Rank fusion avoids calibrating one score against the other. The field's
+English label is appended to the user's question as a topic anchor -- which
+helps terse questions ("ye kya hai?") and, measurably, biases some questions
+toward that field's own FAQ (M8.5).
+
+### M8.4 The citation check
+
+As with extraction, the model's reply is schema-bounded and then checked
+deterministically: every cited passage must have been retrieved, and an answer
+must cite something. Failure of either, an explicit "not answerable", or an API
+error falls back to the human-authored gloss with a statement of uncertainty.
+The check is what makes the answer auditable; the model is not trusted to cite
+honestly.
+
+### M8.5 Evaluation, and what it does not measure
+
+Thirty hand-written questions with gold passages plus six out-of-corpus
+controls. Retrieval hit rate and control refusal are reported together, for the
+same reason as gate recall and false-positive rate. The correctness of an
+answer's wording is not scored automatically; the per-question transcript is
+kept for human review. The offline test suite exercises retrieval with a
+bag-of-words stand-in embedder, so it verifies wiring, not retrieval quality --
+retrieval quality is a live measurement only.
+
 ---
 
 *(Subsequent sections are appended as each phase completes.)*

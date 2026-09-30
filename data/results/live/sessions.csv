@@ -1,0 +1,9 @@
+session_id,persona_id,lang,model,client,turns,committed,declined,abandoned,escaped_errors,blocked_writes
+27385835423d4ce59191adee4c969b28,p05,en,gemini-3.5-flash-lite,GeminiExtractionClient,15,14,0,0,0,0
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,en,gemini-3.5-flash-lite,GeminiExtractionClient,18,12,1,1,0,0
+6de3e01de6494e34a57ea519e9316af5,p07,en,gemini-3.5-flash-lite,GeminiExtractionClient,16,14,0,0,0,0
+7165dab48ca545c28c8cdd2891ebb8f3,p06,en,gemini-3.5-flash-lite,GeminiExtractionClient,17,13,1,0,0,0
+9202ab07514d46299344df39d9645cea,p02,en,gemini-3.5-flash-lite,GeminiExtractionClient,14,14,0,0,0,0
+bb7572bded444e0cb146bce6a15cab1d,p01,en,gemini-3.5-flash-lite,GeminiExtractionClient,16,14,0,0,0,0
+df36de1c80344a5fb0b8d0a95a40ee37,p08,en,gemini-3.5-flash-lite,GeminiExtractionClient,17,14,0,0,0,0
+f0ab615ba006440d8bb37781f3f332a9,p04,hi,gemini-3.5-flash-lite,GeminiExtractionClient,17,12,1,1,0,0

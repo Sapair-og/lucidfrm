@@ -1,0 +1,113 @@
+session_id,persona_id,field_id,turns,questions,rejections,corrections,committed_value,ground_truth,resolution,correct
+27385835423d4ce59191adee4c969b28,p05,full_name,1,0,,0,Priya Anil Deshmukh,Priya Anil Deshmukh,committed,True
+27385835423d4ce59191adee4c969b28,p05,father_name,1,0,,0,Anil Deshmukh,Anil Deshmukh,committed,True
+27385835423d4ce59191adee4c969b28,p05,dob,1,0,,0,1999-07-21,1999-07-21,committed,True
+27385835423d4ce59191adee4c969b28,p05,gender,1,0,,0,Female,Female,committed,True
+27385835423d4ce59191adee4c969b28,p05,pan,1,0,,0,CQWPD7788N,CQWPD7788N,committed,True
+27385835423d4ce59191adee4c969b28,p05,aadhaar,1,0,,0,800712985167,800712985167,committed,True
+27385835423d4ce59191adee4c969b28,p05,address_line,1,0,,0,"Flat 12, Shivaji Nagar","Flat 12, Shivaji Nagar",committed,True
+27385835423d4ce59191adee4c969b28,p05,city,1,0,,0,Pune,Pune,committed,True
+27385835423d4ce59191adee4c969b28,p05,state,1,0,,0,Maharashtra,Maharashtra,committed,True
+27385835423d4ce59191adee4c969b28,p05,pin,1,0,,0,411005,411005,committed,True
+27385835423d4ce59191adee4c969b28,p05,mobile,1,0,,0,9822031456,9822031456,committed,True
+27385835423d4ce59191adee4c969b28,p05,email,1,0,,0,priya.deshmukh@example.invalid,priya.deshmukh@example.invalid,committed,True
+27385835423d4ce59191adee4c969b28,p05,occupation,2,0,enum,0,Salaried,Salaried,committed,True
+27385835423d4ce59191adee4c969b28,p05,income_band,1,0,,0,10-25 Lakh,10-25 Lakh,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,full_name,1,0,,0,Abdul Rahim Khan,Abdul Rahim Khan,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,father_name,1,0,,0,Mohammad Yusuf Khan,Mohammad Yusuf Khan,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,dob,1,0,,0,1979-06-21,1979-06-21,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,gender,1,0,,0,Male,Male,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,pan,2,1,,0,CJMPK1953R,CJMPK1953R,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,aadhaar,1,0,,0,771740876250,771740876250,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,address_line,2,0,,1,,"15 Hazratganj, Near Post Office",abandoned,
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,city,1,0,,0,Lucknow,Lucknow,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,state,1,0,,0,Uttar Pradesh,Uttar Pradesh,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,pin,1,0,,0,226001,226001,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,mobile,1,0,,0,8299170453,8299170453,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,email,1,0,,0,,,declined,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,occupation,2,0,ambiguous_extraction,0,Self-employed,Self-employed,committed,True
+445c7da4ab7c428cbc1ce3e0e8a43db9,p03,income_band,2,0,enum,0,1-5 Lakh,1-5 Lakh,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,full_name,1,0,,0,Anita Sharma,Anita Sharma,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,father_name,1,0,,0,Om Prakash Sharma,Om Prakash Sharma,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,dob,1,0,,0,1979-12-31,1979-12-31,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,gender,1,0,,0,Female,Female,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,pan,2,0,ambiguous_extraction,0,DLMPS2244A,DLMPS2244A,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,aadhaar,1,0,,0,339824586848,339824586848,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,address_line,1,0,,0,45 Malviya Nagar,45 Malviya Nagar,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,city,1,0,,0,New Delhi,New Delhi,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,state,1,0,,0,Delhi,Delhi,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,pin,1,0,,0,110017,110017,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,mobile,1,0,,0,9811122233,9811122233,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,email,1,0,,0,anita.sharma@example.invalid,anita.sharma@example.invalid,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,occupation,1,0,,0,Homemaker,Homemaker,committed,True
+6de3e01de6494e34a57ea519e9316af5,p07,income_band,2,0,enum,0,Below 1 Lakh,Below 1 Lakh,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,full_name,1,0,,0,Mohammed Irfan Shaikh,Mohammed Irfan Shaikh,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,father_name,1,0,,0,Abdul Karim Shaikh,Abdul Karim Shaikh,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,dob,2,0,ambiguous_extraction,0,1987-01-05,1987-01-05,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,gender,1,0,,0,Male,Male,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,pan,1,0,,0,BHKPS3361L,BHKPS3361L,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,aadhaar,1,0,,0,716030847888,716030847888,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,address_line,1,0,,0,"Charminar Road, Ghansi Bazar","Charminar Road, Ghansi Bazar",committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,city,1,0,,0,Hyderabad,Hyderabad,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,state,1,0,,0,Telangana,Telangana,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,pin,1,0,,0,500002,500002,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,mobile,1,0,,0,7013456789,7013456789,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,email,1,0,,0,,,declined,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,occupation,2,0,enum,0,Self-employed,Self-employed,committed,True
+7165dab48ca545c28c8cdd2891ebb8f3,p06,income_band,2,0,enum,0,1-5 Lakh,1-5 Lakh,committed,True
+9202ab07514d46299344df39d9645cea,p02,full_name,1,0,,0,Lakshmi Devi Nair,Lakshmi Devi Nair,committed,True
+9202ab07514d46299344df39d9645cea,p02,father_name,1,0,,0,Krishnan Nair,Krishnan Nair,committed,True
+9202ab07514d46299344df39d9645cea,p02,dob,1,0,,0,1994-11-02,1994-11-02,committed,True
+9202ab07514d46299344df39d9645cea,p02,gender,1,0,,0,Female,Female,committed,True
+9202ab07514d46299344df39d9645cea,p02,pan,1,0,,0,BFTPN8206C,BFTPN8206C,committed,True
+9202ab07514d46299344df39d9645cea,p02,aadhaar,1,0,,0,544211033660,544211033660,committed,True
+9202ab07514d46299344df39d9645cea,p02,address_line,1,0,,0,"7B Marine Drive, Ernakulam","7B Marine Drive, Ernakulam",committed,True
+9202ab07514d46299344df39d9645cea,p02,city,1,0,,0,Kochi,Kochi,committed,True
+9202ab07514d46299344df39d9645cea,p02,state,1,0,,0,Kerala,Kerala,committed,True
+9202ab07514d46299344df39d9645cea,p02,pin,1,0,,0,682016,682016,committed,True
+9202ab07514d46299344df39d9645cea,p02,mobile,1,0,,0,7736540912,7736540912,committed,True
+9202ab07514d46299344df39d9645cea,p02,email,1,0,,0,l.nair@example.invalid,l.nair@example.invalid,committed,True
+9202ab07514d46299344df39d9645cea,p02,occupation,1,0,,0,Salaried,Salaried,committed,True
+9202ab07514d46299344df39d9645cea,p02,income_band,1,0,,0,10-25 Lakh,10-25 Lakh,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,full_name,1,0,,0,Ramesh Kumar Sharma,Ramesh Kumar Sharma,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,father_name,1,0,,0,Suresh Kumar Sharma,Suresh Kumar Sharma,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,dob,1,0,,0,1987-03-14,1987-03-14,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,gender,1,0,,0,Male,Male,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,pan,1,0,,0,AKQPS3417M,AKQPS3417M,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,aadhaar,1,0,,0,747910984992,747910984992,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,address_line,1,0,,0,"42 Nehru Marg, Bapu Nagar","42 Nehru Marg, Bapu Nagar",committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,city,1,0,,0,Jaipur,Jaipur,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,state,1,0,,0,Rajasthan,Rajasthan,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,pin,1,0,,0,302015,302015,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,mobile,1,0,,0,9812345607,9812345607,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,email,1,0,,0,ramesh.sharma@example.invalid,ramesh.sharma@example.invalid,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,occupation,2,0,enum,0,Business,Business,committed,True
+bb7572bded444e0cb146bce6a15cab1d,p01,income_band,2,0,enum,0,5-10 Lakh,5-10 Lakh,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,full_name,1,0,,0,Ravi Kumar Reddy,Ravi Kumar Reddy,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,father_name,1,0,,0,Venkat Reddy,Venkat Reddy,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,dob,1,0,,0,1990-06-15,1990-06-15,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,gender,1,0,,0,Male,Male,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,pan,2,0,,0,EKLPR9012G,EKLPR9012G,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,aadhaar,2,1,,0,420607984402,420607984402,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,address_line,1,0,,0,Koramangala 5th Block,Koramangala 5th Block,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,city,1,0,,0,Bengaluru,Bengaluru,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,state,1,0,,0,Karnataka,Karnataka,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,pin,1,0,,0,560034,560034,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,mobile,1,0,,0,8105550123,8105550123,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,email,1,0,,0,ravi.reddy@example.invalid,ravi.reddy@example.invalid,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,occupation,2,1,,0,Business,Business,committed,True
+df36de1c80344a5fb0b8d0a95a40ee37,p08,income_band,1,0,,0,5-10 Lakh,5-10 Lakh,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,full_name,1,0,,0,Suresh Prasad Yadav,Suresh Prasad Yadav,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,father_name,1,0,,0,Ram Prasad Yadav,Ram Prasad Yadav,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,dob,1,0,,0,1958-03-14,1958-03-14,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,gender,2,0,enum,0,,Male,abandoned,
+f0ab615ba006440d8bb37781f3f332a9,p04,pan,1,0,,0,AFRPY4521K,AFRPY4521K,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,aadhaar,2,1,,0,963486009472,963486009472,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,address_line,1,0,,0,"Sarai Mohana, Rajghat","Sarai Mohana, Rajghat",committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,city,1,0,,0,Varanasi,Varanasi,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,state,1,0,,0,Uttar Pradesh,Uttar Pradesh,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,pin,1,0,,0,221001,221001,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,mobile,1,0,,0,9839012457,9839012457,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,email,1,0,,0,,,declined,True
+f0ab615ba006440d8bb37781f3f332a9,p04,occupation,2,0,enum,0,Agriculture,Agriculture,committed,True
+f0ab615ba006440d8bb37781f3f332a9,p04,income_band,1,0,,0,Below 1 Lakh,Below 1 Lakh,committed,True

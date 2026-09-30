@@ -1,0 +1,12 @@
+﻿removed 0 existing run log(s)
+p01  committed 14  declined 0  abandoned 0  readback-denials 0
+p02  committed 14  declined 0  abandoned 0  readback-denials 0
+p03  committed 12  declined 1  abandoned 1  readback-denials 1
+p04  committed 12  declined 1  abandoned 1  readback-denials 0
+p05  committed 14  declined 0  abandoned 0  readback-denials 0
+p06  committed 13  declined 1  abandoned 0  readback-denials 0
+p07  committed 14  declined 0  abandoned 0  readback-denials 0
+p08  committed 14  declined 0  abandoned 0  readback-denials 0
+
+logs in data\runs_live
+reduce them with: lucidform metrics --runs data\runs_live
