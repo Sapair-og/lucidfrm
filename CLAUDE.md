@@ -11,8 +11,13 @@ This file is only working notes.
   site — including recomputing the fingerprint, so a receipt for value A cannot
   write value B. No `set()`, no `update()`, no "trusted" field, no admin path.
 - **The gate imports no LLM.** Nothing under `lucidform/gate/` or
-  `lucidform/formstate/` may import `anthropic` or `lucidform.extract`.
-  `tests/test_no_silent_write.py` fails the build if it does.
+  `lucidform/formstate/` may import a model SDK (`anthropic`, `google.genai`,
+  `openai`), an agent framework (`langgraph`, `langchain`), or
+  `lucidform.extract` / `.help` / `.llm` / `.orchestrate` -- directly or
+  transitively. `tests/test_no_silent_write.py` fails the build if it does.
+- **The help agent has no route to the form.** `lucidform/help/` may not import
+  `formstate`, `gate` or `orchestrate`, and may not build a `Candidate` or a
+  receipt. It explains; the user answers.
 - **Receipts are minted in one place.** `ConfirmationReceipt.__post_init__`
   walks the stack and refuses construction from anywhere but
   `orchestrate/confirm.py`. This stops accidents; the AST test stops intent.

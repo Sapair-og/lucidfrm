@@ -37,7 +37,25 @@ PACKAGE = Path(__file__).resolve().parents[1] / "lucidform"
 # model version, sampling, or prompt phrasing (METHODOLOGY M0.2).
 LLM_FREE_PACKAGES = ("gate", "formstate")
 
-FORBIDDEN_IMPORTS = ("anthropic", "lucidform.extract", "openai", "httpx")
+FORBIDDEN_IMPORTS = (
+    # model SDKs and agent frameworks
+    "anthropic",
+    "openai",
+    "google",  # google.genai, reached as `from google import genai`
+    "langgraph",
+    "langchain",
+    "httpx",
+    # the parts of this package that talk to a model or run the conversation
+    "lucidform.extract",
+    "lucidform.help",
+    "lucidform.llm",
+    "lucidform.orchestrate",
+)
+
+# The help agent explains; it must have no route to the form. It may not import
+# the write path or the receipt issuer, and may not build a Candidate.
+HELP_PACKAGE = "help"
+HELP_FORBIDDEN_IMPORTS = ("lucidform.formstate", "lucidform.orchestrate", "lucidform.gate")
 
 RECEIPT_ISSUER = PACKAGE / "orchestrate" / "confirm.py"
 STATE_MODULE = PACKAGE / "formstate" / "state.py"
@@ -98,6 +116,83 @@ def test_decision_and_write_paths_import_no_model(package: str) -> None:
         "the accept/reject decision and the write path are deterministic by "
         "design (SPEC.md section 2). Found:\n  " + "\n  ".join(violations)
     )
+
+
+def _violations(tree: ast.Module, forbidden: tuple[str, ...]) -> list[str]:
+    return [
+        name
+        for name, _ in _imported_names(tree)
+        if any(name == f or name.startswith(f + ".") for f in forbidden)
+    ]
+
+
+def test_the_gate_and_write_path_load_no_model_even_transitively() -> None:
+    """The direct-import scan above cannot see a dependency one hop away.
+
+    This imports the gate and the write path in a clean interpreter and checks
+    what actually ended up loaded -- the "even transitively" half of the rule.
+    """
+    import subprocess
+    import sys
+
+    probe = (
+        "import sys, json\n"
+        "import lucidform.gate.gate, lucidform.formstate.state, lucidform.formstate.writer\n"
+        "print(json.dumps(sorted(sys.modules)))\n"
+    )
+    out = subprocess.run(
+        [sys.executable, "-c", probe],
+        cwd=PACKAGE.parent,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    import json
+
+    loaded = json.loads(out.stdout)
+    bad = [
+        m
+        for m in loaded
+        for f in FORBIDDEN_IMPORTS
+        if (m == f or m.startswith(f + ".")) and f != "google"
+    ] + [m for m in loaded if m == "google.genai" or m.startswith("google.genai.")]
+    assert not bad, f"importing the gate / write path loads: {sorted(set(bad))}"
+
+
+def test_the_help_agent_has_no_route_to_the_form() -> None:
+    violations: list[str] = []
+    for path in _python_files(PACKAGE / HELP_PACKAGE):
+        tree = _parse(path)
+        for name in _violations(tree, HELP_FORBIDDEN_IMPORTS):
+            violations.append(f"{_rel(path)} imports {name}")
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                func = node.func
+                name = func.id if isinstance(func, ast.Name) else getattr(func, "attr", None)
+                if name in ("Candidate", "ConfirmationReceipt"):
+                    violations.append(f"{_rel(path)}:{node.lineno} constructs {name}")
+    assert not violations, (
+        "lucidform/help/ explains fields; it must not be able to produce or "
+        "commit a value. Found:\n  " + "\n  ".join(violations)
+    )
+
+
+def test_the_new_rules_fire_on_deliberate_violations() -> None:
+    """Each rule added for LangGraph and the help agent is shown to fail."""
+    gate_side = ast.parse(
+        "from google import genai\nimport langgraph.graph\nfrom lucidform.help import answer\n"
+        "from lucidform import llm\nfrom lucidform.orchestrate.graph import SessionGraph\n"
+    )
+    hits = _violations(gate_side, FORBIDDEN_IMPORTS)
+    for expected in ("google.genai", "langgraph.graph", "lucidform.help.answer", "lucidform.llm", "lucidform.orchestrate.graph"):
+        assert expected in hits, expected
+
+    help_side = ast.parse("from lucidform.formstate.state import FormState\nfrom lucidform.orchestrate import confirm\n")
+    assert len(_violations(help_side, HELP_FORBIDDEN_IMPORTS)) >= 2
+
+    # Near-misses must not fire.
+    clean = ast.parse("import googleapis_common\nfrom lucidform.models import FieldSpec\nimport helpers\n")
+    assert _violations(clean, FORBIDDEN_IMPORTS) == []
 
 
 def test_receipts_are_minted_only_by_the_confirmation_module() -> None:
