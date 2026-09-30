@@ -36,15 +36,15 @@
     "semantic_hash": ""
   },
   "lucidform/cli.py": {
-    "mtime": 1790771273.7686226,
-    "seen": 1790771951.7123582,
-    "ast_hash": "f034a19cc741fccdff08d186173c5562",
+    "mtime": 1790774202.5808878,
+    "seen": 1790775099.6028988,
+    "ast_hash": "6fb228420ecbf5539ce840d474824b67",
     "semantic_hash": ""
   },
   "lucidform/config.py": {
-    "mtime": 1790766853.4841125,
-    "seen": 1790771951.7123606,
-    "ast_hash": "e71b04b064abe85a01473a418084c2a8",
+    "mtime": 1790773386.0465045,
+    "seen": 1790775099.602901,
+    "ast_hash": "6b8eba64441f2b53f968eb197bb0aca5",
     "semantic_hash": ""
   },
   "lucidform/eval/__init__.py": {
@@ -72,9 +72,9 @@
     "semantic_hash": ""
   },
   "lucidform/eval/metrics.py": {
-    "mtime": 1788720431.4771514,
-    "seen": 1790759907.5909097,
-    "ast_hash": "164f95881727906ea4f90de99c8ddd7f",
+    "mtime": 1790773423.3494618,
+    "seen": 1790775099.6029098,
+    "ast_hash": "f4df3627791384e3a51a334bf07c5872",
     "semantic_hash": ""
   },
   "lucidform/eval/personas.py": {
@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "tests/test_personas.py": {
-    "mtime": 1788714717.2279954,
-    "seen": 1790759907.590964,
-    "ast_hash": "56411114331e594dd1a3db3ba23ea685",
+    "mtime": 1790773386.6812384,
+    "seen": 1790775099.6029932,
+    "ast_hash": "c5b38448316c7633563c60da27ea9ce3",
     "semantic_hash": ""
   },
   "tests/test_readback.py": {
@@ -432,15 +432,15 @@
     "semantic_hash": ""
   },
   "METHODOLOGY.md": {
-    "mtime": 1788720349.5776248,
-    "seen": 1790759907.5909853,
-    "ast_hash": "f9633407487368d9c9a960f87f0d42cc",
+    "mtime": 1790775241.8769267,
+    "seen": 1790775885.825668,
+    "ast_hash": "e044321eebe365c4f89c605efddf08e2",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1788720370.563594,
-    "seen": 1790759907.5909863,
-    "ast_hash": "5642a4f065321800ba17325780e0f355",
+    "mtime": 1790773199.635919,
+    "seen": 1790773223.8043792,
+    "ast_hash": "cef272977bdb0a7de9f695cf6c8956ee",
     "semantic_hash": ""
   },
   "SPEC.md": {
@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "docs/paper-draft.md": {
-    "mtime": 1788755080.0122714,
-    "seen": 1790759907.5909936,
-    "ast_hash": "057bacdcdacfb38819dd195e81750c4a",
+    "mtime": 1790775166.9384816,
+    "seen": 1790775885.8257031,
+    "ast_hash": "549d1f880960fe6684ed8d606797641e",
     "semantic_hash": ""
   },
   "lucidform/i18n/strings_en.yaml": {
@@ -630,9 +630,99 @@
     "semantic_hash": ""
   },
   "tests/test_help.py": {
-    "mtime": 1790769326.455054,
-    "seen": 1790771951.7124574,
-    "ast_hash": "f896e1206104dc30f2bb198bd1e90fd3",
+    "mtime": 1790773676.147337,
+    "seen": 1790775099.6029854,
+    "ast_hash": "6b69f9aa38609b768cc178fbfc3aef7c",
+    "semantic_hash": ""
+  },
+  ".github/pull_request_template.md": {
+    "mtime": 1790773157.5855613,
+    "seen": 1790773223.8043714,
+    "ast_hash": "6f5053015cb5ffd1ea4e96fc5da5d4f5",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1790773145.8933988,
+    "seen": 1790773223.804373,
+    "ast_hash": "778e3227be929ad457f667ee7237fbb0",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1790772693.9184248,
+    "seen": 1790773223.804374,
+    "ast_hash": "94a8e18d6336dfec622bebf225fdd265",
+    "semantic_hash": ""
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1790772695.269691,
+    "seen": 1790773223.8043768,
+    "ast_hash": "03edbac8f29a447380aa84118794ad3a",
+    "semantic_hash": ""
+  },
+  "ROADMAP.md": {
+    "mtime": 1790772694.6198397,
+    "seen": 1790773223.8043802,
+    "ast_hash": "b17e2ad9c437fa0595a222ceb5e39526",
+    "semantic_hash": ""
+  },
+  "docs/PROGRESS.md": {
+    "mtime": 1790772696.5827065,
+    "seen": 1790773223.8043904,
+    "ast_hash": "d5ddb2df7b2d063424cb3875c33473fd",
+    "semantic_hash": ""
+  },
+  "docs/TEAM_GUIDE.md": {
+    "mtime": 1790772695.9094474,
+    "seen": 1790773223.8043911,
+    "ast_hash": "79a29bf6954d8657f9db51d334e0e1b3",
+    "semantic_hash": ""
+  },
+  "lucidform/help/evaluate.py": {
+    "mtime": 1790773658.2551045,
+    "seen": 1790775099.6029432,
+    "ast_hash": "c6c334db2dfac0f2798d961d94325fb2",
+    "semantic_hash": ""
+  },
+  "data/help/eval_questions.yaml": {
+    "mtime": 1790773657.456756,
+    "seen": 1790775099.6030302,
+    "ast_hash": "98bcc027274f163612806d8c8ac15a46",
+    "semantic_hash": ""
+  },
+  "data/personas/extended/p04_suresh.yaml": {
+    "mtime": 1790773366.132091,
+    "seen": 1790775099.6030378,
+    "ast_hash": "0b88be7ac6ebeaded1c15a64bdaddbb9",
+    "semantic_hash": ""
+  },
+  "data/personas/extended/p05_priya.yaml": {
+    "mtime": 1790773366.8255618,
+    "seen": 1790775099.6030395,
+    "ast_hash": "c14c2f3c67e37ca65bf4913fc215eb73",
+    "semantic_hash": ""
+  },
+  "data/personas/extended/p06_irfan.yaml": {
+    "mtime": 1790773367.4957428,
+    "seen": 1790775099.6030405,
+    "ast_hash": "47dfd0fb62474147ca63d119d7e2ae44",
+    "semantic_hash": ""
+  },
+  "data/personas/extended/p07_anita.yaml": {
+    "mtime": 1790773368.163634,
+    "seen": 1790775099.603042,
+    "ast_hash": "dbdeb71439bca4585bfd135a709e44b2",
+    "semantic_hash": ""
+  },
+  "data/personas/extended/p08_ravi.yaml": {
+    "mtime": 1790773368.8672132,
+    "seen": 1790775099.6030428,
+    "ast_hash": "032918501511c77882f893fce304a223",
+    "semantic_hash": ""
+  },
+  "docs/demo.md": {
+    "mtime": 1790775197.7709045,
+    "seen": 1790775885.825699,
+    "ast_hash": "f5fee7617c771f092f4cd47e711195c3",
     "semantic_hash": ""
   }
 }

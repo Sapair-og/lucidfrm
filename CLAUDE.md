@@ -50,6 +50,11 @@ This file is only working notes.
   phone number is reshaping. Padding a short Aadhaar, transliterating Devanagari
   digits, or snapping an enum to its nearest option is repairing — it commits a
   value the user never said.
+- **Enum options may have declared names** (`enum_names` in the overlay, e.g.
+  `Male: [पुरुष, purush]`): exactly the names the Hindi prompt says aloud, matched
+  exactly after case-folding. That is reshaping. Adding a synonym the prompt does
+  not offer ("mard", "kheti") or any fuzzy match is repairing -- don't. The loader
+  refuses a name declared for two options.
 - The phone prefix strip only fires when removing it leaves exactly 10 digits,
   so a genuine `91`-prefixed subscriber number keeps its leading 9.
 - PAN's 5th character is the surname initial — that is a *cross-field* check

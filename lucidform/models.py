@@ -83,6 +83,9 @@ class FieldSpec:
     max_length: int | None = None
     pattern: str | None = None
     enum_values: tuple[str, ...] = ()
+    # option -> the other names a human has declared for it (e.g. Male ->
+    # purush, पुरुष). Matched exactly, never approximately; see rules.normalize.
+    enum_names: dict[str, tuple[str, ...]] = field(default_factory=dict)
     # Field ids this one is validated against (e.g. pan -> name, pin -> state).
     depends_on: tuple[str, ...] = ()
 

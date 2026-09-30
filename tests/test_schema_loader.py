@@ -126,6 +126,31 @@ def test_a_field_missing_from_the_pdf_is_fatal(built_pdf, tmp_path, overlay):
         loader.load(pdf_path=built_pdf, overlay_path=path)
 
 
+@pytest.mark.parametrize(
+    "names, message",
+    [
+        ({"Male": ["purush"], "Female": ["purush"]}, "declared for both"),
+        ({"Man": ["purush"]}, "non-options"),
+    ],
+)
+def test_an_ambiguous_or_orphan_enum_name_is_fatal(built_pdf, tmp_path, overlay, names, message):
+    """One spoken name for two options would make the gate choose for the user."""
+    import copy
+
+    bad = copy.deepcopy(overlay)
+    gender = next(f for f in bad["fields"] if f["id"] == "gender")
+    gender["enum_names"] = names
+    path = tmp_path / "bad_overlay.yaml"
+    path.write_text(yaml.safe_dump(bad, allow_unicode=True), encoding="utf-8")
+    with pytest.raises(loader.SchemaError, match=message):
+        loader.load(pdf_path=built_pdf, overlay_path=path)
+
+
+def test_declared_enum_names_are_loaded(schema):
+    gender = schema.by_id("gender")
+    assert "purush" in gender.enum_names["Male"]
+
+
 def test_a_widget_with_no_overlay_entry_is_fatal(built_pdf, tmp_path, overlay):
     """Conversely, a PDF widget nothing validates must raise."""
     bad = dict(overlay)

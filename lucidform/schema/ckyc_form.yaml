@@ -72,6 +72,12 @@ fields:
     type: enum
     required: true
     enum_values: [Male, Female, Transgender]
+    # Exactly the option names the Hindi prompt says aloud, in Devanagari and
+    # romanised. Declared names only -- matched exactly, never approximately.
+    enum_names:
+      Male: [पुरुष, purush]
+      Female: [महिला, mahila]
+      Transgender: [ट्रांसजेंडर]
     prompt:
       en: What is your gender — male, female, or transgender?
       hi: आपका लिंग क्या है — पुरुष, महिला, या ट्रांसजेंडर?
@@ -231,6 +237,15 @@ fields:
     type: enum
     required: true
     enum_values: [Salaried, Self-employed, Business, Student, Homemaker, Retired, Agriculture, Other]
+    enum_names:
+      Salaried: [नौकरीपेशा, naukripesha]
+      Self-employed: [स्वरोजगार, swarozgar]
+      Business: [व्यापार, vyapar]
+      Student: [विद्यार्थी, vidyarthi]
+      Homemaker: [गृहिणी, grihini]
+      Retired: [सेवानिवृत्त, sevanivritt]
+      Agriculture: [कृषि, krishi]
+      Other: [अन्य, anya]
     prompt:
       en: What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.
       hi: आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।
@@ -251,6 +266,12 @@ fields:
       - 5-10 Lakh
       - 10-25 Lakh
       - Above 25 Lakh
+    enum_names:
+      Below 1 Lakh: [एक लाख से कम, ek lakh se kam]
+      1-5 Lakh: [एक से पाँच लाख, ek se paanch lakh]
+      5-10 Lakh: [पाँच से दस लाख, paanch se das lakh]
+      10-25 Lakh: [दस से पच्चीस लाख, das se pachchees lakh]
+      Above 25 Lakh: [पच्चीस लाख से अधिक, pachchees lakh se adhik]
     prompt:
       en: Roughly what is your yearly income — below one lakh, one to five lakh, five to ten lakh, ten to twenty-five lakh, or above twenty-five lakh?
       hi: आपकी वार्षिक आय लगभग कितनी है — एक लाख से कम, एक से पाँच लाख, पाँच से दस लाख, दस से पच्चीस लाख, या पच्चीस लाख से अधिक?

@@ -148,6 +148,11 @@ def normalize(value: str, field: FieldSpec) -> str:
         for option in field.enum_values:
             if option.casefold() == folded:
                 return option
+            # A declared name of the option in the user's language is the
+            # option, not a guess at it: exact match only, and only names a
+            # human wrote into the overlay for this field.
+            if any(name.casefold() == folded for name in field.enum_names.get(option, ())):
+                return option
         return text
 
     return text  # NAME, TEXT: whitespace already collapsed

@@ -322,6 +322,58 @@ categories:
         note: a valid PIN code offered as a mobile number
 
   # ------------------------------------------------------------------------
+  - name: enum_declared_names
+    rationale: >
+      The Hindi prompt offers the options by their Hindi names ("purush, mahila,
+      ya transgender") and then, before these names were declared, rejected the
+      answer it had just suggested -- found in the first live run. An option's
+      name in the user's language, declared by a human in the overlay and
+      matched exactly, is reshaping like case-folding. Anything undeclared or
+      approximate is still rejected: this category exists as much for the
+      near-misses as for the controls.
+    cases:
+      - field: gender
+        value: purush
+        expect: pass
+        normalized: Male
+        note: control -- the romanised Hindi option name offered by the prompt
+      - field: gender
+        value: पुरुष
+        expect: pass
+        normalized: Male
+        note: control -- the same name in Devanagari
+      - field: gender
+        value: MAHILA
+        expect: pass
+        normalized: Female
+        note: control -- case differs only
+      - field: gender
+        value: purushh
+        expect: reject
+        reason: enum
+        note: one letter off a declared name; no fuzzy matching
+      - field: gender
+        value: mard
+        expect: reject
+        reason: enum
+        note: a real word for "man", but not the option name the form uses
+      - field: occupation
+        value: kheti karta hoon
+        expect: reject
+        reason: enum
+        note: a sentence containing a declared name is not the name
+      - field: occupation
+        value: purush
+        expect: reject
+        reason: enum
+        note: a declared name of another field's option must not leak across fields
+      - field: income_band
+        value: ek lakh se kam
+        expect: pass
+        normalized: Below 1 Lakh
+        note: control -- the declared Hindi name of the band
+
+  # ------------------------------------------------------------------------
   - name: enum_near_miss
     rationale: >
       Values close to a permitted option but not equal to one. Accepting them

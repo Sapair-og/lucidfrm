@@ -74,6 +74,12 @@ def test_adversarial_case(gate, committed, category, case):
             "wrong -- it is measured, not tolerated."
         )
         assert report.normalized_value, "a passing report must carry a value to commit"
+        if "normalized" in case:
+            # What will actually be written -- and read back -- must be the
+            # canonical option, never the user's own spelling of it.
+            assert report.normalized_value == case["normalized"], (
+                f"[{category}] expected {case['normalized']!r}, got {report.normalized_value!r}"
+            )
     else:
         assert report.status is Status.REJECT, (
             f"[{category}] this value was accepted and should not have been. "

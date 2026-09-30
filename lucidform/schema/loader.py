@@ -148,6 +148,22 @@ def load(
         structure = parsed.get(entry["acroform_name"], {})
         ftype = FieldType(entry["type"])
         enum_values = tuple(entry.get("enum_values", ()))
+        enum_names = {
+            option: tuple(str(n) for n in names)
+            for option, names in (entry.get("enum_names") or {}).items()
+        }
+        unknown = set(enum_names) - set(enum_values)
+        if unknown:
+            raise SchemaError(f"{entry['id']}: enum_names for non-options {sorted(unknown)}")
+        seen: dict[str, str] = {}
+        for option, names in enum_names.items():
+            for name in names:
+                other = seen.setdefault(name.casefold(), option)
+                if other != option:
+                    # One spoken name for two options would make the gate choose.
+                    raise SchemaError(
+                        f"{entry['id']}: {name!r} is declared for both {other!r} and {option!r}"
+                    )
 
         if strict and ftype is FieldType.ENUM:
             pdf_options = structure.get("options", ())
@@ -172,6 +188,7 @@ def load(
                 max_length=structure.get("max_length") or entry.get("max_length"),
                 pattern=entry.get("pattern"),
                 enum_values=enum_values,
+                enum_names=enum_names,
                 depends_on=tuple(entry.get("depends_on", ())),
             )
         )
