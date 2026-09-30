@@ -93,8 +93,6 @@ class GeminiExtractionClient:
     request, so it cannot change what the user is asked to confirm.
     """
 
-    RETRYABLE = frozenset({429, 500, 502, 503, 504})
-
     def __init__(
         self,
         model: str | None = None,
@@ -124,29 +122,17 @@ class GeminiExtractionClient:
         self._sdk = sdk
 
     def complete(self, system: str, user: str) -> ModelReply:
-        from google.genai import errors, types
+        from lucidform.llm import json_config, with_retries
 
-        config = types.GenerateContentConfig(
-            system_instruction=system,
-            response_mime_type="application/json",
-            response_json_schema=Extraction.model_json_schema(),
-            # The extractor declares no tools; leaving AFC on only buys an SDK
-            # warning and a code path that could call something.
-            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+        config = json_config(system, Extraction.model_json_schema())
+        response = with_retries(
+            lambda: self._sdk.models.generate_content(
+                model=self.model, contents=user, config=config
+            ),
+            max_retries=self.max_retries,
+            base_delay=self.base_delay,
+            sleep=self._sleep,
         )
-        attempt = 0
-        while True:
-            try:
-                response = self._sdk.models.generate_content(
-                    model=self.model, contents=user, config=config
-                )
-                break
-            except errors.APIError as exc:
-                if exc.code not in self.RETRYABLE or attempt >= self.max_retries:
-                    raise
-                self._sleep(self.base_delay * (2**attempt))
-                attempt += 1
-
         extraction = Extraction.model_validate_json(response.text or "")
         usage = getattr(response, "usage_metadata", None)
         return ModelReply(

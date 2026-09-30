@@ -32,8 +32,56 @@ app = typer.Typer(
 )
 schema_app = typer.Typer(no_args_is_help=True, help="Inspect the form schema.")
 persona_app = typer.Typer(no_args_is_help=True, help="Inspect the synthetic corpus.")
+help_app = typer.Typer(no_args_is_help=True, help="The help agent: build, ask, evaluate.")
 app.add_typer(schema_app, name="schema")
 app.add_typer(persona_app, name="personas")
+app.add_typer(help_app, name="help")
+
+
+@help_app.command("build")
+def help_build() -> None:
+    """Chunk the official sources and embed them (a few minutes on the free tier)."""
+    import time
+
+    from lucidform.help import corpus
+    from lucidform.help.answer import default_index_dir
+    from lucidform.help.index import GeminiEmbedder, HelpIndex
+
+    out = default_index_dir()
+    chunks = corpus.load_chunks(out / "sources")
+    typer.echo(f"{len(chunks)} chunks from {len(corpus.load_manifest(out / 'sources'))} sources")
+    started = time.perf_counter()
+    index = HelpIndex.build(chunks, GeminiEmbedder())
+    index.save(out)
+    typer.echo(f"embedded in {time.perf_counter() - started:.0f}s -> {out}")
+
+
+@help_app.command("ask")
+def help_ask(
+    field: str = typer.Option(..., "--field", "-f", help="Field id, e.g. pan."),
+    question: str = typer.Option(..., "--question", "-q", help="What the user asked."),
+    lang: str = typer.Option("en", help="Answer language."),
+) -> None:
+    """Ask the help agent one question, showing what it retrieved and cited."""
+    from lucidform.help.answer import load_agent
+    from lucidform.schema import loader
+
+    schema = loader.load()
+    if field not in schema.ids:
+        typer.echo(f"unknown field {field!r}. Known: {', '.join(schema.ids)}")
+        raise typer.Exit(2)
+    agent = load_agent()
+    if agent is None:
+        typer.echo("no help index yet. Build it: lucidform help build")
+        raise typer.Exit(2)
+    spec = schema.by_id(field)
+    answer = agent.answer(spec, question, lang)
+    typer.echo("  retrieved")
+    for cid in answer.retrieved_ids:
+        mark = "*" if cid in answer.cited_ids else " "
+        typer.echo(f"   {mark} {agent.index.get(cid).label}")
+    typer.echo(f"\n  source   {answer.source}" + (f" ({answer.fallback_reason})" if answer.fallback_reason else ""))
+    typer.echo(f"  says     {answer.spoken}")
 
 
 @app.command("make-form")
@@ -76,6 +124,7 @@ def replay_cmd(
     settings = get_settings()
     schema = loader.load()
     client = _extraction_client(replay)
+    helper = _help_agent(replay)
 
     everyone = {p.persona_id: p for p in load_all()}
     chosen = list(personas) if personas else list(everyone)
@@ -95,7 +144,7 @@ def replay_cmd(
     for _ in range(repeat):
         for persona_id in chosen:
             run = run_persona(
-                everyone[persona_id], schema, client, lang=lang, echo=False
+                everyone[persona_id], schema, client, lang=lang, echo=False, helper=helper
             )
             result = run.result
             escaped = run.escaped_errors
@@ -278,6 +327,7 @@ def run_cmd(
     settings = get_settings()
     schema = loader.load()
     client = _extraction_client(replay)
+    helper = _help_agent(replay)
 
     if persona:
         from lucidform.eval.personas import load_all, load_persona
@@ -294,7 +344,7 @@ def run_cmd(
                 raise typer.Exit(2)
             who = matches[0]
 
-        run = run_persona(who, schema, client, lang=lang, echo=not quiet)
+        run = run_persona(who, schema, client, lang=lang, echo=not quiet, helper=helper)
         state, result = run.state, run.result
         typer.echo(f"\nlog: {run.log_path}")
     else:
@@ -310,6 +360,7 @@ def run_cmd(
             output_channel=channel,
             log=log,
             lang=lang or settings.lang,
+            helper=helper,
         )
         result = session.run()
         typer.echo(f"\nlog: {log.path}")
@@ -345,6 +396,26 @@ def run_cmd(
         typer.echo(f"\nwrote {written}")
 
     raise typer.Exit(0 if result.complete else 1)
+
+
+def _help_agent(replay: bool):
+    """The live help agent for question turns, or None to answer from the gloss.
+
+    Offline runs always use the gloss, so replayed sessions stay deterministic
+    and the golden transcripts remain comparable across runs.
+    """
+    if replay:
+        return None
+    from lucidform.help.answer import load_agent
+
+    try:
+        agent = load_agent()
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"help agent unavailable ({exc}); questions will get the field's gloss")
+        return None
+    if agent is None:
+        typer.echo("no help index yet (lucidform help build); questions will get the field's gloss")
+    return agent
 
 
 def _extraction_client(replay: bool):

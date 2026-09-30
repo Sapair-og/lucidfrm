@@ -43,3 +43,8 @@ declined_note_some: ', {count} left blank at your request'
 
 incomplete: >-
   {count} still need answers: {fields}.
+
+help_source: '(Source: {sources}.)'
+
+help_uncertain: >-
+  I am not certain about that part, so here is what this field means:

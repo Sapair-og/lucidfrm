@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     extraction_provider: str = "gemini"
     extraction_model: str = "claude-opus-5-5"
     gemini_model: str = "gemini-3.5-flash-lite"
+
+    # Help agent: retrieval embeddings and the model that phrases the answer.
+    embedding_model: str = "gemini-embedding-001"
+    help_model: str = "gemini-3.5-flash-lite"
     lang: str = "en"
 
     # Below this, the gate rejects as LOW_CONFIDENCE rather than passing a value

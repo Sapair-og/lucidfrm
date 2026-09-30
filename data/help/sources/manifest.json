@@ -1,51 +1,46 @@
-﻿[
-    {
-        "value":  [
-                      {
-                          "file":  "rbi_kyc_faq_2025.pdf",
-                          "url":  "https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/KYC09062025.pdf",
-                          "retrieved_at":  "2026-09-30T09:36:26Z",
-                          "sha256":  "a0532fbb8b096053ba1cec6b5ac83393f59fa3f034e6c5f68f623b51e4baa001",
-                          "bytes":  262409
-                      },
-                      {
-                          "file":  "rbi_kyc_master_direction.html",
-                          "url":  "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11566",
-                          "retrieved_at":  "2026-09-30T09:36:27Z",
-                          "sha256":  "e30b88d909ef3d07f30d478e68070ada14b8454a142b2fb3d401b49918971a65",
-                          "bytes":  480170
-                      },
-                      {
-                          "file":  "uidai_faq_enrolment.html",
-                          "url":  "https://uidai.gov.in/en/enrolment-and-update",
-                          "retrieved_at":  "2026-09-30T09:36:37Z",
-                          "sha256":  "ab75d6b3e1aba2cfaee9f5cec1dedd6aaf2b89fdbd01fd4e8ebb7c9205299a57",
-                          "bytes":  709155
-                      },
-                      {
-                          "file":  "cersai_ckyc_guidelines_2016.pdf",
-                          "url":  "https://www.sebi.gov.in/sebi_data/commondocs/21072016_Annex3_p.pdf",
-                          "retrieved_at":  "2026-09-30T09:36:39Z",
-                          "sha256":  "0451e021785c862fe2bb10990a8b0420a7175a214a617691493489ae32999042",
-                          "bytes":  255768
-                      }
-                  ],
-        "Count":  4
-    },
-    {
-        "file":  "incometax_pan_faq.md",
-        "url":  "https://www.incometaxindia.gov.in/documents/d/guest/form-93-94-95-96-faqs",
-        "retrieved_at":  "2026-09-30T09:38:44Z",
-        "sha256":  "fbffa3bc51603795298e339e3e08ec8c047d6de2e5c14998b8af6f1ab1b9c703",
-        "bytes":  7863,
-        "via":  "exa web fetch; verbatim text, nav removed"
-    },
-    {
-        "file":  "uidai_faq_update.md",
-        "url":  "https://uidai.gov.in/en/contact-support/have-any-question/297-faqs/enrolment-update/aadhaar-updation.html",
-        "retrieved_at":  "2026-09-30T09:38:44Z",
-        "sha256":  "832a40f0099d519b9e1fd7e77f7d465cfed33f05b9bcc836119de0be8abe86b1",
-        "bytes":  8845,
-        "via":  "exa web fetch; verbatim text, nav removed"
-    }
+[
+  {
+    "file": "rbi_kyc_faq_2025.pdf",
+    "url": "https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/KYC09062025.pdf",
+    "retrieved_at": "2026-09-30T09:36:26Z",
+    "sha256": "a0532fbb8b096053ba1cec6b5ac83393f59fa3f034e6c5f68f623b51e4baa001",
+    "bytes": 262409
+  },
+  {
+    "file": "rbi_kyc_master_direction.html",
+    "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11566",
+    "retrieved_at": "2026-09-30T09:36:27Z",
+    "sha256": "e30b88d909ef3d07f30d478e68070ada14b8454a142b2fb3d401b49918971a65",
+    "bytes": 480170
+  },
+  {
+    "file": "incometax_pan_faq.md",
+    "url": "https://www.incometaxindia.gov.in/documents/d/guest/form-93-94-95-96-faqs",
+    "retrieved_at": "2026-09-30T09:38:44Z",
+    "sha256": "fbffa3bc51603795298e339e3e08ec8c047d6de2e5c14998b8af6f1ab1b9c703",
+    "bytes": 7863,
+    "via": "exa web fetch; verbatim text, nav removed"
+  },
+  {
+    "file": "uidai_faq_update.md",
+    "url": "https://uidai.gov.in/en/contact-support/have-any-question/297-faqs/enrolment-update/aadhaar-updation.html",
+    "retrieved_at": "2026-09-30T09:38:44Z",
+    "sha256": "832a40f0099d519b9e1fd7e77f7d465cfed33f05b9bcc836119de0be8abe86b1",
+    "bytes": 8845,
+    "via": "exa web fetch; verbatim text, nav removed"
+  },
+  {
+    "file": "uidai_faq_enrolment.html",
+    "url": "https://uidai.gov.in/en/enrolment-and-update",
+    "retrieved_at": "2026-09-30T09:36:37Z",
+    "sha256": "ab75d6b3e1aba2cfaee9f5cec1dedd6aaf2b89fdbd01fd4e8ebb7c9205299a57",
+    "bytes": 709155
+  },
+  {
+    "file": "cersai_ckyc_guidelines_2016.pdf",
+    "url": "https://www.sebi.gov.in/sebi_data/commondocs/21072016_Annex3_p.pdf",
+    "retrieved_at": "2026-09-30T09:36:39Z",
+    "sha256": "0451e021785c862fe2bb10990a8b0420a7175a214a617691493489ae32999042",
+    "bytes": 255768
+  }
 ]

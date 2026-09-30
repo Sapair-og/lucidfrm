@@ -90,7 +90,11 @@ class Session:
         lang: str = "en",
         max_attempts: int = 3,
         max_questions: int = 2,
+        helper=None,
     ) -> None:
+        # Optional help agent (lucidform.help). Without one, a question is
+        # answered with the field's human-authored gloss.
+        self.helper = helper
         self.schema = schema
         self.extractor = extractor
         self.gate = gate
@@ -113,6 +117,14 @@ class Session:
         return SessionGraph(self).run()
 
     def _explain(self, field: FieldSpec, said: str | None = None) -> None:
+        if self.helper is not None and said:
+            # The answer is spoken and logged -- it goes nowhere near the form.
+            answer = self.helper.answer(field, said, self.lang)
+            self.log.emit(
+                Event.JARGON_EXPLAINED, field_id=field.id, payload=answer.to_payload()
+            )
+            self.output.say(answer.spoken, kind=Kind.EXPLANATION)
+            return
         text = field.explain(self.lang) or field.name(self.lang)
         self.log.emit(
             Event.JARGON_EXPLAINED, field_id=field.id, payload={"text": text}

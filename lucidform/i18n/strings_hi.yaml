@@ -41,3 +41,8 @@ declined_note_some: ', {count} आपके कहने पर खाली छ
 
 incomplete: >-
   {count} अभी बाकी हैं: {fields}।
+
+help_source: '(स्रोत: {sources}।)'
+
+help_uncertain: >-
+  मैं इस बारे में पक्का नहीं हूँ, इसलिए बताता हूँ कि इस खाने का मतलब क्या है:

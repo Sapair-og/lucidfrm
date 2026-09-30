@@ -61,6 +61,7 @@ def run_persona(
     lang: str | None = None,
     echo: bool = False,
     max_attempts: int = 3,
+    helper=None,
 ) -> ReplayRun:
     settings = get_settings()
     lang = lang or persona.lang or settings.lang
@@ -78,6 +79,7 @@ def run_persona(
             # Recorded so a results table can never conflate a corpus replay
             # with a live run.
             "client": type(client).__name__,
+            "help": "rag" if helper is not None else "gloss",
         },
     )
 
@@ -93,6 +95,7 @@ def run_persona(
         log=log,
         lang=lang,
         max_attempts=max_attempts,
+        helper=helper,
     )
 
     result = session.run()

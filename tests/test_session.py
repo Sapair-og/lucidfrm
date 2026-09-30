@@ -276,6 +276,46 @@ def test_a_hang_up_at_the_read_back_ends_the_field_without_re_asking(schema, tmp
     assert channel.kinds().count(Kind.PROMPT.value) == 1
 
 
+# -- the help agent ------------------------------------------------------------
+
+
+class StubHelper:
+    def __init__(self):
+        self.asked = []
+
+    def answer(self, field, question, lang):
+        from lucidform.help.answer import HelpAnswer
+
+        self.asked.append((field.id, question, lang))
+        return HelpAnswer(
+            spoken="A PAN is your tax number. (Source: Income Tax PAN FAQ, Q1.)",
+            source="rag",
+            retrieved_ids=["pan-q1"],
+            cited_ids=["pan-q1"],
+            cited_labels=["Income Tax PAN FAQ, Q1"],
+        )
+
+
+def test_a_question_is_answered_by_the_help_agent_and_never_becomes_a_value(schema, tmp_path):
+    helper = StubHelper()
+    result, state, channel, log = one_field(
+        schema,
+        "pan",
+        [Extraction(intent=Intent.QUESTION), value(value="AKQPS3417M", quote="akqps3417m")],
+        ["pan kya hota hai", "akqps3417m", "yes"],
+        tmp_path,
+        helper=helper,
+    )
+    assert helper.asked == [("pan", "pan kya hota hai", "en")]
+    assert (Kind.EXPLANATION.value, "A PAN is your tax number. (Source: Income Tax PAN FAQ, Q1.)") in channel.said
+    explained = [r for r in read_log(log.path) if r["event"] == Event.JARGON_EXPLAINED.value]
+    assert explained[0]["payload"]["source"] == "rag"
+    assert explained[0]["payload"]["cited_labels"] == ["Income Tax PAN FAQ, Q1"]
+    # The answer is not the value: what was committed came from the user's own reply.
+    assert state.values == {"pan": "AKQPS3417M"}
+    assert result.fields[0].questions == 1 and result.fields[0].attempts == 0
+
+
 # -- logging -----------------------------------------------------------------
 
 
