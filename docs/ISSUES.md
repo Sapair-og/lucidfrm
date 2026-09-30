@@ -17,6 +17,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | No PAN | Offer **Form 60** (as the official CKYC form does) instead of leaving it blank |
 | Work order | Phase 1 safety → 4 session end → 2 address → 3 email/income → 5 official form |
 | Invariant | Every new check stays deterministic (no LLM); every suggestion still needs an explicit "yes" |
+| Reshape vs repair | CLAUDE.md forbids *normalization* from repairing (snapping enums, mapping "teen lakh" to a band). LF-005/LF-009 don't change that: normalization is untouched. Instead deterministic code **proposes** a value, which is read back and committed only on an explicit yes. The user decides, not the system or the model |
 
 ## Summary
 | ID | Problem | Phase | Status |
@@ -26,7 +27,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-003 | PIN / city / state mismatch accepted | 2 | OPEN |
 | LF-004 | Email only syntax-checked | 3 | OPEN |
 | LF-005 | Income band not derived from a stated amount | 3 | OPEN |
-| LF-006 | Session ends with required fields empty, no final review | 4 | OPEN |
+| LF-006 | Session ends with required fields empty, no final review | 4 | FIXED |
 | LF-007 | Model silently drops/changes digits; grounding doesn't catch it | 1 | FIXED |
 | LF-008 | "I don't have a PAN" skips a required field | 1 | FIXED |
 | LF-009 | Near-miss answers (`kerela`, `housewife`) rejected with no suggestion | 3 | OPEN |
@@ -95,7 +96,27 @@ Source of the first batch: manual live run on 2026-09-30, session log
   missing, do you want to give it now?"). Then read back every committed value; user can
   say "change <field>". Export only after a final explicit yes. If required fields remain
   empty at exit, stamp the PDF **INCOMPLETE**.
-- **Status:** OPEN
+- **Fix (branch `fix-4-session-end`):** New graph nodes `wrap_up` → `review` → `listen_review`
+  (`orchestrate/graph.py`); `next_field` now walks a `queue` of schema indices.
+  1. **Revisit:** after the first pass, every unresolved field is queued once more
+     ("Before we finish, let us go back to what is still missing: …").
+  2. **Review:** every committed value is read back (spoken form); missing ones are listed.
+     `Purpose.REVIEW` listen. An explicit yes (same whole-utterance whitelist as
+     confirmation) sets `SessionResult.approved`. "change <field>" is resolved by
+     `field_named()` against the overlay's new `aliases` (whole phrase, longest wins; no guess
+     → "did not understand"), and that field is re-asked with `correcting=True`. A new commit
+     replaces the old value through the normal receipt path. Bounded by `Session.max_reviews` (5).
+  3. **Hang-up:** a `None` from the channel sets `gone`; there's no revisit or review with nobody there.
+  4. **Export:** `writer.export(..., stamp=)` watermarks `INCOMPLETE` (required fields missing)
+     or `NOT CONFIRMED BY APPLICANT` (no final yes). The CLI prints `approved yes/no`.
+  - Revisited/corrected fields replace their earlier `FieldResult`, with counters summed.
+  - `PersonaChannel` answers the review with "yes" (each value was already checked against
+    ground truth at its own read-back).
+  - Golden sessions re-recorded. Verified the event stream is identical to the old golden up to
+    the new tail (`readback` summary + review `user_utterance`) for p01–p03, en + hi.
+- **Tests:** `tests/test_issues_phase4.py`; `test_session.py` updated (question cap is per
+  visit; the summary event is logged; the out-of-attempts test supplies replies for the revisit).
+- **Status:** FIXED
 
 ## LF-007 — Model silently drops/changes digits
 - **Symptom:** User typed 13 nines for Aadhaar; the model returned 12 and it was saved.

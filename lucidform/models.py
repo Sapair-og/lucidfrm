@@ -93,6 +93,9 @@ class FieldSpec:
     # committed only on an explicit yes, like any other value.
     decline_value: str | None = None
     decline_offer: dict[str, str] = field(default_factory=dict)  # lang -> offer text
+    # Words a user may say to name this field at the final review ("change
+    # city"). Human-authored, matched as whole phrases, longest wins.
+    aliases: tuple[str, ...] = ()
 
     def name(self, lang: str) -> str:
         """What to call this field out loud.

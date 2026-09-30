@@ -168,7 +168,8 @@ def test_endless_questions_are_bounded(schema, tmp_path):
         max_questions=2,
     )
     assert result.fields[0].abandoned
-    assert result.fields[0].questions <= 2
+    # max_questions bounds each visit; the end-of-form revisit is a second visit.
+    assert result.fields[0].questions <= 2 * 2
 
 
 def test_declining_an_optional_field_is_recorded_not_committed(schema, tmp_path):
@@ -245,7 +246,8 @@ def test_a_field_that_runs_out_of_attempts_is_abandoned_not_left_empty(schema, t
     result, state, _, _ = one_field(
         schema,
         "pin",
-        [value(value="not a pin", quote="not a pin")] * 3,
+        # three attempts, then three more when the field is revisited at the end
+        [value(value="not a pin", quote="not a pin")] * 6,
         ["not a pin"] * 6,
         tmp_path,
         max_attempts=3,
@@ -335,6 +337,7 @@ def test_every_stage_is_logged_in_order(schema, tmp_path):
         Event.USER_UTTERANCE.value,
         Event.CONFIRMATION.value,
         Event.COMMIT.value,
+        Event.READBACK.value,  # the final summary (LF-006)
         Event.SESSION_END.value,
     ]
     assert events == expected

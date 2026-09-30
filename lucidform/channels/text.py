@@ -98,11 +98,14 @@ class PersonaChannel:
     # -- input ---------------------------------------------------------------
 
     def listen(self, field_id: str, purpose: Purpose) -> str | None:
-        said = (
-            self._answer_readback(field_id)
-            if purpose is Purpose.CONFIRMATION
-            else self._next_utterance(field_id)
-        )
+        if purpose is Purpose.REVIEW:
+            # Each value was already compared with ground truth at its own
+            # read-back, so the simulated user approves the summary.
+            said = "yes"
+        elif purpose is Purpose.CONFIRMATION:
+            said = self._answer_readback(field_id)
+        else:
+            said = self._next_utterance(field_id)
         if said is not None:
             self.transcript.append(Turn("user", said, purpose.value, field_id))
             if self.echo:

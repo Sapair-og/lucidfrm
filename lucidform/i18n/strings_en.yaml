@@ -48,3 +48,18 @@ help_source: '(Source: {sources}.)'
 
 help_uncertain: >-
   I am not certain about that part, so here is what this field means:
+
+revisit: >-
+  Before we finish, let us go back to what is still missing: {fields}.
+
+review_intro: 'Here is everything I have saved:'
+
+review_prompt: >-
+  Is all of this correct? Say yes to finish, or say the name of the item you
+  want to change, for example "change city".
+
+review_done: Thank you. The form is complete.
+
+review_unclear: >-
+  Sorry, I did not understand. Say yes if everything is correct, or say the
+  name of the item to change.

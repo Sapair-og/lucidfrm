@@ -37,6 +37,7 @@ def export(
     schema: FormSchema,
     out: Path,
     template: Path | None = None,
+    stamp: str | None = None,
 ) -> Path:
     """Write the confirmed values into a copy of the blank form.
 
@@ -84,10 +85,34 @@ def export(
         if on_this_page:
             writer.update_page_form_field_values(page, on_this_page)
 
+    if stamp:
+        # LF-006: a form that is not finished and approved must say so on its
+        # face, so nobody mistakes it for a completed application.
+        for page in writer.pages:
+            page.merge_page(_stamp_page(stamp, page.mediabox.width, page.mediabox.height))
+
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("wb") as fh:
         writer.write(fh)
     return out
+
+
+def _stamp_page(text: str, width: float, height: float):
+    """A one-page PDF carrying a large diagonal watermark."""
+    import io
+
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=(float(width), float(height)))
+    c.setFillColorRGB(0.85, 0.1, 0.1, alpha=0.35)
+    c.setFont("Helvetica-Bold", 44)
+    c.translate(float(width) / 2, float(height) / 2)
+    c.rotate(35)
+    c.drawCentredString(0, 0, text)
+    c.save()
+    buf.seek(0)
+    return PdfReader(buf).pages[0]
 
 
 def read_back(pdf: Path) -> dict[str, str]:

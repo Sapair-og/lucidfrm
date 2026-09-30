@@ -26,6 +26,7 @@ exactly the unconfirmed write the project exists to prevent (METHODOLOGY M7).
 
 from __future__ import annotations
 
+import re
 from typing import Any, TypedDict
 
 from langgraph.graph import END, START, StateGraph
@@ -34,7 +35,7 @@ from lucidform.channels.base import Kind, Purpose
 from lucidform.eval.events import Event
 from lucidform.models import Candidate, Status
 from lucidform.orchestrate import readback
-from lucidform.orchestrate.confirm import confirm
+from lucidform.orchestrate.confirm import confirm, parse_affirmation
 
 # A full form takes a few hundred steps; LangGraph's default limit of 25 is a
 # guard against runaway graphs, which this one cannot be -- every cycle spends
@@ -53,11 +54,24 @@ class TurnState(TypedDict, total=False):
     receipt: Any
     route: str
     results: list
+    queue: list  # schema indices still to visit
+    correcting: bool  # the current field is being changed at the user's request
+    revisited: bool
+    reviews: int
+    approved: bool
+    gone: bool  # the input channel ended (hang-up / EOF): nobody to revisit or review with
 
 
 # Conditional edges: node -> {route label: destination}.
 ROUTES: dict[str, dict[str, str]] = {
-    "next_field": {"field": "budget", "done": "close"},
+    "next_field": {"field": "budget", "done": "wrap_up"},
+    "wrap_up": {"again": "next_field", "review": "review", "end": "close"},
+    "listen_review": {
+        "approved": "close",
+        "change": "next_field",
+        "unclear": "wrap_up",
+        "gone": "close",
+    },
     "budget": {"ask": "ask", "finish": "finish"},
     "listen": {"heard": "extract", "gone": "finish"},
     "extract": {
@@ -80,11 +94,12 @@ EDGES: list[tuple[str, str]] = [
     ("readback", "listen_confirm"),
     ("commit", "finish"),
     ("finish", "next_field"),
+    ("review", "listen_review"),
 ]
 NODES = (
     "greet", "next_field", "budget", "ask", "listen", "extract", "explain",
     "decline", "not_understood", "gate", "readback", "listen_confirm",
-    "confirm", "commit", "finish", "close",
+    "confirm", "commit", "finish", "wrap_up", "review", "listen_review", "close",
 )
 
 
@@ -118,7 +133,11 @@ class SessionGraph:
         final = self._compiled.invoke(
             {"index": -1, "results": []}, config={"recursion_limit": RECURSION_LIMIT}
         )
-        result = SessionResult(session_id=self.s.log.session_id, fields=final["results"])
+        result = SessionResult(
+            session_id=self.s.log.session_id,
+            fields=final["results"],
+            approved=bool(final.get("approved")),
+        )
         self.s._close(result)
         return result
 
@@ -126,18 +145,32 @@ class SessionGraph:
 
     def greet(self, state: TurnState) -> dict:
         self.s.output.say(self.s.strings.get("greeting"), kind=Kind.PROGRESS)
-        return {}
+        return {
+            "queue": list(range(len(self.s.schema))),
+            "correcting": False,
+            "revisited": False,
+            "reviews": 0,
+            "approved": False,
+            "gone": False,
+        }
 
     def next_field(self, state: TurnState) -> dict:
         from lucidform.orchestrate.session import FieldResult
 
         fields = list(self.s.schema)
-        index = state["index"] + 1
-        while index < len(fields) and self.s.state.is_resolved(fields[index].id):
-            index += 1
-        if index >= len(fields):
-            return {"index": index, "route": "done"}
-        return {"index": index, "current": FieldResult(field_id=fields[index].id), "route": "field"}
+        queue = list(state["queue"])
+        while queue:
+            index = queue.pop(0)
+            # A field the user asked to change is asked again even though it
+            # already holds a value; otherwise resolved fields are skipped.
+            if state.get("correcting") or not self.s.state.is_resolved(fields[index].id):
+                return {
+                    "index": index,
+                    "queue": queue,
+                    "current": FieldResult(field_id=fields[index].id),
+                    "route": "field",
+                }
+        return {"queue": [], "correcting": False, "route": "done"}
 
     def budget(self, state: TurnState) -> dict:
         outcome = state["current"]
@@ -161,7 +194,7 @@ class SessionGraph:
         said = self.s.input.listen(field.id, Purpose.VALUE)
         if said is None:
             outcome.abandoned = True
-            return {"said": None, "route": "gone"}
+            return {"said": None, "gone": True, "route": "gone"}
         self.s.log.emit(
             Event.USER_UTTERANCE,
             field_id=field.id,
@@ -263,7 +296,7 @@ class SessionGraph:
             # The user is gone. Ending the field here, rather than re-asking,
             # is the one deliberate behaviour change from the loop this replaced.
             outcome.abandoned = True
-            return {"said": None, "route": "gone"}
+            return {"said": None, "gone": True, "route": "gone"}
         # Logged with the same event type as any other thing the user said, so
         # the metrics can count turns and measure latency without special-casing
         # the confirmation reply. `purpose` is what distinguishes them.
@@ -310,7 +343,73 @@ class SessionGraph:
                 self.s.strings.say("out_of_attempts", label=field.name(self.s.lang)),
                 kind=Kind.PROGRESS,
             )
-        return {"results": [*state["results"], outcome]}
+        # A revisited or corrected field replaces its earlier result, so the
+        # session reports each field once, as it finally stands.
+        earlier = [r for r in state["results"] if r.field_id != outcome.field_id]
+        for prior in state["results"]:
+            if prior.field_id == outcome.field_id:
+                # Counters describe the whole effort spent on the field.
+                outcome.attempts += prior.attempts
+                outcome.questions += prior.questions
+                outcome.rejections[:0] = prior.rejections
+                outcome.corrections += prior.corrections
+        if not outcome.resolved and self.s.state.is_committed(field.id):
+            # The user asked to change a value and then gave no new one: the
+            # earlier confirmed value stands.
+            outcome.committed, outcome.abandoned = True, False
+        return {"results": [*earlier, outcome]}
+
+    # -- end of form: revisit, then review (ISSUES.md LF-006) --------------
+
+    def wrap_up(self, state: TurnState) -> dict:
+        if state.get("gone"):
+            return {"route": "end"}
+        fields = list(self.s.schema)
+        missing = [i for i, f in enumerate(fields) if not self.s.state.is_resolved(f.id)]
+        if missing and not state.get("revisited"):
+            labels = ", ".join(fields[i].name(self.s.lang) for i in missing)
+            self.s.output.say(self.s.strings.say("revisit", fields=labels), kind=Kind.PROGRESS)
+            return {"queue": missing, "revisited": True, "route": "again"}
+        if self.s.state.values and state.get("reviews", 0) < self.s.max_reviews:
+            return {"route": "review"}
+        return {"route": "end"}
+
+    def review(self, state: TurnState) -> dict:
+        lang = self.s.lang
+        lines = [
+            f"{f.name(lang)}: {readback.render_value(self.s.state.get(f.id), f, lang)}"
+            for f in self.s.schema
+            if self.s.state.is_committed(f.id)
+        ]
+        self.s.log.emit(Event.READBACK, payload={"summary": lines})
+        self.s.output.say(self.s.strings.get("review_intro"), kind=Kind.READBACK)
+        for line in lines:
+            self.s.output.say(line, kind=Kind.READBACK)
+        missing = [f.name(lang) for f in self.s.schema if not self.s.state.is_resolved(f.id)]
+        if missing:
+            self.s.output.say(
+                self.s.strings.say("incomplete", count=len(missing), fields=", ".join(missing)),
+                kind=Kind.PROBLEM,
+            )
+        self.s.output.say(self.s.strings.get("review_prompt"), kind=Kind.PROMPT)
+        return {}
+
+    def listen_review(self, state: TurnState) -> dict:
+        said = self.s.input.listen("review", Purpose.REVIEW)
+        reviews = state.get("reviews", 0) + 1
+        if said is None:
+            return {"route": "gone", "reviews": reviews}
+        self.s.log.emit(
+            Event.USER_UTTERANCE, payload={"text": said, "purpose": Purpose.REVIEW.value}
+        )
+        if parse_affirmation(said).explicit:
+            self.s.output.say(self.s.strings.get("review_done"), kind=Kind.PROGRESS)
+            return {"route": "approved", "approved": True, "reviews": reviews}
+        index = field_named(said, list(self.s.schema))
+        if index is None:
+            self.s.output.say(self.s.strings.get("review_unclear"), kind=Kind.PROBLEM)
+            return {"route": "unclear", "reviews": reviews}
+        return {"route": "change", "queue": [index], "correcting": True, "reviews": reviews}
 
     def close(self, state: TurnState) -> dict:
         return {}
@@ -319,6 +418,27 @@ class SessionGraph:
 
     def _field(self, state: TurnState):
         return list(self.s.schema)[state["index"]]
+
+
+_NON_WORD = re.compile(r"[^a-z0-9' ]+")
+
+
+def field_named(utterance: str, fields) -> int | None:
+    """Index of the field the user named, by its declared aliases or label.
+
+    Whole-phrase matches only; the longest wins, so "father's name" beats
+    "name". None when nothing matches: the user is asked again rather than
+    the system guessing which field they meant.
+    """
+    text = " " + " ".join(_NON_WORD.sub(" ", (utterance or "").casefold()).split()) + " "
+    best: tuple[int, int] | None = None
+    for i, f in enumerate(fields):
+        names = {*f.aliases, f.label, f.id.replace("_", " "), *f.labels.values()}
+        for name in names:
+            phrase = " ".join(_NON_WORD.sub(" ", name.casefold()).split())
+            if phrase and f" {phrase} " in text and (best is None or len(phrase) > best[0]):
+                best = (len(phrase), i)
+    return best[1] if best else None
 
 
 # -- structure, for tests and the paper figure -------------------------------------

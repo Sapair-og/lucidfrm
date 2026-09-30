@@ -415,7 +415,8 @@ def run_cmd(
 
     typer.echo(
         f"committed {len(result.committed)} | declined {len(result.declined)} "
-        f"| abandoned {len(result.abandoned)} | blocked writes {state.blocked_writes}"
+        f"| abandoned {len(result.abandoned)} | approved {'yes' if result.approved else 'no'} "
+        f"| blocked writes {state.blocked_writes}"
     )
 
     if persona:
@@ -440,8 +441,15 @@ def run_cmd(
     if export_to:
         from lucidform.formstate.writer import export
 
-        written = export(state, schema, export_to)
-        typer.echo(f"\nwrote {written}")
+        # LF-006: an unfinished or unapproved form says so on its face.
+        if not result.complete:
+            stamp = "INCOMPLETE"
+        elif not result.approved:
+            stamp = "NOT CONFIRMED BY APPLICANT"
+        else:
+            stamp = None
+        written = export(state, schema, export_to, stamp=stamp)
+        typer.echo(f"\nwrote {written}" + (f"  [stamped {stamp}]" if stamp else ""))
 
     raise typer.Exit(0 if result.complete else 1)
 

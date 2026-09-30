@@ -27,6 +27,7 @@ class Purpose(str, enum.Enum):
 
     VALUE = "value"
     CONFIRMATION = "confirmation"
+    REVIEW = "review"  # the final summary: yes, or the name of a field to change
 
 
 class Kind(str, enum.Enum):

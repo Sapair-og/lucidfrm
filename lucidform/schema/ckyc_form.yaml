@@ -22,6 +22,7 @@ fields:
   - id: full_name
     acroform_name: full_name
     label: Full name
+    aliases: [name, full name, my name, naam]
     labels:
       hi: पूरा नाम
     type: name
@@ -37,6 +38,7 @@ fields:
   - id: father_name
     acroform_name: father_name
     label: Father's or spouse's name
+    aliases: [father, "father's name", fathers name, spouse, husband, pita, pati]
     labels:
       hi: पिता या जीवनसाथी का नाम
     type: name
@@ -52,6 +54,7 @@ fields:
   - id: dob
     acroform_name: dob
     label: Date of birth
+    aliases: [date of birth, birth date, birthday, dob, janm tithi]
     labels:
       hi: जन्म तिथि
     type: date
@@ -67,6 +70,7 @@ fields:
   - id: gender
     acroform_name: gender
     label: Gender
+    aliases: [gender, sex, ling]
     labels:
       hi: लिंग
     type: enum
@@ -88,6 +92,7 @@ fields:
   - id: pan
     acroform_name: pan
     label: PAN
+    aliases: [pan, pan number, form 60]
     labels:
       hi: पैन
     type: pan
@@ -108,6 +113,7 @@ fields:
   - id: aadhaar
     acroform_name: aadhaar
     label: Aadhaar number
+    aliases: [aadhaar, aadhar, adhaar, adhar]
     labels:
       hi: आधार नंबर
     type: aadhaar
@@ -123,6 +129,7 @@ fields:
   - id: address_line
     acroform_name: address_line
     label: Address
+    aliases: [address, pata, house]
     labels:
       hi: पता
     type: text
@@ -138,6 +145,7 @@ fields:
   - id: city
     acroform_name: city
     label: City or town
+    aliases: [city, town, shahar]
     labels:
       hi: शहर या कस्बा
     type: text
@@ -153,6 +161,7 @@ fields:
   - id: state
     acroform_name: state
     label: State
+    aliases: [state, rajya]
     labels:
       hi: राज्य
     type: enum
@@ -190,6 +199,7 @@ fields:
   - id: pin
     acroform_name: pin
     label: PIN code
+    aliases: [pin, pincode, pin code, postal code]
     labels:
       hi: पिन कोड
     type: pin
@@ -206,6 +216,7 @@ fields:
   - id: mobile
     acroform_name: mobile
     label: Mobile number
+    aliases: [mobile, phone, number, mobile number, phone number]
     labels:
       hi: मोबाइल नंबर
     type: phone
@@ -221,6 +232,7 @@ fields:
   - id: email
     acroform_name: email
     label: Email address
+    aliases: [email, e-mail, mail]
     labels:
       hi: ईमेल पता
     type: email
@@ -236,6 +248,7 @@ fields:
   - id: occupation
     acroform_name: occupation
     label: Occupation
+    aliases: [occupation, job, work, kaam, profession]
     labels:
       hi: व्यवसाय
     type: enum
@@ -260,6 +273,7 @@ fields:
   - id: income_band
     acroform_name: income_band
     label: Annual income band
+    aliases: [income, salary, aamdani, kamai, income band]
     labels:
       hi: वार्षिक आय
     type: enum

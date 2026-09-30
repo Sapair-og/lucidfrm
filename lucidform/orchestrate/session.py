@@ -59,6 +59,8 @@ class FieldResult:
 class SessionResult:
     session_id: str
     fields: list[FieldResult] = dc_field(default_factory=list)
+    # True only when the user said an explicit yes to the final summary.
+    approved: bool = False
 
     @property
     def committed(self) -> list[FieldResult]:
@@ -90,6 +92,7 @@ class Session:
         lang: str = "en",
         max_attempts: int = 3,
         max_questions: int = 2,
+        max_reviews: int = 5,
         helper=None,
     ) -> None:
         # Optional help agent (lucidform.help). Without one, a question is
@@ -106,6 +109,8 @@ class Session:
         self.strings = Strings(lang)
         self.max_attempts = max_attempts
         self.max_questions = max_questions
+        # Bounds the final summary loop, so "change X" cannot go on forever.
+        self.max_reviews = max_reviews
 
     # -- the conversation ----------------------------------------------------
 
@@ -157,6 +162,7 @@ class Session:
                 "committed": [f.field_id for f in result.committed],
                 "declined": [f.field_id for f in result.declined],
                 "abandoned": [f.field_id for f in result.abandoned],
+                "approved": result.approved,
                 "blocked_writes": self.state.blocked_writes,
             }
         )
