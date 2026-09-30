@@ -1,0 +1,2 @@
+sessions,scored_sessions,fields_committed,fields_declined,fields_abandoned,proposals,extraction_accuracy,gate_recall,gate_false_positive_rate,gate_precision,readback_correction_rate,readback_caught_wrong,escaped_errors,blocked_writes,log_inconsistencies,mean_turns_to_commit,extraction_ms_p50,extraction_ms_p95,clients,offline_only
+8,8,106,3,3,118,0.9068,0.7273,0.0093,0.8889,0.0275,3,0,0,0,1.132,1044.005,2842.282,GeminiExtractionClient,False

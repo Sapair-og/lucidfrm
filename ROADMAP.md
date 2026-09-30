@@ -13,9 +13,12 @@ builds the same thing twice. Each phase lands on its own branch with tests green
 | 4 | Orchestrator as a LangGraph state machine (golden parity with the old loop) | 2, 3 | | main | ✅ done |
 | 5 | Evaluation harness: replay, metrics, layered-defence table | 4 | | main | ✅ done |
 | 6 | Help agent v1: RAG over RBI / UIDAI / Income Tax / CERSAI with checked citations | 4 | | main | ✅ done |
-| 7 | Live evaluation at scale: more personas, `replay --live`, help-agent eval | 3, 5, 6 | | `phase-7-live-eval` | ⏳ in progress |
-| 8 | Paper: live results, help-agent section, figures | 7 | | `phase-8-paper` | ⏳ in progress |
-| 9 | Hindi completion: native-speaker review, grammar, translated gate messages, digit words | 4 | | `phase-9-hindi` | ☐ |
+| 7 | Live evaluation: 8 personas × 2 live runs, help-agent eval (30 + 6 controls) | 3, 5, 6 | | main | ✅ done |
+| 8 | Paper: live results, help-agent + LangGraph sections, IEEE docx/pdf build | 7 | | main | ✅ draft done — team review |
+| 9 | Hindi completion: native-speaker review, grammar, translated gate messages, digit words (option names ✅ done) | 4 | | `phase-9-hindi` | ⏳ partly done |
+| 9b | Deterministic display-case for text fields (case is inaudible at read-back) | 1 | | `phase-9b-case` | ☐ |
+| 9c | Question-vs-decline handling for utterances that are both ("pan card nahi hai toh?") | 3, 6 | | `phase-9c-intent` | ☐ |
+| 9d | Real-user study with the target population | 7 | | — | ☐ |
 | 10 | Voice with real backends (faster-whisper + Piper), identifier round-trip probe | 4 | | `phase-10-voice` | ☐ |
 | 11 | Help agent v2: better query formulation, retrieval eval on code-mixed questions | 6, 7 | | `phase-11-help-v2` | ☐ |
 | 12 | Ingestion: OCR of scanned/photographed forms into the same field schema | 0 | | `phase-12-ocr` | ☐ |

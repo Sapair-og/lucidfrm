@@ -53,10 +53,27 @@ cp .env.example .env    # GEMINI_API_KEY, only needed for live runs
 .venv/Scripts/python -m lucidform.cli metrics                           # logs -> CSV + headline table
 ```
 
-## First results
+## Results
 
-Three synthetic sessions, offline. Six wrong values were proposed; all six were
-stopped.
+**Live** (`gemini-3.5-flash-lite`, 8 synthetic personas incl. a Hindi-only session and an
+embedded prompt injection, two runs — logs in `data/runs_live_v1/`, `data/runs_live/`):
+
+| | Run 1 | Run 2 |
+|---|---|---|
+| wrong values proposed | 11 | 11 |
+| rejected by the gate | 10 | 8 |
+| denied at read-back | 1 | 3 |
+| **committed wrong** | **0** | **0** |
+| gate false-positive rate | 1.8% | 0.9% |
+| extraction accuracy | 90.8% | 90.7% |
+
+Run 1 exposed a real defect (Hindi option names offered by the prompt, rejected by the gate);
+it was fixed with adversarial cases before run 2. **Help agent** (30 questions + 6 controls):
+correct passage retrieved 28/30, correct source cited in 26/28 answers, 6/6 controls refused.
+Reproduce: `replay --live --extended --runs-dir data/runs_live`, `metrics --runs data/runs_live`,
+`help eval`. The paper is `docs/paper-draft.md` (build: `node tools/paper/build.js`).
+
+**Offline** (core personas, replayed): six wrong values were proposed; all six were stopped.
 
 | where a wrong value was stopped | count |
 |---|---|

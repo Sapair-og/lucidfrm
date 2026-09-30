@@ -26,3 +26,22 @@ Append-only. Newest entry at the bottom. Each entry: who, phase, done, left, got
   - Offline replays deliberately use the gloss, not the help agent, so goldens stay deterministic.
   - "pan card nahi hai toh kya karu" retrieves PAN-application FAQs rather than RBI FAQ Q5
     (Form 60) — the field label biases the query. Measured in Phase 7 before tuning.
+
+---
+### 2026-09-30 (evening) · Shubh (+Claude) · Phases 7–8: live evaluation + paper
+- **Done:**
+  - 5 extended live-only personas (p04–p08); `replay --live --extended --runs-dir`.
+  - Live run 1 (8 personas): 11 wrong → 10 gate, 1 read-back, 0 committed. Exposed Hindi enum
+    gap ("purush" rejected) → fixed with overlay `enum_names` + 8 adversarial cases.
+  - Live run 2: 11 wrong → 8 gate, 3 read-back, 0 committed; FPR 0.9%; accuracy 90.7%; p95 2.84 s.
+  - Help eval (30 + 6 controls): hit@4 93.3%, gold-cite 92.9%, controls refused 100%.
+  - Paper updated (abstract, §I, §III-F/G, §IV-B/E, §VI, §VII, §VIII, refs 21–25) and built to
+    IEEE-layout docx + pdf (`node tools/paper/build.js`, PDF via Word). `docs/demo.md` written.
+  - Corrected a stale claim: the gate suite was 51 cases / 12 categories, not "56 / 11"; now 59 / 13.
+- **Left:** team review of the paper; Hindi native-speaker review; display-case rule; question-vs-decline;
+  real-user study; voice with real speech.
+- **Gotchas:**
+  - Letter case is inaudible: 2 of 4 read-back catches were case-only; the simulator is stricter than a listener.
+  - The one live "false positive" is "5/1/87" flagged ambiguous (correct reading, intended re-ask).
+  - Run-to-run nondeterminism: "pan card nahi hai toh kya karu?" was a decline once, a question once.
+  - Free tier: `help build` ~5 min (paced); live run of 8 personas ~30 min.

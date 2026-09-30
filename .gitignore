@@ -24,3 +24,7 @@ Capstone/
 
 # personal Claude Code permissions
 .claude/settings.local.json
+
+# paper build tooling
+node_modules/
+tools/paper/preview/

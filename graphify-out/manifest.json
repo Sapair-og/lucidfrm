@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "lucidform/gate/rules.py": {
-    "mtime": 1790772462.8360686,
-    "seen": 1790772635.4847074,
-    "ast_hash": "b49778185730834b99596fab0002ea4a",
+    "mtime": 1790776049.7915442,
+    "seen": 1790776223.0518277,
+    "ast_hash": "78b431f2822df0f51adc2a32f3e2eb26",
     "semantic_hash": ""
   },
   "lucidform/i18n/__init__.py": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "lucidform/models.py": {
-    "mtime": 1788718593.7928307,
-    "seen": 1790759907.5909355,
-    "ast_hash": "9af51417d388a319b639dd165916bf69",
+    "mtime": 1790776047.2993307,
+    "seen": 1790776223.0518374,
+    "ast_hash": "945f4d654a9d34e69ce4af4ca699fbbd",
     "semantic_hash": ""
   },
   "lucidform/orchestrate/__init__.py": {
@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "lucidform/schema/loader.py": {
-    "mtime": 1788718593.7928307,
-    "seen": 1790759907.5909429,
-    "ast_hash": "6b6577c3497696683fc29343faf860af",
+    "mtime": 1790776069.9608595,
+    "seen": 1790776223.0518458,
+    "ast_hash": "786f28802b98b97463a509f6dfb0bd19",
     "semantic_hash": ""
   },
   "lucidform/schema/make_form.py": {
@@ -252,9 +252,9 @@
     "semantic_hash": ""
   },
   "tests/test_adversarial.py": {
-    "mtime": 1788715202.7393456,
-    "seen": 1790759907.5909476,
-    "ast_hash": "097fc2c31ea622e5bfa264d35a55aecd",
+    "mtime": 1790776021.8898702,
+    "seen": 1790776223.0518522,
+    "ast_hash": "034a1c7df8f875a7ed4aaece603a52de",
     "semantic_hash": ""
   },
   "tests/test_checksums.py": {
@@ -342,9 +342,9 @@
     "semantic_hash": ""
   },
   "tests/test_schema_loader.py": {
-    "mtime": 1788714643.4428806,
-    "seen": 1790759907.5909662,
-    "ast_hash": "cec0a579ba2d14dfbbadd47fab622732",
+    "mtime": 1790776176.830901,
+    "seen": 1790776223.0518725,
+    "ast_hash": "7080747cdcb417270b1e86110f0b3165",
     "semantic_hash": ""
   },
   "tests/test_session.py": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1790772478.657468,
-    "seen": 1790772635.4847844,
-    "ast_hash": "0e3ea5fddcfdc809dd401241f84ab2e6",
+    "mtime": 1790776195.5868745,
+    "seen": 1790776223.0518894,
+    "ast_hash": "5785944b26e200e9090084ca6ae3feae",
     "semantic_hash": ""
   },
   "METHODOLOGY.md": {
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "lucidform/schema/ckyc_form.yaml": {
-    "mtime": 1788718608.8037229,
-    "seen": 1790759907.5909998,
-    "ast_hash": "582540b2cb79983cb05f532ab6e3e254",
+    "mtime": 1790776098.338009,
+    "seen": 1790776223.0519176,
+    "ast_hash": "de0181b9b2c3f38d3156bf2cddf8efff",
     "semantic_hash": ""
   },
   "requirements-voice.txt": {
@@ -516,9 +516,9 @@
     "semantic_hash": ""
   },
   "tests/adversarial/gate_cases.yaml": {
-    "mtime": 1788715054.4540293,
-    "seen": 1790759907.5910063,
-    "ast_hash": "bb309c6e1ae42bd50a969c5d09e27983",
+    "mtime": 1790776028.7847455,
+    "seen": 1790776223.0519211,
+    "ast_hash": "738673e58bcba50211e7242aa2e0250f",
     "semantic_hash": ""
   },
   "data/help/sources/manifest.json": {
