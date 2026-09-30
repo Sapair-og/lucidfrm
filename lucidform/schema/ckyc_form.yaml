@@ -142,6 +142,23 @@ fields:
       en: Where you currently live. House or flat number, the street or road, and the locality.
       hi: आप अभी कहाँ रहते हैं। मकान या फ्लैट नंबर, गली या सड़क, और मोहल्ला।
 
+  - id: pin
+    acroform_name: pin
+    label: PIN code
+    aliases: [pin, pincode, pin code, postal code]
+    labels:
+      hi: पिन कोड
+    type: pin
+    required: true
+    max_length: 6
+    depends_on: [state]
+    prompt:
+      en: What is your six-digit PIN code?
+      hi: आपका छह अंकों का पिन कोड क्या है?
+    gloss:
+      en: The six-digit postal code for your area. The first digit tells the postal service which region you are in, so it must agree with the state you gave.
+      hi: आपके इलाके का छह अंकों का डाक कोड। इसका पहला अंक क्षेत्र बताता है, इसलिए यह आपके बताए राज्य से मेल खाना चाहिए।
+
   - id: city
     acroform_name: city
     label: City or town
@@ -195,23 +212,6 @@ fields:
     gloss:
       en: The state your address is in. Your postal code must match this state.
       hi: वह राज्य जिसमें आपका पता है। आपका पिन कोड इसी राज्य से मेल खाना चाहिए।
-
-  - id: pin
-    acroform_name: pin
-    label: PIN code
-    aliases: [pin, pincode, pin code, postal code]
-    labels:
-      hi: पिन कोड
-    type: pin
-    required: true
-    max_length: 6
-    depends_on: [state]
-    prompt:
-      en: What is your six-digit PIN code?
-      hi: आपका छह अंकों का पिन कोड क्या है?
-    gloss:
-      en: The six-digit postal code for your area. The first digit tells the postal service which region you are in, so it must agree with the state you gave.
-      hi: आपके इलाके का छह अंकों का डाक कोड। इसका पहला अंक क्षेत्र बताता है, इसलिए यह आपके बताए राज्य से मेल खाना चाहिए।
 
   - id: mobile
     acroform_name: mobile

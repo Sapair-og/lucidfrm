@@ -63,3 +63,5 @@ review_done: Thank you. The form is complete.
 review_unclear: >-
   Sorry, I did not understand. Say yes if everything is correct, or say the
   name of the item to change.
+
+proposal: 'Your PIN code {pin} is in {place}.'

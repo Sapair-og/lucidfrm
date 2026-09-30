@@ -217,7 +217,7 @@ def test_a_denied_readback_is_recorded_as_a_correction(schema, tmp_path):
     result, state, _, log = one_field(
         schema,
         "city",
-        [value(value="Kolhapur", quote="kochi"), value(value="Kochi", quote="kochi")],
+        [value(value="Kollam", quote="kochi"), value(value="Kochi", quote="kochi")],
         ["kochi", "no that's wrong", "kochi", "yes"],
         tmp_path,
     )
@@ -421,7 +421,7 @@ def test_the_readback_catches_what_nothing_else_could(runs):
     which is the whole argument for the read-back being a pipeline stage.
     """
     run = runs["p02"]
-    assert run.channel.denials == [("city", "Kochi", "Kolhapur")]
+    assert run.channel.denials == [("city", "Kochi", "Kollam")]
     assert run.state.get("city") == "Kochi"
 
 

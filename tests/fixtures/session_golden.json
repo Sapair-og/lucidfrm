@@ -820,6 +820,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "three zero two zero one five"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "302015"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "302015",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "I have PIN code as: three zero two ... zero one five. Is that correct?",
+      "value": "302015"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "yes that is correct"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
+      "explicit": true,
+      "raw_utterance": "yes that is correct"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "yes that is correct",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "302015"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -872,6 +990,11 @@
        {
         "detail": "",
         "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "city_matches_pin",
         "passed": true
        },
        {
@@ -932,41 +1055,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "rajasthan"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Rajasthan"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -980,6 +1068,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -1037,124 +1130,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Rajasthan"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "three zero two zero one five"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "302015"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "302015",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "I have PIN code as: three zero two ... zero one five. Is that correct?",
-      "value": "302015"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "yes that is correct"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
-      "explicit": true,
-      "raw_utterance": "yes that is correct"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "yes that is correct",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "302015"
      }
     },
     {
@@ -1730,9 +1705,9 @@
        "PAN: A K Q P S ... three four one seven M",
        "Aadhaar number: seven four seven nine ... one zero nine eight ... four nine nine two",
        "Address: 42 Nehru Marg, Bapu Nagar",
+       "PIN code: three zero two ... zero one five",
        "City or town: Jaipur",
        "State: Rajasthan",
-       "PIN code: three zero two ... zero one five",
        "Mobile number: nine eight one two three ... four five six zero seven",
        "Email address: R A M E S H dot S H A R M A at example dot invalid",
        "Occupation: Business",
@@ -1765,9 +1740,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "email",
        "occupation",
@@ -1996,6 +1971,36 @@
     },
     {
      "speaker": "system",
+     "text": "What is your six-digit PIN code?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "three zero two zero one five",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "I have PIN code as: three zero two ... zero one five. Is that correct?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "yes that is correct",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "Saved.",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "Which city or town do you live in?",
      "kind": "prompt",
      "field_id": ""
@@ -2026,15 +2031,9 @@
     },
     {
      "speaker": "system",
-     "text": "Which state do you live in?",
-     "kind": "prompt",
+     "text": "Your PIN code 302015 is in Rajasthan.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "rajasthan",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -2047,36 +2046,6 @@
      "text": "yes that is correct",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "Saved.",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "What is your six-digit PIN code?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "three zero two zero one five",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "I have PIN code as: three zero two ... zero one five. Is that correct?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "yes that is correct",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -2290,6 +2259,12 @@
     },
     {
      "speaker": "system",
+     "text": "PIN code: three zero two ... zero one five",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "City or town: Jaipur",
      "kind": "readback",
      "field_id": ""
@@ -2297,12 +2272,6 @@
     {
      "speaker": "system",
      "text": "State: Rajasthan",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "PIN code: three zero two ... zero one five",
      "kind": "readback",
      "field_id": ""
     },
@@ -3240,6 +3209,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "six eight two zero one six"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "682016"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "682016",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "I have PIN code as: six eight two ... zero one six. Is that correct?",
+      "value": "682016"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "yes that is right"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
+      "explicit": true,
+      "raw_utterance": "yes that is right"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "yes that is right",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "682016"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -3270,7 +3357,7 @@
       "model": "expected",
       "reported_confidence": 0.71,
       "usage": {},
-      "value": "Kolhapur"
+      "value": "Kollam"
      }
     },
     {
@@ -3296,6 +3383,11 @@
        },
        {
         "detail": "",
+        "name": "city_matches_pin",
+        "passed": true
+       },
+       {
+        "detail": "",
         "name": "unambiguous",
         "passed": true
        },
@@ -3307,7 +3399,7 @@
       ],
       "detail": "",
       "field_id": "city",
-      "normalized_value": "Kolhapur",
+      "normalized_value": "Kollam",
       "reason": null,
       "status": "pass"
      }
@@ -3317,8 +3409,8 @@
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
-      "spoken": "I have City or town as: Kolhapur. Is that correct?",
-      "value": "Kolhapur"
+      "spoken": "I have City or town as: Kollam. Is that correct?",
+      "value": "Kollam"
      }
     },
     {
@@ -3346,7 +3438,7 @@
      "turn_idx": 0,
      "payload": {
       "said": "no, that is wrong, let me say it again",
-      "value_rejected": "Kolhapur"
+      "value_rejected": "Kollam"
      }
     },
     {
@@ -3407,6 +3499,11 @@
        },
        {
         "detail": "",
+        "name": "city_matches_pin",
+        "passed": true
+       },
+       {
+        "detail": "",
         "name": "unambiguous",
         "passed": true
        },
@@ -3463,41 +3560,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "kerala"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Kerala"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -3511,6 +3573,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -3568,124 +3635,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Kerala"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "six eight two zero one six"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "682016"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "682016",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "I have PIN code as: six eight two ... zero one six. Is that correct?",
-      "value": "682016"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "yes that is right"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
-      "explicit": true,
-      "raw_utterance": "yes that is right"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "yes that is right",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "682016"
      }
     },
     {
@@ -4143,9 +4092,9 @@
        "PAN: B F T P N ... eight two zero six C",
        "Aadhaar number: five four four two ... one one zero three ... three six six zero",
        "Address: 7B Marine Drive, Ernakulam",
+       "PIN code: six eight two ... zero one six",
        "City or town: Kochi",
        "State: Kerala",
-       "PIN code: six eight two ... zero one six",
        "Mobile number: seven seven three six five ... four zero nine one two",
        "Email address: L dot N A I R at example dot invalid",
        "Occupation: Salaried",
@@ -4178,9 +4127,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "email",
        "occupation",
@@ -4427,6 +4376,36 @@
     },
     {
      "speaker": "system",
+     "text": "What is your six-digit PIN code?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "six eight two zero one six",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "I have PIN code as: six eight two ... zero one six. Is that correct?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "yes that is right",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "Saved.",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "Which city or town do you live in?",
      "kind": "prompt",
      "field_id": ""
@@ -4439,7 +4418,7 @@
     },
     {
      "speaker": "system",
-     "text": "I have City or town as: Kolhapur. Is that correct?",
+     "text": "I have City or town as: Kollam. Is that correct?",
      "kind": "readback",
      "field_id": "city"
     },
@@ -4487,15 +4466,9 @@
     },
     {
      "speaker": "system",
-     "text": "Which state do you live in?",
-     "kind": "prompt",
+     "text": "Your PIN code 682016 is in Kerala.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "kerala",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -4508,36 +4481,6 @@
      "text": "yes that is right",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "Saved.",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "What is your six-digit PIN code?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "six eight two zero one six",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "I have PIN code as: six eight two ... zero one six. Is that correct?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "yes that is right",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -4715,6 +4658,12 @@
     },
     {
      "speaker": "system",
+     "text": "PIN code: six eight two ... zero one six",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "City or town: Kochi",
      "kind": "readback",
      "field_id": ""
@@ -4722,12 +4671,6 @@
     {
      "speaker": "system",
      "text": "State: Kerala",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "PIN code: six eight two ... zero one six",
      "kind": "readback",
      "field_id": ""
     },
@@ -5644,6 +5587,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "two two six zero zero one"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "226001"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "226001",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "I have PIN code as: two two six ... zero zero one. Is that correct?",
+      "value": "226001"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "haan, sahi hai"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^haan sahi hai$'",
+      "explicit": true,
+      "raw_utterance": "haan, sahi hai"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "haan, sahi hai",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "226001"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -5696,6 +5757,11 @@
        {
         "detail": "",
         "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "city_matches_pin",
         "passed": true
        },
        {
@@ -5756,41 +5822,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "uttar pradesh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Uttar Pradesh"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -5804,6 +5835,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -5861,124 +5897,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Uttar Pradesh"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "two two six zero zero one"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "226001"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "226001",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "I have PIN code as: two two six ... zero zero one. Is that correct?",
-      "value": "226001"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "haan, sahi hai"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^haan sahi hai$'",
-      "explicit": true,
-      "raw_utterance": "haan, sahi hai"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "haan, sahi hai",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "226001"
      }
     },
     {
@@ -6485,9 +6403,9 @@
        "PAN: C J M P K ... one nine five three R",
        "Aadhaar number: seven seven one seven ... four zero eight seven ... six two five zero",
        "Address: 15 Hazratganj, Near Post Office",
+       "PIN code: two two six ... zero zero one",
        "City or town: Lucknow",
        "State: Uttar Pradesh",
-       "PIN code: two two six ... zero zero one",
        "Mobile number: eight two nine nine one ... seven zero four five three",
        "Occupation: Self-employed",
        "Annual income band: 1-5 Lakh"
@@ -6519,9 +6437,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "occupation",
        "income_band"
@@ -6769,6 +6687,36 @@
     },
     {
      "speaker": "system",
+     "text": "What is your six-digit PIN code?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "two two six zero zero one",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "I have PIN code as: two two six ... zero zero one. Is that correct?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "haan, sahi hai",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "Saved.",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "Which city or town do you live in?",
      "kind": "prompt",
      "field_id": ""
@@ -6799,15 +6747,9 @@
     },
     {
      "speaker": "system",
-     "text": "Which state do you live in?",
-     "kind": "prompt",
+     "text": "Your PIN code 226001 is in Uttar Pradesh.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "uttar pradesh",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -6820,36 +6762,6 @@
      "text": "haan, sahi hai",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "Saved.",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "What is your six-digit PIN code?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "two two six zero zero one",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "I have PIN code as: two two six ... zero zero one. Is that correct?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "haan, sahi hai",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -7051,6 +6963,12 @@
     },
     {
      "speaker": "system",
+     "text": "PIN code: two two six ... zero zero one",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "City or town: Lucknow",
      "kind": "readback",
      "field_id": ""
@@ -7058,12 +6976,6 @@
     {
      "speaker": "system",
      "text": "State: Uttar Pradesh",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "PIN code: two two six ... zero zero one",
      "kind": "readback",
      "field_id": ""
     },
@@ -7933,6 +7845,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "three zero two zero one five"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "302015"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "302015",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "आपका पिन कोड है: three zero two ... zero one five। क्या यह सही है?",
+      "value": "302015"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "yes that is correct"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
+      "explicit": true,
+      "raw_utterance": "yes that is correct"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "yes that is correct",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "302015"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -7985,6 +8015,11 @@
        {
         "detail": "",
         "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "city_matches_pin",
         "passed": true
        },
        {
@@ -8045,41 +8080,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "rajasthan"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Rajasthan"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -8093,6 +8093,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -8150,124 +8155,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Rajasthan"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "three zero two zero one five"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "302015"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "302015",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "आपका पिन कोड है: three zero two ... zero one five। क्या यह सही है?",
-      "value": "302015"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "yes that is correct"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
-      "explicit": true,
-      "raw_utterance": "yes that is correct"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "yes that is correct",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "302015"
      }
     },
     {
@@ -8843,9 +8730,9 @@
        "पैन: A K Q P S ... three four one seven M",
        "आधार नंबर: seven four seven nine ... one zero nine eight ... four nine nine two",
        "पता: 42 Nehru Marg, Bapu Nagar",
+       "पिन कोड: three zero two ... zero one five",
        "शहर या कस्बा: Jaipur",
        "राज्य: Rajasthan",
-       "पिन कोड: three zero two ... zero one five",
        "मोबाइल नंबर: nine eight one two three ... four five six zero seven",
        "ईमेल पता: R A M E S H dot S H A R M A at example dot invalid",
        "व्यवसाय: Business",
@@ -8878,9 +8765,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "email",
        "occupation",
@@ -9109,6 +8996,36 @@
     },
     {
      "speaker": "system",
+     "text": "आपका छह अंकों का पिन कोड क्या है?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "three zero two zero one five",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "आपका पिन कोड है: three zero two ... zero one five। क्या यह सही है?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "yes that is correct",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "सेव हो गया।",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "आप किस शहर या कस्बे में रहते हैं?",
      "kind": "prompt",
      "field_id": ""
@@ -9139,15 +9056,9 @@
     },
     {
      "speaker": "system",
-     "text": "आप किस राज्य में रहते हैं?",
-     "kind": "prompt",
+     "text": "आपका पिन कोड 302015 Rajasthan में है।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "rajasthan",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -9160,36 +9071,6 @@
      "text": "yes that is correct",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "सेव हो गया।",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "आपका छह अंकों का पिन कोड क्या है?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "three zero two zero one five",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "आपका पिन कोड है: three zero two ... zero one five। क्या यह सही है?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "yes that is correct",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -9403,6 +9284,12 @@
     },
     {
      "speaker": "system",
+     "text": "पिन कोड: three zero two ... zero one five",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "शहर या कस्बा: Jaipur",
      "kind": "readback",
      "field_id": ""
@@ -9410,12 +9297,6 @@
     {
      "speaker": "system",
      "text": "राज्य: Rajasthan",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "पिन कोड: three zero two ... zero one five",
      "kind": "readback",
      "field_id": ""
     },
@@ -10353,6 +10234,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "six eight two zero one six"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "682016"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "682016",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "आपका पिन कोड है: six eight two ... zero one six। क्या यह सही है?",
+      "value": "682016"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "yes that is right"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
+      "explicit": true,
+      "raw_utterance": "yes that is right"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "yes that is right",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "682016"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -10383,7 +10382,7 @@
       "model": "expected",
       "reported_confidence": 0.71,
       "usage": {},
-      "value": "Kolhapur"
+      "value": "Kollam"
      }
     },
     {
@@ -10409,6 +10408,11 @@
        },
        {
         "detail": "",
+        "name": "city_matches_pin",
+        "passed": true
+       },
+       {
+        "detail": "",
         "name": "unambiguous",
         "passed": true
        },
@@ -10420,7 +10424,7 @@
       ],
       "detail": "",
       "field_id": "city",
-      "normalized_value": "Kolhapur",
+      "normalized_value": "Kollam",
       "reason": null,
       "status": "pass"
      }
@@ -10430,8 +10434,8 @@
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
-      "spoken": "आपका शहर या कस्बा है: Kolhapur। क्या यह सही है?",
-      "value": "Kolhapur"
+      "spoken": "आपका शहर या कस्बा है: Kollam। क्या यह सही है?",
+      "value": "Kollam"
      }
     },
     {
@@ -10459,7 +10463,7 @@
      "turn_idx": 0,
      "payload": {
       "said": "no, that is wrong, let me say it again",
-      "value_rejected": "Kolhapur"
+      "value_rejected": "Kollam"
      }
     },
     {
@@ -10520,6 +10524,11 @@
        },
        {
         "detail": "",
+        "name": "city_matches_pin",
+        "passed": true
+       },
+       {
+        "detail": "",
         "name": "unambiguous",
         "passed": true
        },
@@ -10576,41 +10585,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "kerala"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Kerala"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -10624,6 +10598,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -10681,124 +10660,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Kerala"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "six eight two zero one six"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "682016"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "682016",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "आपका पिन कोड है: six eight two ... zero one six। क्या यह सही है?",
-      "value": "682016"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "yes that is right"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
-      "explicit": true,
-      "raw_utterance": "yes that is right"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "yes that is right",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "682016"
      }
     },
     {
@@ -11256,9 +11117,9 @@
        "पैन: B F T P N ... eight two zero six C",
        "आधार नंबर: five four four two ... one one zero three ... three six six zero",
        "पता: 7B Marine Drive, Ernakulam",
+       "पिन कोड: six eight two ... zero one six",
        "शहर या कस्बा: Kochi",
        "राज्य: Kerala",
-       "पिन कोड: six eight two ... zero one six",
        "मोबाइल नंबर: seven seven three six five ... four zero nine one two",
        "ईमेल पता: L dot N A I R at example dot invalid",
        "व्यवसाय: Salaried",
@@ -11291,9 +11152,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "email",
        "occupation",
@@ -11540,6 +11401,36 @@
     },
     {
      "speaker": "system",
+     "text": "आपका छह अंकों का पिन कोड क्या है?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "six eight two zero one six",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "आपका पिन कोड है: six eight two ... zero one six। क्या यह सही है?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "yes that is right",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "सेव हो गया।",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "आप किस शहर या कस्बे में रहते हैं?",
      "kind": "prompt",
      "field_id": ""
@@ -11552,7 +11443,7 @@
     },
     {
      "speaker": "system",
-     "text": "आपका शहर या कस्बा है: Kolhapur। क्या यह सही है?",
+     "text": "आपका शहर या कस्बा है: Kollam। क्या यह सही है?",
      "kind": "readback",
      "field_id": "city"
     },
@@ -11600,15 +11491,9 @@
     },
     {
      "speaker": "system",
-     "text": "आप किस राज्य में रहते हैं?",
-     "kind": "prompt",
+     "text": "आपका पिन कोड 682016 Kerala में है।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "kerala",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -11621,36 +11506,6 @@
      "text": "yes that is right",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "सेव हो गया।",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "आपका छह अंकों का पिन कोड क्या है?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "six eight two zero one six",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "आपका पिन कोड है: six eight two ... zero one six। क्या यह सही है?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "yes that is right",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -11828,6 +11683,12 @@
     },
     {
      "speaker": "system",
+     "text": "पिन कोड: six eight two ... zero one six",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "शहर या कस्बा: Kochi",
      "kind": "readback",
      "field_id": ""
@@ -11835,12 +11696,6 @@
     {
      "speaker": "system",
      "text": "राज्य: Kerala",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "पिन कोड: six eight two ... zero one six",
      "kind": "readback",
      "field_id": ""
     },
@@ -12757,6 +12612,124 @@
     },
     {
      "event": "field_asked",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "value",
+      "text": "two two six zero zero one"
+     }
+    },
+    {
+     "event": "extraction",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "alternatives": [],
+      "ambiguous": false,
+      "confidence": 0.94,
+      "error": null,
+      "grounded": true,
+      "grounding_detail": "",
+      "intent": "value",
+      "model": "expected",
+      "reported_confidence": 0.94,
+      "usage": {},
+      "value": "226001"
+     }
+    },
+    {
+     "event": "validation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "checks": [
+       {
+        "detail": "",
+        "name": "non_empty",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "length",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "not checked: state has not been confirmed yet",
+        "name": "pin_matches_state",
+        "passed": false
+       },
+       {
+        "detail": "",
+        "name": "unambiguous",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "confidence",
+        "passed": true
+       }
+      ],
+      "detail": "",
+      "field_id": "pin",
+      "normalized_value": "226001",
+      "reason": null,
+      "status": "pass"
+     }
+    },
+    {
+     "event": "readback",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "spoken": "आपका पिन कोड है: two two six ... zero zero one। क्या यह सही है?",
+      "value": "226001"
+     }
+    },
+    {
+     "event": "user_utterance",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "purpose": "confirmation",
+      "text": "haan, sahi hai"
+     }
+    },
+    {
+     "event": "confirmation",
+     "field_id": "pin",
+     "turn_idx": 0,
+     "payload": {
+      "basis": "whole utterance matched '^haan sahi hai$'",
+      "explicit": true,
+      "raw_utterance": "haan, sahi hai"
+     }
+    },
+    {
+     "event": "commit",
+     "field_id": "pin",
+     "turn_idx": null,
+     "payload": {
+      "affirmed_with": "haan, sahi hai",
+      "field_id": "pin",
+      "replaced": null,
+      "value": "226001"
+     }
+    },
+    {
+     "event": "field_asked",
      "field_id": "city",
      "turn_idx": 0,
      "payload": {
@@ -12809,6 +12782,11 @@
        {
         "detail": "",
         "name": "format",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "city_matches_pin",
         "passed": true
        },
        {
@@ -12869,41 +12847,6 @@
      }
     },
     {
-     "event": "field_asked",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "state",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "uttar pradesh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "state",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Uttar Pradesh"
-     }
-    },
-    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -12917,6 +12860,11 @@
        {
         "detail": "",
         "name": "enum",
+        "passed": true
+       },
+       {
+        "detail": "",
+        "name": "state_matches_pin",
         "passed": true
        },
        {
@@ -12974,124 +12922,6 @@
       "field_id": "state",
       "replaced": null,
       "value": "Uttar Pradesh"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "attempt": 0
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "value",
-      "text": "two two six zero zero one"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "226001"
-     }
-    },
-    {
-     "event": "validation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "checks": [
-       {
-        "detail": "",
-        "name": "non_empty",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "length",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "format",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "pin_matches_state",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "unambiguous",
-        "passed": true
-       },
-       {
-        "detail": "",
-        "name": "confidence",
-        "passed": true
-       }
-      ],
-      "detail": "",
-      "field_id": "pin",
-      "normalized_value": "226001",
-      "reason": null,
-      "status": "pass"
-     }
-    },
-    {
-     "event": "readback",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "spoken": "आपका पिन कोड है: two two six ... zero zero one। क्या यह सही है?",
-      "value": "226001"
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "purpose": "confirmation",
-      "text": "haan, sahi hai"
-     }
-    },
-    {
-     "event": "confirmation",
-     "field_id": "pin",
-     "turn_idx": 0,
-     "payload": {
-      "basis": "whole utterance matched '^haan sahi hai$'",
-      "explicit": true,
-      "raw_utterance": "haan, sahi hai"
-     }
-    },
-    {
-     "event": "commit",
-     "field_id": "pin",
-     "turn_idx": null,
-     "payload": {
-      "affirmed_with": "haan, sahi hai",
-      "field_id": "pin",
-      "replaced": null,
-      "value": "226001"
      }
     },
     {
@@ -13598,9 +13428,9 @@
        "पैन: C J M P K ... one nine five three R",
        "आधार नंबर: seven seven one seven ... four zero eight seven ... six two five zero",
        "पता: 15 Hazratganj, Near Post Office",
+       "पिन कोड: two two six ... zero zero one",
        "शहर या कस्बा: Lucknow",
        "राज्य: Uttar Pradesh",
-       "पिन कोड: two two six ... zero zero one",
        "मोबाइल नंबर: eight two nine nine one ... seven zero four five three",
        "व्यवसाय: Self-employed",
        "वार्षिक आय: 1-5 Lakh"
@@ -13632,9 +13462,9 @@
        "pan",
        "aadhaar",
        "address_line",
+       "pin",
        "city",
        "state",
-       "pin",
        "mobile",
        "occupation",
        "income_band"
@@ -13882,6 +13712,36 @@
     },
     {
      "speaker": "system",
+     "text": "आपका छह अंकों का पिन कोड क्या है?",
+     "kind": "prompt",
+     "field_id": ""
+    },
+    {
+     "speaker": "user",
+     "text": "two two six zero zero one",
+     "kind": "value",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "आपका पिन कोड है: two two six ... zero zero one। क्या यह सही है?",
+     "kind": "readback",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "user",
+     "text": "haan, sahi hai",
+     "kind": "confirmation",
+     "field_id": "pin"
+    },
+    {
+     "speaker": "system",
+     "text": "सेव हो गया।",
+     "kind": "progress",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "आप किस शहर या कस्बे में रहते हैं?",
      "kind": "prompt",
      "field_id": ""
@@ -13912,15 +13772,9 @@
     },
     {
      "speaker": "system",
-     "text": "आप किस राज्य में रहते हैं?",
-     "kind": "prompt",
+     "text": "आपका पिन कोड 226001 Uttar Pradesh में है।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "uttar pradesh",
-     "kind": "value",
-     "field_id": "state"
     },
     {
      "speaker": "system",
@@ -13933,36 +13787,6 @@
      "text": "haan, sahi hai",
      "kind": "confirmation",
      "field_id": "state"
-    },
-    {
-     "speaker": "system",
-     "text": "सेव हो गया।",
-     "kind": "progress",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "आपका छह अंकों का पिन कोड क्या है?",
-     "kind": "prompt",
-     "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "two two six zero zero one",
-     "kind": "value",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "system",
-     "text": "आपका पिन कोड है: two two six ... zero zero one। क्या यह सही है?",
-     "kind": "readback",
-     "field_id": "pin"
-    },
-    {
-     "speaker": "user",
-     "text": "haan, sahi hai",
-     "kind": "confirmation",
-     "field_id": "pin"
     },
     {
      "speaker": "system",
@@ -14164,6 +13988,12 @@
     },
     {
      "speaker": "system",
+     "text": "पिन कोड: two two six ... zero zero one",
+     "kind": "readback",
+     "field_id": ""
+    },
+    {
+     "speaker": "system",
      "text": "शहर या कस्बा: Lucknow",
      "kind": "readback",
      "field_id": ""
@@ -14171,12 +14001,6 @@
     {
      "speaker": "system",
      "text": "राज्य: Uttar Pradesh",
-     "kind": "readback",
-     "field_id": ""
-    },
-    {
-     "speaker": "system",
-     "text": "पिन कोड: two two six ... zero zero one",
      "kind": "readback",
      "field_id": ""
     },

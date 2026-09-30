@@ -33,6 +33,7 @@ from langgraph.graph import END, START, StateGraph
 
 from lucidform.channels.base import Kind, Purpose
 from lucidform.eval.events import Event
+from lucidform.gate import regions
 from lucidform.models import Candidate, Status
 from lucidform.orchestrate import readback
 from lucidform.orchestrate.confirm import confirm, parse_affirmation
@@ -72,7 +73,7 @@ ROUTES: dict[str, dict[str, str]] = {
         "unclear": "wrap_up",
         "gone": "close",
     },
-    "budget": {"ask": "ask", "finish": "finish"},
+    "budget": {"ask": "ask", "propose": "propose", "finish": "finish"},
     "listen": {"heard": "extract", "gone": "finish"},
     "extract": {
         "question": "explain",
@@ -95,9 +96,10 @@ EDGES: list[tuple[str, str]] = [
     ("commit", "finish"),
     ("finish", "next_field"),
     ("review", "listen_review"),
+    ("propose", "gate"),
 ]
 NODES = (
-    "greet", "next_field", "budget", "ask", "listen", "extract", "explain",
+    "greet", "next_field", "budget", "propose", "ask", "listen", "extract", "explain",
     "decline", "not_understood", "gate", "readback", "listen_confirm",
     "confirm", "commit", "finish", "wrap_up", "review", "listen_review", "close",
 )
@@ -175,8 +177,33 @@ class SessionGraph:
     def budget(self, state: TurnState) -> dict:
         outcome = state["current"]
         if outcome.attempts < self.s.max_attempts and not outcome.resolved:
+            if outcome.attempts == 0 and not outcome.proposed and self._proposal(state):
+                return {"route": "propose"}
             return {"route": "ask"}
         return {"route": "finish"}
+
+    def propose(self, state: TurnState) -> dict:
+        # LF-003: offer the state that a confirmed PIN code fixes. The offer
+        # takes the normal gate -> read-back -> explicit yes path; a "no"
+        # falls through to the ordinary question.
+        field, outcome = self._field(state), state["current"]
+        outcome.proposed = True
+        value = self._proposal(state)
+        self.s.output.say(
+            self.s.strings.say("proposal", pin=self.s.state.get("pin"), place=value),
+            kind=Kind.EXPLANATION,
+        )
+        proposed = Candidate(
+            field_id=field.id, value=value, raw_utterance="", confidence=1.0
+        )
+        return {"proposed": proposed}
+
+    def _proposal(self, state: TurnState) -> str | None:
+        field = self._field(state)
+        value = regions.propose(field.id, self.s.state.values)
+        if value is None or (field.enum_values and value not in field.enum_values):
+            return None
+        return value
 
     def ask(self, state: TurnState) -> dict:
         field, outcome = self._field(state), state["current"]

@@ -88,13 +88,15 @@ OVERRIDES: dict[tuple[str, str, int], dict[str, Any]] = {
         "confidence": 0.4,
         "ambiguous": False,
     },
-    # A valid value that is simply the wrong one. "Kolhapur" is a real city and
-    # a well-formed answer, so it passes every check the gate performs. Only
-    # the read-back can catch it -- which is the entire argument for the
-    # read-back being a pipeline stage rather than a courtesy.
+    # A valid value that is simply the wrong one. "Kollam" is a real city in
+    # the same state as the persona's PIN code, so it passes every check the
+    # gate performs, including the PIN/city directory check (ISSUES.md LF-003;
+    # this was "Kolhapur", which that check now catches). Only the read-back
+    # can catch it -- which is the entire argument for the read-back being a
+    # pipeline stage rather than a courtesy.
     ("p02", "city", 0): {
         "intent": "value",
-        "value": "Kolhapur",
+        "value": "Kollam",
         "quote": "kochi",
         "confidence": 0.71,
         "ambiguous": False,

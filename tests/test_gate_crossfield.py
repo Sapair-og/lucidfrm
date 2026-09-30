@@ -135,7 +135,7 @@ def test_cross_field_checks_read_only_committed_values(gate):
 
 
 def test_fields_without_a_cross_field_rule_return_nothing():
-    assert crossfield.check("city", "Jaipur", {"state": "Rajasthan"}) is None
+    assert crossfield.check("email", "a@example.invalid", {"state": "Rajasthan"}) is None
 
 
 # -- ordering ----------------------------------------------------------------

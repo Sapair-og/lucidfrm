@@ -49,6 +49,7 @@ class FieldResult:
     questions: int = 0
     rejections: list[str] = dc_field(default_factory=list)
     corrections: int = 0
+    proposed: bool = False  # a value derived from confirmed fields was offered
 
     @property
     def resolved(self) -> bool:

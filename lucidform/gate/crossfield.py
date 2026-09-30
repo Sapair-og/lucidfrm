@@ -20,7 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Mapping
 
-from lucidform.gate.regions import pin_matches_state
+from lucidform.gate.regions import city_states, pin_matches_state, pin_place
 
 
 @dataclass(frozen=True)
@@ -101,23 +101,93 @@ def pin_matches_confirmed_state(
             detail=f"not checked: no postal region data for {state!r}",
         )
     if verdict:
-        return CrossFieldResult(name, ran=True, passed=True)
+        return _city_agrees(name, value, state, committed.get("city"))
 
+    place = pin_place(value)
     return CrossFieldResult(
         name,
         ran=True,
         passed=False,
         detail=(
-            f"a PIN code in {state} does not begin with {value[0]!r}; "
-            "the postal region does not match the confirmed state"
+            f"PIN code {value} is in {place[1]}, {place[0]}, not in {state}"
+            if place
+            else (
+                f"a PIN code in {state} does not begin with {value[0]!r}; "
+                "the postal region does not match the confirmed state"
+            )
         ),
     )
+
+
+def _city_agrees(name: str, pin: str, state: str | None, city: str | None) -> CrossFieldResult:
+    """The confirmed city, if the directory knows it, must be in the PIN's or state's state."""
+    known = city_states(city or "")
+    if known is None:
+        return CrossFieldResult(name, ran=True, passed=True)
+    place = pin_place(pin) if pin else None
+    where = place[0] if place else state
+    if where is None or where in known:
+        return CrossFieldResult(name, ran=True, passed=True)
+    return CrossFieldResult(
+        name,
+        ran=True,
+        passed=False,
+        detail=f"{city} is in {_or(known)}, but {_what(pin, place, state)}",
+    )
+
+
+def _or(states) -> str:
+    states = sorted(states)
+    return states[0] if len(states) == 1 else ", ".join(states[:-1]) + " or " + states[-1]
+
+
+def _what(pin, place, state) -> str:
+    if place:
+        return f"PIN code {pin} is in {place[0]}"
+    return f"the confirmed state is {state}"
+
+
+def state_matches_pin_and_city(value: str, committed: Mapping[str, str]) -> CrossFieldResult:
+    """A state must agree with a confirmed PIN (exactly, via the directory) and city."""
+    name = "state_matches_pin"
+    pin = (committed.get("pin") or "").strip()
+    city = (committed.get("city") or "").strip()
+    if not pin and not city:
+        return _skipped(name, "pin")
+    if pin:
+        verdict = pin_matches_state(pin, value)
+        if verdict is False:
+            place = pin_place(pin)
+            where = f"{place[1]}, {place[0]}" if place else "a different postal region"
+            return CrossFieldResult(
+                name, ran=True, passed=False,
+                detail=f"the confirmed PIN code {pin} is in {where}, not in {value}",
+            )
+    known = city_states(city) if city else None
+    if known is not None and value not in known:
+        return CrossFieldResult(
+            name, ran=True, passed=False,
+            detail=f"the confirmed city {city} is in {_or(known)}, not in {value}",
+        )
+    return CrossFieldResult(name, ran=True, passed=True)
+
+
+def city_matches_pin_and_state(value: str, committed: Mapping[str, str]) -> CrossFieldResult:
+    """A city the directory knows must lie in the confirmed PIN's / state's state."""
+    name = "city_matches_pin"
+    pin = (committed.get("pin") or "").strip()
+    state = (committed.get("state") or "").strip()
+    if not pin and not state:
+        return _skipped(name, "pin")
+    return _city_agrees(name, pin, state or None, value)
 
 
 # field id -> the check that applies to it
 CHECKS: dict[str, Callable[[str, Mapping[str, str]], CrossFieldResult]] = {
     "pan": pan_matches_surname,
     "pin": pin_matches_confirmed_state,
+    "state": state_matches_pin_and_city,
+    "city": city_matches_pin_and_state,
 }
 
 

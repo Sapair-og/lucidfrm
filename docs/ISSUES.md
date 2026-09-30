@@ -24,7 +24,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 |---|---|---|---|
 | LF-001 | Can't fill the official CKYC form | 5 | OPEN |
 | LF-002 | Weak Aadhaar validation (`999999999999` accepted) | 1 | FIXED |
-| LF-003 | PIN / city / state mismatch accepted | 2 | OPEN |
+| LF-003 | PIN / city / state mismatch accepted | 2 | FIXED |
 | LF-004 | Email only syntax-checked | 3 | OPEN |
 | LF-005 | Income band not derived from a stated amount | 3 | OPEN |
 | LF-006 | Session ends with required fields empty, no final review | 4 | FIXED |
@@ -70,7 +70,30 @@ Source of the first batch: manual live run on 2026-09-30, session log
   data.gov.in All-India Pincode Directory). Exact PIN->state check; city must match the
   PIN's district/office names (fuzzy), else ask which is right. Reorder: PIN asked before
   city/state, and the district/state is proposed from it and read back for a yes.
-- **Status:** OPEN
+- **Fix (branch `fix-2-address`):**
+  - Data: `lucidform/gate/data/pin_directory.json` (18,719 PINs → state + district; 23,904
+    place names → states, from districts and head/sub post offices only, because village branch
+    offices would add false matches). Rebuild: `python tools/build_pin_directory.py <csv>`.
+    Source CSV: India Post All-India Pincode Directory, mirrored at
+    github.com/saravanakumargn/All-India-Pincode-Directory. It is older than some renames, so
+    `regions.CITY_ALIASES` maps Bengaluru→Bangalore, Mumbai→Bombay, etc.
+  - `regions.pin_place`, `city_states`, and `pin_matches_state` (exact via the directory; a PIN not in
+    the directory falls back to the old first-digit region check, so a stale directory never
+    rejects a real PIN).
+  - `crossfield.py`: `pin` (vs state, then vs city), new `state` (vs PIN and city) and `city`
+    (vs PIN or state) checks. **A city is rejected only if the directory knows it and in no
+    matching state.** An unknown city or locality (e.g. Rawatbhata) always passes.
+  - Order: `address_line, pin, city, state`. The state is **proposed** from the confirmed PIN
+    (`regions.propose`, graph node `propose`: budget → propose → gate → read-back → yes).
+    A "no" falls through to the normal question.
+  - Persona p02's deliberate mis-hearing changed from Kolhapur to **Kollam** (same state as
+    its PIN), because the gate now catches Kolhapur and the fixture exists to show an error
+    only the read-back can catch. Offline Table II numbers unchanged (tests pinned).
+  - Golden sessions re-recorded. Every persona commits identical values, with one fewer turn
+    (state accepted with "yes").
+- **Tests:** `tests/test_issues_phase2.py` (Kota/Goa/466114, unknown-city control, renamed
+  city, directory miss fallback, state proposal needs yes).
+- **Status:** FIXED
 
 ## LF-004 — Email only syntax-checked
 - **Symptom:** `uhauihiuah@hhd.com` accepted.

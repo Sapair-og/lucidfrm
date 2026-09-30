@@ -144,6 +144,20 @@
     },
     {
       "persona_id": "p01",
+      "field_id": "pin",
+      "utterance": "three zero two zero one five",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "302015",
+        "quote": "three zero two zero one five",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p01",
       "field_id": "city",
       "utterance": "jaipur",
       "attempt": 0,
@@ -165,20 +179,6 @@
         "intent": "value",
         "value": "Rajasthan",
         "quote": "rajasthan",
-        "confidence": 0.94,
-        "ambiguous": false,
-        "alternatives": []
-      }
-    },
-    {
-      "persona_id": "p01",
-      "field_id": "pin",
-      "utterance": "three zero two zero one five",
-      "attempt": 0,
-      "extraction": {
-        "intent": "value",
-        "value": "302015",
-        "quote": "three zero two zero one five",
         "confidence": 0.94,
         "ambiguous": false,
         "alternatives": []
@@ -382,13 +382,27 @@
     },
     {
       "persona_id": "p02",
+      "field_id": "pin",
+      "utterance": "six eight two zero one six",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "682016",
+        "quote": "six eight two zero one six",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p02",
       "field_id": "city",
       "utterance": "kochi",
       "attempt": 0,
       "extraction": {
         "alternatives": [],
         "intent": "value",
-        "value": "Kolhapur",
+        "value": "Kollam",
         "quote": "kochi",
         "confidence": 0.71,
         "ambiguous": false
@@ -417,20 +431,6 @@
         "intent": "value",
         "value": "Kerala",
         "quote": "kerala",
-        "confidence": 0.94,
-        "ambiguous": false,
-        "alternatives": []
-      }
-    },
-    {
-      "persona_id": "p02",
-      "field_id": "pin",
-      "utterance": "six eight two zero one six",
-      "attempt": 0,
-      "extraction": {
-        "intent": "value",
-        "value": "682016",
-        "quote": "six eight two zero one six",
         "confidence": 0.94,
         "ambiguous": false,
         "alternatives": []
@@ -606,6 +606,20 @@
     },
     {
       "persona_id": "p03",
+      "field_id": "pin",
+      "utterance": "two two six zero zero one",
+      "attempt": 0,
+      "extraction": {
+        "intent": "value",
+        "value": "226001",
+        "quote": "two two six zero zero one",
+        "confidence": 0.94,
+        "ambiguous": false,
+        "alternatives": []
+      }
+    },
+    {
+      "persona_id": "p03",
       "field_id": "city",
       "utterance": "lucknow",
       "attempt": 0,
@@ -627,20 +641,6 @@
         "intent": "value",
         "value": "Uttar Pradesh",
         "quote": "uttar pradesh",
-        "confidence": 0.94,
-        "ambiguous": false,
-        "alternatives": []
-      }
-    },
-    {
-      "persona_id": "p03",
-      "field_id": "pin",
-      "utterance": "two two six zero zero one",
-      "attempt": 0,
-      "extraction": {
-        "intent": "value",
-        "value": "226001",
-        "quote": "two two six zero zero one",
         "confidence": 0.94,
         "ambiguous": false,
         "alternatives": []
