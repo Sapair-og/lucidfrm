@@ -125,18 +125,48 @@ with real users — that study hasn't been done yet.
 
 ## Quickstart
 
-```bash
-git clone https://github.com/ShubhPS/LucidForm && cd LucidForm
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # POSIX: .venv/bin/pip
-.venv/Scripts/python -m pytest                                          # 489 tests, offline, no key
+**Windows, one step:** clone, then run `setup.cmd`. It creates `.venv`, installs everything,
+runs the offline tests, and creates your `.env` from `.env.example` (opening it in Notepad so
+you can paste your key).
+
+```bat
+git clone https://github.com/Sapair-og/lucidfrm && cd lucidfrm
+setup.cmd
 ```
 
-Talk to it (needs a free [Gemini API key](https://aistudio.google.com/apikey) in `.env`):
+**Your API key.** The key is never in the repo. Get a free
+[Gemini API key](https://aistudio.google.com/apikey), then paste it into `.env`:
+
+```ini
+GEMINI_API_KEY=your-key-here
+```
+
+`.env.example` is the template (setup.cmd copies it for you; on Mac/Linux: `cp .env.example .env`).
+`.env` is git-ignored, so your key stays on your machine.
+
+**Manual setup (any OS):**
 
 ```bash
-cp .env.example .env                                   # add GEMINI_API_KEY
-.venv/Scripts/python -m lucidform.cli help build       # embed the official sources (~5 min, once)
-.venv/Scripts/python -m lucidform.cli run --export data/forms/mine.pdf
+python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # POSIX: .venv/bin/pip
+.venv/Scripts/python -m pytest                                          # 620 tests, offline, no key
+cp .env.example .env                                                    # then paste GEMINI_API_KEY
+```
+
+**Run it:**
+
+```bat
+.venv\Scripts\python -m lucidform.cli help build     :: embed the official sources (~5 min, once)
+bin\lucidform                                         :: fill the official CKYC form (or your own PDF)
+```
+
+`bin\lucidform` first asks whether to fill **your own PDF** (paste its path) or the built-in official
+CKYC form, then saves the filled PDF in `dataorms\` and opens it. Add the `bin` folder to your
+PATH to just type `lucidform`. Other options:
+
+```bash
+.venv/Scripts/python -m lucidform.cli run --form official --export out.pdf   # official form
+.venv/Scripts/python -m lucidform.cli run --pdf my_form.pdf --export out.pdf # your own fillable PDF
+.venv/Scripts/python -m lucidform.cli run --export out.pdf                   # 14-field research template
 ```
 
 No key? Watch a simulated user fill the whole form offline:
@@ -144,6 +174,9 @@ No key? Watch a simulated user fill the whole form offline:
 ```bash
 .venv/Scripts/python -m lucidform.cli run --persona p02 --replay
 ```
+
+Known problems and how each was fixed are in [`docs/ISSUES.md`](docs/ISSUES.md). A step-by-step live
+demo script is in [`docs/reference/LIVE_DEMO_GUIDE.md`](docs/reference/LIVE_DEMO_GUIDE.md).
 
 A scripted 5-minute walkthrough is in [`docs/demo.md`](docs/demo.md).
 
