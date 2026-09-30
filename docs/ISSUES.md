@@ -34,6 +34,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-010 | A valid option the model was unsure of ("voter card") is re-asked blindly | 5 | FIXED |
 | LF-011 | Follow-ups found while fixing the above | — | OPEN |
 | LF-012 | User has a PAN/Aadhaar but can't find the number; no guidance | 6 | FIXED |
+| LF-013 | Model quotes a shortened number, so LF-007's digit check passes | 6 | FIXED |
 
 ---
 
@@ -307,4 +308,20 @@ Source of the first batch: manual live run on 2026-09-30, session log
 - **Limit:** links are read out as text. For a voice-only user they should also be sent by
   SMS/WhatsApp (future work). The Hindi text needs native review (LF-011).
 - **Tests:** `tests/test_issues_phase6.py`.
+- **Status:** FIXED
+
+## LF-013 — A quote cut short inside a number defeats the digit check
+- **Symptom (live demo, 2026-10-01):** mobile `45555555555` (11 digits). Gemini returned
+  `4555555555` **and quoted `4555555555`**, a real substring. So LF-007's digit comparison
+  (value vs quote) agreed. It was rejected only because it started with 4. `98390124577` would have
+  reached the read-back as a wrong 10-digit number.
+- **Root cause:** grounding proves the quote occurs in the utterance, not that it covers the whole
+  number the user said.
+- **Fix (branch `fix-6-find-help`):** `grounding._whole_number` widens a quote on digit fields to the
+  full run of ASCII digits it sits in (for phone/Aadhaar also across single spaces/hyphens between
+  digits, since people group them). The widened digits are what's compared, and for all-digit
+  fields what the gate judges. Merging two separate numbers in one utterance can only cause a
+  rejection and re-ask, never a wrong write.
+- **Verified live:** `98390124577` → "expected exactly 10 characters, got 11".
+- **Tests:** `tests/test_issues_phase1.py` (LF-013 section).
 - **Status:** FIXED

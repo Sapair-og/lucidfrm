@@ -147,6 +147,35 @@ def _strip_phone_prefix(digits: str) -> str:
     return digits
 
 
+_ASCII_DIGITS = "0123456789"
+
+
+def _whole_number(quote: str, utterance: str, span, field_type: FieldType) -> str:
+    """The quote, widened to the whole run of digits it sits inside.
+
+    A model can quote honestly and still quote short: the user typed eleven
+    digits, the model quoted and returned the first ten, and the quote was a
+    real substring. A quote that stops in the middle of a number is widened to
+    the full number, so the digits compared are the digits the user gave.
+    Separators (space, hyphen) are crossed only between digits, for the
+    grouped way people say phone and Aadhaar numbers.
+    """
+    if span is None or field_type not in DIGIT_FIELDS:
+        return quote
+    i, j = span
+    n = len(utterance)
+
+    def digit(k: int) -> bool:
+        return 0 <= k < n and utterance[k] in _ASCII_DIGITS
+
+    grouped = field_type in (FieldType.PHONE, FieldType.AADHAAR)
+    while digit(i - 1) or (grouped and i >= 2 and utterance[i - 1] in " -" and digit(i - 2) and digit(i)):
+        i -= 1
+    while digit(j) or (grouped and utterance[j:j + 1] in (" ", "-") and digit(j + 1) and digit(j - 1)):
+        j += 1
+    return utterance[i:j]
+
+
 def digits_agree(value: str, quote: str, field_type: FieldType) -> Grounding | None:
     """None when consistent or not checkable; a failed Grounding otherwise."""
     if field_type not in DIGIT_FIELDS:
@@ -188,7 +217,8 @@ def check(
         return Grounding(True, None, "no value to ground")
     located = locate(extraction.quote, utterance)
     if located.grounded and field_type is not None:
-        mismatch = digits_agree(extraction.value, extraction.quote, field_type)
+        quote = _whole_number(extraction.quote, utterance, located.span, field_type)
+        mismatch = digits_agree(extraction.value, quote, field_type)
         if mismatch is not None:
             if mismatch.replacement is not None:
                 return Grounding(True, located.span, mismatch.detail, mismatch.replacement)

@@ -158,3 +158,25 @@ def test_form_60_skips_the_surname_check(schema):
     report = _gate(schema, "pan", "form 60", {"full_name": "Suresh Yadav"})
     assert report.status is Status.PASS
     assert report.normalized_value == "Form 60"
+
+
+# -- LF-013: a quote that stops in the middle of a number ------------------------
+
+
+def test_short_quote_inside_a_longer_number_is_widened():
+    # live 2026-10-01: user typed 11 digits; model quoted and returned the first 10
+    said = "98390124577"
+    g = grounding.check(_extraction("9839012457", "9839012457"), said, FieldType.PHONE)
+    assert g.replacement == said
+
+
+def test_grouped_number_is_widened_across_spaces():
+    said = "my number is 98390 12457 7"
+    g = grounding.check(_extraction("9839012457", "98390 12457"), said, FieldType.PHONE)
+    assert g.replacement == "98390124577"
+
+
+def test_exact_quote_of_a_whole_number_is_unchanged():
+    said = "my pin is 221001"
+    g = grounding.check(_extraction("221001", "221001"), said, FieldType.PIN)
+    assert g.grounded and g.replacement is None
