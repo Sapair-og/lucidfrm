@@ -143,6 +143,67 @@ fields:
     max_length: 25
     depends_on: [poi_type]
     ask_if: {poi_type: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter]}
+    decline_reopens: poi_type
+    find_help_by: poi_type
+    # LF-015: how to find each document's number, or get the document.
+    # Official sites only, checked reachable 2026-10-01. Video help is a
+    # YouTube search link, not one unvetted video.
+    find_help: &doc_find_help
+      Voter ID:
+        en: |-
+          Your voter ID (EPIC) number is printed on the front of your voter ID card: three letters, then seven digits.
+          If the card is not with you: go to electoralsearch.eci.gov.in and search with your name and details, or with your mobile number. Your EPIC number is shown. You can also download your e-EPIC card from voters.eci.gov.in, use the Voter Helpline app, or call 1950.
+          If you have never had a voter ID, you can apply at voters.eci.gov.in using Form 6.
+          Video help: https://www.youtube.com/results?search_query=how+to+find+voter+id+epic+number+online
+          If you do not have this document, say "I don't have it" and we will choose a different one.
+        hi: |-
+          आपका वोटर आईडी (एपिक) नंबर आपके वोटर कार्ड के सामने छपा होता है: पहले तीन अक्षर, फिर सात अंक।
+          अगर कार्ड पास नहीं है: electoralsearch.eci.gov.in पर जाएँ और अपने नाम और विवरण से, या मोबाइल नंबर से खोजें। आपका एपिक नंबर दिख जाएगा। आप voters.eci.gov.in से ई-एपिक कार्ड डाउनलोड कर सकते हैं, वोटर हेल्पलाइन ऐप इस्तेमाल कर सकते हैं, या 1950 पर कॉल कर सकते हैं।
+          अगर आपका वोटर आईडी कभी नहीं बना, तो voters.eci.gov.in पर फॉर्म 6 से आवेदन कर सकते हैं।
+          वीडियो मदद: https://www.youtube.com/results?search_query=how+to+find+voter+id+epic+number+online
+          अगर यह दस्तावेज़ आपके पास नहीं है, तो "मेरे पास नहीं है" कहें, हम दूसरा दस्तावेज़ चुनेंगे।
+      Passport:
+        en: |-
+          Your passport number is on the first page, the one with your photo, at the top right: one letter, then seven digits. It is also printed on the last page.
+          If you have lost your passport, contact Passport Seva at passportindia.gov.in.
+          Video help: https://www.youtube.com/results?search_query=where+is+passport+number+on+indian+passport
+          If you do not have this document, say "I don't have it" and we will choose a different one.
+        hi: |-
+          आपका पासपोर्ट नंबर पहले पन्ने पर, जहाँ आपकी फोटो है, ऊपर दाईं ओर छपा होता है: पहले एक अक्षर, फिर सात अंक। यह आखिरी पन्ने पर भी छपा होता है।
+          अगर पासपोर्ट खो गया है, तो passportindia.gov.in पर पासपोर्ट सेवा से संपर्क करें।
+          वीडियो मदद: https://www.youtube.com/results?search_query=where+is+passport+number+on+indian+passport
+          अगर यह दस्तावेज़ आपके पास नहीं है, तो "मेरे पास नहीं है" कहें, हम दूसरा दस्तावेज़ चुनेंगे।
+      Driving Licence:
+        en: |-
+          Your driving licence number is printed on the front of the licence. It starts with your state code, for example RJ14 followed by more digits.
+          If the licence is not with you: open the DigiLocker or mParivahan app and sign in; your licence is shown there. You can also use the driving licence services at parivahan.gov.in.
+          Video help: https://www.youtube.com/results?search_query=how+to+find+driving+licence+number+online+india
+          If you do not have this document, say "I don't have it" and we will choose a different one.
+        hi: |-
+          आपका ड्राइविंग लाइसेंस नंबर लाइसेंस के सामने छपा होता है। यह आपके राज्य के कोड से शुरू होता है, जैसे RJ14 और फिर अंक।
+          अगर लाइसेंस पास नहीं है: डिजीलॉकर या एमपरिवहन ऐप खोलकर लॉग इन करें; वहाँ आपका लाइसेंस दिखेगा। आप parivahan.gov.in पर ड्राइविंग लाइसेंस सेवाएँ भी देख सकते हैं।
+          वीडियो मदद: https://www.youtube.com/results?search_query=how+to+find+driving+licence+number+online+india
+          अगर यह दस्तावेज़ आपके पास नहीं है, तो "मेरे पास नहीं है" कहें, हम दूसरा दस्तावेज़ चुनेंगे।
+      NREGA Job Card:
+        en: |-
+          Your job card number is printed on the first page of your NREGA job card.
+          If the card is not with you: go to nrega.nic.in, choose your state, district, block and panchayat, and find your name in the job card list. Your gram panchayat office can also tell you the number.
+          Video help: https://www.youtube.com/results?search_query=how+to+find+nrega+job+card+number+online
+          If you do not have this document, say "I don't have it" and we will choose a different one.
+        hi: |-
+          आपका जॉब कार्ड नंबर आपके नरेगा जॉब कार्ड के पहले पन्ने पर छपा होता है।
+          अगर कार्ड पास नहीं है: nrega.nic.in पर जाएँ, अपना राज्य, ज़िला, ब्लॉक और पंचायत चुनें, और जॉब कार्ड सूची में अपना नाम खोजें। आपकी ग्राम पंचायत का दफ़्तर भी नंबर बता सकता है।
+          वीडियो मदद: https://www.youtube.com/results?search_query=how+to+find+nrega+job+card+number+online
+          अगर यह दस्तावेज़ आपके पास नहीं है, तो "मेरे पास नहीं है" कहें, हम दूसरा दस्तावेज़ चुनेंगे।
+      NPR Letter:
+        en: |-
+          The number is printed on the letter you received from the National Population Register.
+          If you do not have the letter, ask at your local municipal or registrar office.
+          If you do not have this document, say "I don't have it" and we will choose a different one.
+        hi: |-
+          नंबर राष्ट्रीय जनसंख्या रजिस्टर से मिले पत्र पर छपा होता है।
+          अगर पत्र आपके पास नहीं है, तो अपने स्थानीय नगर निगम या रजिस्ट्रार कार्यालय में पूछें।
+          अगर यह दस्तावेज़ आपके पास नहीं है, तो "मेरे पास नहीं है" कहें, हम दूसरा दस्तावेज़ चुनेंगे।
     prompt:
       en: What is the number printed on that document?
       hi: उस दस्तावेज़ पर छपा नंबर क्या है?
@@ -245,6 +306,9 @@ fields:
     max_length: 25
     depends_on: [cur_poa_type]
     ask_if: {cur_poa_type: [Passport, Voter ID, Driving Licence, NREGA Job Card, NPR Letter]}
+    decline_reopens: cur_poa_type
+    find_help_by: cur_poa_type
+    find_help: *doc_find_help
     prompt:
       en: What is the number on that document?
       hi: उस दस्तावेज़ पर लिखा नंबर क्या है?

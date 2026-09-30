@@ -86,3 +86,10 @@ own_pdf_skipped: >-
   These parts need to be ticked or signed by hand after printing: {fields}.
 
 own_pdf_fallback: All right, we will use the built-in KYC form instead.
+
+question_limit: >-
+  I have explained all I can for this question. Please give the answer now. If
+  you do not have it, say "I don't have it".
+
+reopen: >-
+  All right. Then let us go back and choose a different {label}.

@@ -112,6 +112,20 @@ class FieldSpec:
     # lang -> how to look the number up when the user has the document but
     # cannot find it (LF-012). Human-written, with official links only.
     find_help: dict[str, str] = field(default_factory=dict)
+    # LF-015: help that depends on another answer -- the document number's
+    # help depends on which document was chosen. {value of find_help_by: {lang: text}}
+    find_help_by: str | None = None
+    find_help_options: dict[str, dict[str, str]] = field(default_factory=dict)
+    # LF-015: saying "I don't have it" here re-opens this earlier question
+    # (no voter ID -> choose a different proof), instead of a dead end.
+    decline_reopens: str | None = None
+
+    def find_text(self, lang: str, values: Mapping[str, str]) -> str | None:
+        """How to look this value up, for the document the user chose."""
+        table = self.find_help
+        if self.find_help_by:
+            table = self.find_help_options.get(values.get(self.find_help_by, ""), {})
+        return table.get(lang) or table.get("en") or None
 
     def applies(self, values: Mapping[str, str]) -> bool:
         return all(values.get(dep) in allowed for dep, allowed in self.ask_if.items())

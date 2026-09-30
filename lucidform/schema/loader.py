@@ -247,7 +247,14 @@ def _build(overlay: dict[str, Any], parsed: dict[str, dict[str, Any]], strict: b
                     for dep, allowed in (entry.get("ask_if") or {}).items()
                 },
                 date_future=bool(entry.get("date_future", False)),
-                find_help=dict(entry.get("find_help", {})),
+                find_help={} if entry.get("find_help_by") else dict(entry.get("find_help", {})),
+                find_help_by=entry.get("find_help_by"),
+                find_help_options=(
+                    {k: dict(v) for k, v in entry.get("find_help", {}).items()}
+                    if entry.get("find_help_by")
+                    else {}
+                ),
+                decline_reopens=entry.get("decline_reopens"),
             )
         )
 
@@ -258,6 +265,9 @@ def _build(overlay: dict[str, Any], parsed: dict[str, dict[str, Any]], strict: b
         unknown = set(f.ask_if) - set(ids)
         if unknown:
             raise SchemaError(f"{f.id}: ask_if names unknown field(s) {sorted(unknown)}")
+        for ref in (f.find_help_by, f.decline_reopens):
+            if ref is not None and ref not in ids:
+                raise SchemaError(f"{f.id}: refers to unknown field {ref!r}")
 
     known = set(ids)
     for f in fields:

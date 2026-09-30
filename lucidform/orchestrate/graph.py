@@ -56,7 +56,7 @@ class TurnState(TypedDict, total=False):
     route: str
     results: list
     queue: list  # schema indices still to visit
-    correcting: bool  # the current field is being changed at the user's request
+    force: list  # schema indices to ask again even though answered (a change or a re-open)
     revisited: list  # field ids already revisited at the end
     reviews: int
     approved: bool
@@ -85,7 +85,7 @@ ROUTES: dict[str, dict[str, str]] = {
     },
     "explain": {"retry": "budget"},
     "find_help": {"retry": "budget"},
-    "decline": {"retry": "budget", "finish": "finish", "alternative": "gate"},
+    "decline": {"retry": "budget", "finish": "finish", "alternative": "gate", "reopen": "finish"},
     "gate": {"pass": "readback", "retry": "budget", "suggest": "gate"},
     "listen_confirm": {"heard": "confirm", "gone": "finish"},
     "confirm": {"affirmed": "commit", "retry": "budget"},
@@ -155,7 +155,7 @@ class SessionGraph:
         self.s.output.say(self.s.strings.get("greeting"), kind=Kind.PROGRESS)
         return {
             "queue": list(range(len(self.s.schema))),
-            "correcting": False,
+            "force": [],
             "revisited": [],
             "reviews": 0,
             "approved": False,
@@ -171,7 +171,7 @@ class SessionGraph:
             index = queue.pop(0)
             # A field the user asked to change is asked again even though it
             # already holds a value; otherwise resolved fields are skipped.
-            if state.get("correcting") or (
+            if index in (state.get("force") or []) or (
                 not self.s.state.is_resolved(fields[index].id)
                 and fields[index].applies(self.s.state.values)
             ):
@@ -181,7 +181,7 @@ class SessionGraph:
                     "current": FieldResult(field_id=fields[index].id),
                     "route": "field",
                 }
-        return {"queue": [], "correcting": False, "route": "done"}
+        return {"queue": [], "force": [], "route": "done"}
 
     def budget(self, state: TurnState) -> dict:
         outcome = state["current"]
@@ -266,13 +266,25 @@ class SessionGraph:
 
     def explain(self, state: TurnState) -> dict:
         outcome = state["current"]
+        field = self._field(state)
         if outcome.questions >= self.s.max_questions:
             # Explaining again is not helping. Treat it as an attempt so the
-            # session can move on rather than looping.
+            # session can move on rather than looping -- and say so, rather
+            # than asking the same question again in silence (LF-015).
             outcome.attempts += 1
+            self.s.output.say(self.s.strings.get("question_limit"), kind=Kind.PROBLEM)
             return {"route": "retry"}
         outcome.questions += 1
-        self.s._explain(self._field(state), state["said"])
+        # A question about getting or finding the document ("how to get that
+        # document") is answered with the lookup help when the field has it.
+        text = field.find_text(self.s.lang, self.s.state.values)
+        if text and _LOOKUP_QUESTION.search((state["said"] or "").casefold()):
+            self.s.log.emit(
+                Event.JARGON_EXPLAINED, field_id=field.id, payload={"help": "find", "text": text}
+            )
+            self.s.output.say(text, kind=Kind.EXPLANATION)
+            return {"route": "retry"}
+        self.s._explain(field, state["said"])
         return {"route": "retry"}
 
     def find_help(self, state: TurnState) -> dict:
@@ -280,7 +292,7 @@ class SessionGraph:
         # it up (fixed text with official links, no model), then ask again.
         # Shares the question budget: it is help, not a failed attempt.
         field, outcome = self._field(state), state["current"]
-        text = field.find_help.get(self.s.lang) or field.find_help.get("en")
+        text = field.find_text(self.s.lang, self.s.state.values)
         if not text or outcome.questions >= self.s.max_questions:
             return self.explain(state)
         outcome.questions += 1
@@ -306,6 +318,22 @@ class SessionGraph:
                 confidence=1.0,
             )
             return {"proposed": proposed, "route": "alternative"}
+        if field.decline_reopens:
+            # LF-015: no voter ID? Then the earlier choice was the problem --
+            # go back to it, then come back here if the new choice needs it.
+            fields = list(self.s.schema)
+            parent = next(i for i, f in enumerate(fields) if f.id == field.decline_reopens)
+            here = fields.index(field)
+            self.s.output.say(
+                self.s.strings.say("reopen", label=fields[parent].name(self.s.lang)),
+                kind=Kind.PROGRESS,
+            )
+            outcome.reopened = True
+            return {
+                "queue": [parent, here, *state["queue"]],
+                "force": [parent],
+                "route": "reopen",
+            }
         if field.required:
             self.s.output.say(self.s.strings.get("required"), kind=Kind.PROBLEM)
             outcome.attempts += 1
@@ -416,7 +444,7 @@ class SessionGraph:
 
     def finish(self, state: TurnState) -> dict:
         field, outcome = self._field(state), state["current"]
-        if not outcome.resolved and not outcome.abandoned:
+        if not outcome.resolved and not outcome.abandoned and not outcome.reopened:
             outcome.abandoned = True
             self.s.output.say(
                 self.s.strings.say("out_of_attempts", label=field.name(self.s.lang)),
@@ -504,7 +532,7 @@ class SessionGraph:
         if index is None:
             self.s.output.say(self.s.strings.get("review_unclear"), kind=Kind.PROBLEM)
             return {"route": "unclear", "reviews": reviews}
-        return {"route": "change", "queue": [index], "correcting": True, "reviews": reviews}
+        return {"route": "change", "queue": [index], "force": [index], "reviews": reviews}
 
     def close(self, state: TurnState) -> dict:
         return {}
@@ -516,6 +544,10 @@ class SessionGraph:
 
 
 _NON_WORD = re.compile(r"[^a-z0-9' ]+")
+_LOOKUP_QUESTION = re.compile(
+    r"\b(get|find|found|apply|download|lost|lose|where|obtain|kaise|kahan|kaha|milega|"
+    r"nikal|banwa|banaye|pata)\b"
+)
 
 
 def field_named(utterance: str, fields) -> int | None:

@@ -36,6 +36,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-012 | User has a PAN/Aadhaar but can't find the number; no guidance | 6 | FIXED |
 | LF-013 | Model quotes a shortened number, so LF-007's digit check passes | 6 | FIXED |
 | LF-014 | Only the built-in PDFs can be filled; users can't bring their own form | 7 | FIXED (fillable PDFs) |
+| LF-015 | No help finding a voter ID/passport/DL number; silent re-ask; no way out without the document | 8 | FIXED |
 
 ---
 
@@ -355,3 +356,31 @@ Source of the first batch: manual live run on 2026-09-30, session log
   ones are unvalidated free text, by design (nothing is known about them).
 - **Tests:** `tests/test_issues_phase7.py`.
 - **Status:** FIXED for fillable PDFs; flat PDFs remain open
+
+## LF-015 — Document number: no lookup help, a silent re-ask, no way out
+- **Symptom (user test, 2026-10-01, screenshot):** after choosing Voter ID, "how to get the number of
+  voter id" and "how to get it" both got the generic "I am not certain…" gloss. "how to get that
+  document" got **no reply at all**; the question was just asked again.
+- **Root causes:** (1) LF-012's `find_help` existed only for PAN/Aadhaar, and `poi_number`'s help
+  depends on *which* document was chosen. Gemini classified both requests correctly as `find`, and
+  the graph fell back to the gloss. (2) When `max_questions` was used up, `explain` spent an attempt
+  and said nothing. (3) A user without the chosen document could only fail three times on its number.
+- **Fix (branch `fix-7-doc-help`):**
+  - Overlay `find_help_by: poi_type` + `find_help: {<document>: {en, hi}}` (YAML anchor shared with
+    `cur_poa_number`). `FieldSpec.find_text(lang, values)` picks the text for the chosen
+    document: Voter ID (electoralsearch.eci.gov.in, e-EPIC at voters.eci.gov.in, Voter Helpline
+    app, 1950, Form 6 to apply), Passport (where it's printed, passportindia.gov.in), DL (where it's
+    printed, DigiLocker/mParivahan, parivahan.gov.in), NREGA (nrega.nic.in job card list, gram
+    panchayat), NPR (the letter, local office). Links checked 2026-10-01. The Sarathi page and
+    nreganarep timed out and were left out.
+  - A `question` that asks how to get, find, apply for or download something (`_LOOKUP_QUESTION`,
+    English/Hindi keywords) gets the lookup help when the field has it.
+  - Budget exhausted → says `question_limit` ("…please give the answer now, or say I don't have it").
+  - Overlay `decline_reopens: poi_type`: "I don't have it" re-opens the document choice
+    (`reopen` string). The graph queue becomes [parent, this field, rest…] with `force` [parent].
+    `correcting: bool` became `force: list` (also used by "change X" at the review). If the new
+    document needs no number (Aadhaar), the number field no longer applies and is dropped.
+- **Verified live:** the screenshot conversation replayed through `--ask-pdf` gave Voter ID help twice,
+  then the limit message, then "I don't have a voter id" → back to proof → Aadhaar → address.
+- **Tests:** `tests/test_issues_phase8.py`.
+- **Status:** FIXED

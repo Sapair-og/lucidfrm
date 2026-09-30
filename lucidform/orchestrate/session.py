@@ -50,6 +50,7 @@ class FieldResult:
     rejections: list[str] = dc_field(default_factory=list)
     corrections: int = 0
     proposed: bool = False  # a value derived from confirmed fields was offered
+    reopened: bool = False  # left to re-open an earlier answer (LF-015)
 
     @property
     def resolved(self) -> bool:
