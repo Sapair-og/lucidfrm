@@ -489,6 +489,21 @@ def extract_cmd(
     raise typer.Exit(0 if passed else 1)
 
 
+@app.command("graph")
+def graph_cmd(
+    out: Path = typer.Option(None, "--out", "-o", help="Write the Mermaid source here."),
+) -> None:
+    """Print the orchestrator's LangGraph as Mermaid -- the paper's pipeline figure."""
+    from lucidform.orchestrate.graph import mermaid
+
+    text = mermaid()
+    if out:
+        out.write_text(text, encoding="utf-8")
+        typer.echo(f"wrote {out}")
+    else:
+        typer.echo(text)
+
+
 @app.command("gate-check")
 def gate_check(
     field: str = typer.Option(..., "--field", "-f", help="Field id, e.g. pan."),

@@ -1,0 +1,54 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	greet(greet)
+	next_field(next_field)
+	budget(budget)
+	ask(ask)
+	listen(listen)
+	extract(extract)
+	explain(explain)
+	decline(decline)
+	not_understood(not_understood)
+	gate(gate)
+	readback(readback)
+	listen_confirm(listen_confirm)
+	confirm(confirm)
+	commit(commit)
+	finish(finish)
+	close(close)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> greet;
+	ask --> listen;
+	budget -.-> ask;
+	budget -.-> finish;
+	commit --> finish;
+	confirm -. &nbsp;retry&nbsp; .-> budget;
+	confirm -. &nbsp;affirmed&nbsp; .-> commit;
+	decline -. &nbsp;retry&nbsp; .-> budget;
+	decline -.-> finish;
+	explain -. &nbsp;retry&nbsp; .-> budget;
+	extract -.-> decline;
+	extract -. &nbsp;question&nbsp; .-> explain;
+	extract -. &nbsp;value&nbsp; .-> gate;
+	extract -. &nbsp;unclear&nbsp; .-> not_understood;
+	finish --> next_field;
+	gate -. &nbsp;retry&nbsp; .-> budget;
+	gate -. &nbsp;pass&nbsp; .-> readback;
+	greet --> next_field;
+	listen -. &nbsp;heard&nbsp; .-> extract;
+	listen -. &nbsp;gone&nbsp; .-> finish;
+	listen_confirm -. &nbsp;heard&nbsp; .-> confirm;
+	listen_confirm -. &nbsp;gone&nbsp; .-> finish;
+	next_field -. &nbsp;field&nbsp; .-> budget;
+	next_field -. &nbsp;done&nbsp; .-> close;
+	not_understood --> budget;
+	readback --> listen_confirm;
+	close --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

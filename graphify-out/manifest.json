@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "lucidform/cli.py": {
-    "mtime": 1790761803.6163254,
-    "seen": 1790762022.7087498,
-    "ast_hash": "866b9c0791f0ea9fb820cb2c2f9705cc",
+    "mtime": 1790765747.2512047,
+    "seen": 1790766054.8885748,
+    "ast_hash": "3bceb610f650efc6db0cf5580de7aa6e",
     "semantic_hash": ""
   },
   "lucidform/config.py": {
@@ -216,9 +216,9 @@
     "semantic_hash": ""
   },
   "lucidform/orchestrate/session.py": {
-    "mtime": 1788718593.7938356,
-    "seen": 1790759907.5909407,
-    "ast_hash": "5c9e00b9d3122cb941c7fa4bef43aec5",
+    "mtime": 1790765692.6651456,
+    "seen": 1790766054.8886096,
+    "ast_hash": "d02aa803bc98f25b281b98f09a2f663c",
     "semantic_hash": ""
   },
   "lucidform/schema/__init__.py": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "tests/test_session.py": {
-    "mtime": 1788718487.6851265,
-    "seen": 1790759907.5909672,
-    "ast_hash": "b35b4d03b96ccaa71adb0fe3ec25d7d7",
+    "mtime": 1790765340.3860157,
+    "seen": 1790766054.8886359,
+    "ast_hash": "ca41b8e89da62a9a65ee196f8e98972a",
     "semantic_hash": ""
   },
   "tests/test_voice.py": {
@@ -567,6 +567,30 @@
     "mtime": 1790760986.6246343,
     "seen": 1790762022.7088454,
     "ast_hash": "cb7b7198428ba2a73f7445b376784608",
+    "semantic_hash": ""
+  },
+  "lucidform/orchestrate/graph.py": {
+    "mtime": 1790765457.7990563,
+    "seen": 1790766054.8886068,
+    "ast_hash": "0aaed1f668fee4f1b5e28ecb13ddf0ec",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/session_golden.json": {
+    "mtime": 1790765315.8483589,
+    "seen": 1790766054.8886156,
+    "ast_hash": "212acd947f5c12e2b80171406b35e08f",
+    "semantic_hash": ""
+  },
+  "tests/golden_sessions.py": {
+    "mtime": 1790765308.9328737,
+    "seen": 1790766054.8886168,
+    "ast_hash": "f26fa6cc8a18d032e2fca86d7b42562a",
+    "semantic_hash": ""
+  },
+  "tests/test_graph.py": {
+    "mtime": 1790765341.324244,
+    "seen": 1790766054.8886278,
+    "ast_hash": "daa9ed27eb67322b55c5829defd94d5f",
     "semantic_hash": ""
   }
 }

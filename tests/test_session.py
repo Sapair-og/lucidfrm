@@ -261,6 +261,21 @@ def test_silence_abandons_the_field_rather_than_being_read_as_consent(schema, tm
     assert "city" not in state
 
 
+def test_a_hang_up_at_the_read_back_ends_the_field_without_re_asking(schema, tmp_path):
+    """Once the user is gone, asking the question again is talking to nobody.
+
+    The pre-LangGraph loop re-asked here and only stopped because the second
+    listen also returned None; with a live channel that is a phantom turn.
+    """
+    result, _, channel, log = one_field(
+        schema, "city", [value(), value()], ["jaipur", None, "jaipur", "yes"], tmp_path
+    )
+    asked = [r for r in read_log(log.path) if r["event"] == Event.FIELD_ASKED.value]
+    assert result.fields[0].abandoned
+    assert len(asked) == 1
+    assert channel.kinds().count(Kind.PROMPT.value) == 1
+
+
 # -- logging -----------------------------------------------------------------
 
 

@@ -7,7 +7,7 @@ it is acceptable -- that is the gate's verdict, and duplicating the reasoning
 here would create a second, unaudited validator that could drift out of step
 with the first.
 
-The loop per field:
+The flow per field (implemented as a LangGraph graph in graph.py):
 
     ask -> listen -> extract -> [question? explain and ask again]
                              -> [decline? record it, or say it is required]
@@ -29,15 +29,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field as dc_field
 
-from lucidform.channels.base import InputChannel, Kind, OutputChannel, Purpose
+from lucidform.channels.base import InputChannel, Kind, OutputChannel
 from lucidform.eval.events import Event, EventLog
 from lucidform.extract.extractor import Extractor
 from lucidform.formstate.state import FormState
 from lucidform.gate.gate import ValidationGate
 from lucidform.i18n import Strings
-from lucidform.models import FieldSpec, Status
-from lucidform.orchestrate import readback
-from lucidform.orchestrate.confirm import confirm
+from lucidform.models import FieldSpec
 from lucidform.schema.loader import FormSchema
 
 
@@ -105,162 +103,21 @@ class Session:
         self.max_attempts = max_attempts
         self.max_questions = max_questions
 
-    # -- the loop ----------------------------------------------------------
+    # -- the conversation ----------------------------------------------------
 
     def run(self) -> SessionResult:
-        result = SessionResult(session_id=self.log.session_id)
-        self.output.say(self.strings.get("greeting"), kind=Kind.PROGRESS)
+        # The control flow lives in a LangGraph state machine (graph.py); this
+        # class keeps the collaborators and the public API every caller uses.
+        from lucidform.orchestrate.graph import SessionGraph
 
-        for index, field in enumerate(self.schema):
-            if self.state.is_resolved(field.id):
-                continue
-            result.fields.append(self._field(field, index))
+        return SessionGraph(self).run()
 
-        self._close(result)
-        return result
-
-    def _field(self, field: FieldSpec, index: int) -> FieldResult:
-        outcome = FieldResult(field_id=field.id)
-
-        while outcome.attempts < self.max_attempts and not outcome.resolved:
-            self.log.emit(
-                Event.FIELD_ASKED,
-                field_id=field.id,
-                turn_idx=outcome.attempts,
-                payload={"attempt": outcome.attempts},
-            )
-            self.output.say(field.ask(self.lang), kind=Kind.PROMPT)
-
-            said = self.input.listen(field.id, Purpose.VALUE)
-            if said is None:
-                outcome.abandoned = True
-                break
-            self.log.emit(
-                Event.USER_UTTERANCE,
-                field_id=field.id,
-                turn_idx=outcome.attempts,
-                payload={"text": said, "purpose": Purpose.VALUE.value},
-            )
-
-            extraction = self.extractor.extract(field.id, said)
-
-            if extraction.asked_a_question:
-                if outcome.questions >= self.max_questions:
-                    # Explaining again is not helping. Treat it as an attempt
-                    # so the session can move on rather than looping.
-                    outcome.attempts += 1
-                    continue
-                outcome.questions += 1
-                self._explain(field)
-                continue
-
-            if extraction.declined:
-                if field.required:
-                    self.output.say(self.strings.get("required"), kind=Kind.PROBLEM)
-                    outcome.attempts += 1
-                    continue
-                self.state.decline(field.id, said=said)
-                self.output.say(self.strings.get("declined"), kind=Kind.PROGRESS)
-                outcome.declined = True
-                break
-
-            if not extraction.has_candidate:
-                self.output.say(self.strings.get("not_understood"), kind=Kind.PROBLEM)
-                outcome.attempts += 1
-                continue
-
-            candidate = extraction.candidate
-            report = self.gate.check(candidate, self.state.values)
-            self.log.emit(
-                Event.VALIDATION,
-                field_id=field.id,
-                turn_idx=outcome.attempts,
-                payload=report,
-            )
-
-            if report.status is not Status.PASS:
-                outcome.rejections.append(report.reason.value)
-                # The gate's own wording reaches the user. It is written to be
-                # said aloud, and re-phrasing it here would put a second,
-                # untested explanation in front of the person who needs it most.
-                self.output.say(
-                    self.strings.say("problem", detail=report.detail),
-                    kind=Kind.PROBLEM,
-                )
-                outcome.attempts += 1
-                continue
-
-            if self._read_back_and_confirm(field, candidate, report, outcome):
-                outcome.committed = True
-                break
-            outcome.attempts += 1
-
-        if not outcome.resolved and not outcome.abandoned:
-            outcome.abandoned = True
-            self.output.say(
-                self.strings.say("out_of_attempts", label=field.name(self.lang)),
-                kind=Kind.PROGRESS,
-            )
-
-        return outcome
-
-    def _explain(self, field: FieldSpec) -> None:
+    def _explain(self, field: FieldSpec, said: str | None = None) -> None:
         text = field.explain(self.lang) or field.name(self.lang)
         self.log.emit(
             Event.JARGON_EXPLAINED, field_id=field.id, payload={"text": text}
         )
         self.output.say(text, kind=Kind.EXPLANATION)
-
-    def _read_back_and_confirm(self, field, candidate, report, outcome) -> bool:
-        value = report.normalized_value
-        text = readback.render(value, field, self.strings.get("readback"), self.lang)
-
-        self.log.emit(
-            Event.READBACK,
-            field_id=field.id,
-            turn_idx=outcome.attempts,
-            payload={"value": value, "spoken": text},
-        )
-        self.output.read_back(field.id, value, text)
-
-        said = self.input.listen(field.id, Purpose.CONFIRMATION)
-        if said is None:
-            outcome.abandoned = True
-            return False
-
-        # Logged with the same event type as any other thing the user said, so
-        # the metrics can count turns and measure latency without special-casing
-        # the confirmation reply. `purpose` is what distinguishes them.
-        self.log.emit(
-            Event.USER_UTTERANCE,
-            field_id=field.id,
-            turn_idx=outcome.attempts,
-            payload={"text": said, "purpose": Purpose.CONFIRMATION.value},
-        )
-
-        affirmation, receipt = confirm(candidate, report, said)
-        self.log.emit(
-            Event.CONFIRMATION,
-            field_id=field.id,
-            turn_idx=outcome.attempts,
-            payload=affirmation,
-        )
-
-        if receipt is None:
-            outcome.corrections += 1
-            self.log.emit(
-                Event.CORRECTION,
-                field_id=field.id,
-                turn_idx=outcome.attempts,
-                payload={"value_rejected": value, "said": said},
-            )
-            self.output.say(self.strings.get("denied"), kind=Kind.PROBLEM)
-            return False
-
-        # The only write in the whole system.
-        self.state.commit(candidate, receipt)
-        self.output.say(self.strings.get("confirmed"), kind=Kind.PROGRESS)
-        return True
 
     def _close(self, result: SessionResult) -> None:
         declined = len(result.declined)
