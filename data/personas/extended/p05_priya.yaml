@@ -1,0 +1,79 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction (synthetic_aadhaar,
+# seed 20260930); it was generated algorithmically. See METHODOLOGY M0.8.
+#
+# Extended set: used for live-model evaluation only.
+# ============================================================================
+
+persona_id: p05
+name: Priya (fast talker, corrects herself mid-sentence, groups digits)
+lang: en
+
+profile:
+  literacy: high
+  speech_style: fast_self_correcting
+  notes: >
+    Speaks quickly and fixes mistakes inside the same sentence ("...five five,
+    no wait, the last one is six"). Reads numbers in pairs or thousands the way
+    people say them, not digit by digit, and describes her job in her own words
+    first. Exercises self-correction, digit grouping, a two-digit year, and the
+    extractor's refusal to map free text onto an enum.
+
+ground_truth:
+  full_name: Priya Anil Deshmukh
+  father_name: Anil Deshmukh
+  dob: "1999-07-21"
+  gender: Female
+  pan: CQWPD7788N
+  aadhaar: "800712985167"
+  address_line: Flat 12, Shivaji Nagar
+  city: Pune
+  state: Maharashtra
+  pin: "411005"
+  mobile: "9822031456"
+  email: priya.deshmukh@example.invalid
+  occupation: Salaried
+  income_band: 10-25 Lakh
+
+turns:
+  full_name:
+    - priya anil deshmukh
+  father_name:
+    - anil deshmukh
+  dob:
+    - twenty first july ninety nine
+    - twenty first july nineteen ninety nine
+  gender:
+    - female
+  pan:
+    - C Q W P D seventy seven eighty eight N
+    - C Q W P D 7 7 8 8 N
+  aadhaar:
+    - eight thousand seven, twelve ninety eight, fifty one sixty seven
+    - 8 0 0 7 1 2 9 8 5 1 6 7
+  address_line:
+    - flat twelve, shivaji nagar
+    - flat 12, shivaji nagar
+  city:
+    - pune
+  state:
+    - maharashtra
+  pin:
+    - four one one zero zero five
+  mobile:
+    - nine eight two two zero three one four five five, no wait, the last one is six
+    - 9 8 2 2 0 3 1 4 5 6
+  email:
+    - priya dot deshmukh at example dot invalid
+  occupation:
+    - I work at an IT company
+    - salaried
+  income_band:
+    - ten to twenty five lakh
+
+responses:
+  affirm: yes that is right
+  deny: no, that is wrong

@@ -1,0 +1,82 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction (synthetic_aadhaar,
+# seed 20260930); it was generated algorithmically. See METHODOLOGY M0.8.
+#
+# Extended set: used for live-model evaluation only. There is no offline
+# fixture for it, by design -- its value is in what a real model does with it.
+# ============================================================================
+
+persona_id: p04
+name: Suresh (elderly farmer, Hindi session, numbers in Hindi words)
+lang: hi
+
+profile:
+  literacy: low
+  speech_style: hindi_number_words
+  notes: >
+    Speaks Hindi throughout and reads digits as Hindi number words (do, shunya,
+    chhe). Asks whether Aadhaar is compulsory before giving it, and has no
+    email address. Exercises the Hindi prompts, the help agent in Hindi, and
+    the extractor's handling of Hindi numerals spoken as words.
+
+ground_truth:
+  full_name: Suresh Prasad Yadav
+  father_name: Ram Prasad Yadav
+  dob: "1958-03-14"
+  gender: Male
+  pan: AFRPY4521K
+  aadhaar: "963486009472"
+  address_line: Sarai Mohana, Rajghat
+  city: Varanasi
+  state: Uttar Pradesh
+  pin: "221001"
+  mobile: "9839012457"
+  email: ""
+  occupation: Agriculture
+  income_band: Below 1 Lakh
+
+turns:
+  full_name:
+    - mera naam suresh prasad yadav hai
+  father_name:
+    - pita ji ka naam ram prasad yadav
+  dob:
+    - chaudah march unnees sau atthawan
+    - chaudah teen unnees sau atthawan
+  gender:
+    - purush
+  pan:
+    - A F R P Y chaar paanch do ek K
+    - A F R P Y 4 5 2 1 K
+  aadhaar:
+    - aadhaar dena zaroori hai kya?
+    - nau chhe teen chaar aath chhe shunya shunya nau chaar saat do
+    - 9 6 3 4 8 6 0 0 9 4 7 2
+  address_line:
+    - sarai mohana, rajghat
+  city:
+    - varanasi
+    - V A R A N A S I, varanasi
+  state:
+    - uttar pradesh
+  pin:
+    - do do ek shunya shunya ek
+    - 2 2 1 0 0 1
+  mobile:
+    - nau aath teen nau shunya ek do chaar paanch saat
+    - 9 8 3 9 0 1 2 4 5 7
+  email:
+    - email nahi hai
+  occupation:
+    - kheti karta hoon
+    - agriculture
+  income_band:
+    - ek lakh se kam
+    - below 1 lakh
+
+responses:
+  affirm: haan ji
+  deny: nahi, galat hai

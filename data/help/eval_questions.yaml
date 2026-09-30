@@ -1,0 +1,48 @@
+# Help-agent evaluation set. Hand-written questions of the kind the target users
+# ask, in English, Hinglish and Hindi. `gold` lists label substrings of the
+# passages that answer the question; retrieval counts as a hit if any retrieved
+# passage's label contains any of them. Controls have no answer in the corpus
+# and must be refused -- an agent that answers everything scores perfect
+# coverage while being unsafe, the same reason the gate suite has controls.
+#
+# No personal data appears here: the questions are about the form, not a person.
+
+questions:
+  - {id: h01, field: aadhaar, lang: en, q: "Is Aadhaar compulsory for opening a bank account?", gold: ["RBI KYC FAQ, Q10"]}
+  - {id: h02, field: aadhaar, lang: hi, q: "kya aadhaar dena zaroori hai?", gold: ["RBI KYC FAQ, Q10"]}
+  - {id: h03, field: aadhaar, lang: en, q: "Is Aadhaar mandatory for getting a PAN card?", gold: ["Income Tax PAN FAQ (Form 93), Q4"]}
+  - {id: h04, field: pan, lang: en, q: "What is a PAN?", gold: ["Income Tax PAN FAQ, Q1"]}
+  - {id: h05, field: pan, lang: en, q: "pan kya hota hai", gold: ["Income Tax PAN FAQ, Q1"]}
+  - {id: h06, field: pan, lang: en, q: "I don't have a PAN card, can I still open an account?", gold: ["RBI KYC FAQ, Q5"]}
+  - {id: h07, field: pan, lang: en, q: "pan card nahi hai toh account kaise khulega", gold: ["RBI KYC FAQ, Q5"]}
+  - {id: h08, field: pan, lang: en, q: "How do I apply for a PAN card?", gold: ["Income Tax PAN FAQ, Q5", "Income Tax PAN FAQ (Form 93), Q2"]}
+  - {id: h09, field: pan, lang: en, q: "How much does a PAN card cost?", gold: ["Income Tax PAN FAQ, Q12"]}
+  - {id: h10, field: full_name, lang: en, q: "Can I use initials in my name?", gold: ["Income Tax PAN FAQ, Q17", "Income Tax PAN FAQ, Q18"]}
+  - {id: h11, field: father_name, lang: en, q: "Whose name gets printed on the PAN card, father or mother?", gold: ["Income Tax PAN FAQ, Q14"]}
+  - {id: h12, field: full_name, lang: en, q: "My name changed after marriage, what documents do I need?", gold: ["RBI KYC FAQ, Q9"]}
+  - {id: h13, field: address_line, lang: en, q: "My ID has my old address, can I still open an account?", gold: ["RBI KYC FAQ, Q7", "RBI KYC FAQ, Q8"]}
+  - {id: h14, field: address_line, lang: en, q: "Which documents can I give as proof of address?", gold: ["RBI KYC FAQ, Q7", "RBI KYC FAQ, Q5"]}
+  - {id: h15, field: address_line, lang: hi, q: "mera address badal gaya hai, kaunsa proof de sakte hain?", gold: ["RBI KYC FAQ, Q7", "RBI KYC FAQ, Q8"]}
+  - {id: h16, field: full_name, lang: en, q: "What is KYC?", gold: ["RBI KYC FAQ, Q1"]}
+  - {id: h17, field: full_name, lang: en, q: "Why do I have to do KYC at all?", gold: ["RBI KYC FAQ, Q1", "RBI KYC FAQ, Q2"]}
+  - {id: h18, field: aadhaar, lang: en, q: "Will my Aadhaar number change if I update my address?", gold: ["Will my Aadhaar number get changed"]}
+  - {id: h19, field: mobile, lang: en, q: "How do I update the mobile number linked to my Aadhaar?", gold: ["update my mobile number", "lost my mobile number"]}
+  - {id: h20, field: aadhaar, lang: en, q: "How long does an Aadhaar update take?", gold: ["How long does it take to update", "How much time does it take"]}
+  - {id: h21, field: full_name, lang: en, q: "What is a KYC identifier?", gold: ["RBI KYC FAQ, Q14", "G. KYC Identifier"]}
+  - {id: h22, field: full_name, lang: en, q: "How can I get my CKYC number?", gold: ["RBI KYC FAQ, Q17"]}
+  - {id: h23, field: full_name, lang: en, q: "I cannot sign, can I use my thumb impression?", gold: ["RBI KYC FAQ, Q35"]}
+  - {id: h24, field: full_name, lang: en, q: "What is a small account?", gold: ["RBI KYC FAQ, Q6"]}
+  - {id: h25, field: full_name, lang: en, q: "I have no ID documents at all, can I still open an account?", gold: ["RBI KYC FAQ, Q6"]}
+  - {id: h26, field: full_name, lang: hi, q: "koi bhi document nahi hai, kya account khul sakta hai?", gold: ["RBI KYC FAQ, Q6"]}
+  - {id: h27, field: full_name, lang: en, q: "Do I need to give KYC documents again for a second account in the same bank?", gold: ["RBI KYC FAQ, Q4"]}
+  - {id: h28, field: full_name, lang: en, q: "What is video KYC?", gold: ["RBI KYC FAQ, Q19"]}
+  - {id: h29, field: mobile, lang: en, q: "I got an SMS link asking me to update my KYC, what should I do?", gold: ["RBI KYC FAQ, Q29"]}
+  - {id: h30, field: pan, lang: en, q: "Is a passport required to get a PAN?", gold: ["Income Tax PAN FAQ, Q19"]}
+
+controls:
+  - {id: c01, field: income_band, lang: en, q: "Which bank gives the best interest rate?"}
+  - {id: c02, field: city, lang: en, q: "What is the weather in Delhi today?"}
+  - {id: c03, field: occupation, lang: en, q: "Can you recommend a good mutual fund?"}
+  - {id: c04, field: pan, lang: en, q: "How do I file my income tax return?"}
+  - {id: c05, field: income_band, lang: hi, q: "mera loan kab approve hoga?"}
+  - {id: c06, field: full_name, lang: en, q: "What is the capital of France?"}

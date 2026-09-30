@@ -55,6 +55,12 @@ class Settings(BaseSettings):
         return self.data_dir / "personas"
 
     @property
+    def extended_personas_dir(self) -> Path:
+        # Live-evaluation personas. No offline fixtures exist for them, so the
+        # offline suite and its pinned numbers are unaffected by adding one.
+        return self.personas_dir / "extended"
+
+    @property
     def runs_dir(self) -> Path:
         return self.data_dir / "runs"
 

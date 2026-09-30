@@ -142,6 +142,42 @@ def test_an_index_built_with_another_embedder_is_refused(index, tmp_path):
         HelpIndex.load(tmp_path, HashEmbedder(dims=128))
 
 
+# -- the evaluation set and its scoring ----------------------------------------------
+
+
+def test_every_gold_label_exists_in_the_corpus(chunks):
+    """A gold label that matches nothing would score a correct retrieval as a miss."""
+    from lucidform.help.evaluate import load_set
+
+    labels = [c.label for c in chunks]
+    items = load_set(SOURCES.parent / "eval_questions.yaml")
+    assert sum(i["kind"] == "question" for i in items) == 30
+    assert sum(i["kind"] == "control" for i in items) == 6
+    for item in items:
+        for g in item["gold"]:
+            assert any(g in label for label in labels), f"{item['id']}: gold {g!r} matches no chunk"
+
+
+def test_scoring_counts_hits_answers_and_refusals():
+    from lucidform.help.evaluate import Row, summarise
+
+    def row(kind, source, retrieved, cited, gold):
+        return Row("x", kind, "pan", "en", "q", gold, retrieved, cited, source, "", "", 10.0)
+
+    rows = [
+        row("question", "rag", ["A", "B"], ["A"], ["A"]),      # hit, answered, gold cited
+        row("question", "rag", ["B", "C"], ["B"], ["A"]),      # miss, answered, wrong cite
+        row("question", "gloss", ["A"], [], ["A"]),            # hit, not answered
+        row("control", "gloss", ["Z"], [], []),                # refused
+        row("control", "rag", ["Z"], ["Z"], []),               # answered a control: bad
+    ]
+    s = summarise(rows)
+    assert s["retrieval_hit_at_k"] == 66.7
+    assert s["answer_rate"] == 66.7
+    assert s["gold_citation_rate"] == 50.0
+    assert s["control_refusal_rate"] == 50.0
+
+
 # -- the answer and its check -------------------------------------------------------
 
 

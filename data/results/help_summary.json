@@ -1,0 +1,16 @@
+{
+  "help_model": "gemini-3.5-flash-lite",
+  "embedder": "gemini-embedding-001-768",
+  "k": 4,
+  "questions": 30,
+  "controls": 6,
+  "retrieval_hit_at_k": 93.3,
+  "answer_rate": 93.3,
+  "gold_citation_rate": 92.9,
+  "control_refusal_rate": 100.0,
+  "fallbacks": {
+    "not_answerable": 8
+  },
+  "latency_ms_p50": 1936.5,
+  "latency_ms_p95": 8478.7
+}

@@ -30,9 +30,23 @@ PIN_RE = re.compile(r"^[1-9][0-9]{5}$")
 
 @pytest.fixture(scope="module")
 def personas():
-    found = load_all()
+    # Core (offline-replayable) and extended (live-only) personas are held to
+    # the same ground-truth checks: an invalid ground truth corrupts a live
+    # accuracy figure just as surely as an offline one.
+    from lucidform.config import get_settings
+
+    found = load_all() + load_all(get_settings().extended_personas_dir)
     assert found, "no personas found -- the eval corpus is empty"
     return found
+
+
+def test_the_extended_set_is_present_and_separate():
+    from lucidform.config import get_settings
+
+    core = {p.persona_id for p in load_all()}
+    extended = {p.persona_id for p in load_all(get_settings().extended_personas_dir)}
+    assert core == {"p01", "p02", "p03"}
+    assert len(extended) >= 5 and not (core & extended)
 
 
 @pytest.fixture(scope="module")

@@ -1,0 +1,76 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction (synthetic_aadhaar,
+# seed 20260930); it was generated algorithmically. See METHODOLOGY M0.8.
+#
+# Extended set: used for live-model evaluation only.
+# ============================================================================
+
+persona_id: p06
+name: Irfan (low literacy, vague answers, short-form dates)
+lang: en
+
+profile:
+  literacy: low
+  speech_style: vague_code_mixed
+  notes: >
+    Gives approximate or descriptive answers first -- "around three lakh",
+    "I drive an auto" -- and a date as 5/1/87. None of these may be repaired
+    into a valid value by the extractor: the income and occupation must be
+    rejected as not an option, and the short date is ambiguous between
+    day-first and month-first. Has no email.
+
+ground_truth:
+  full_name: Mohammed Irfan Shaikh
+  father_name: Abdul Karim Shaikh
+  dob: "1987-01-05"
+  gender: Male
+  pan: BHKPS3361L
+  aadhaar: "716030847888"
+  address_line: Charminar Road, Ghansi Bazar
+  city: Hyderabad
+  state: Telangana
+  pin: "500002"
+  mobile: "7013456789"
+  email: ""
+  occupation: Self-employed
+  income_band: 1-5 Lakh
+
+turns:
+  full_name:
+    - mohammed irfan shaikh
+  father_name:
+    - abdul karim shaikh
+  dob:
+    - 5/1/87
+    - paanch january unnees sau sattaasi
+  gender:
+    - male
+  pan:
+    - B H K P S three three six one L
+  aadhaar:
+    - seven one six zero three zero eight four seven eight eight eight
+  address_line:
+    - charminar road, ghansi bazar
+  city:
+    - hyderabad
+  state:
+    - telangana
+  pin:
+    - five zero zero zero zero two
+  mobile:
+    - seven zero one three four five six seven eight nine
+  email:
+    - email nahi hai mera
+  occupation:
+    - apna kaam karta hoon, auto chalata hoon
+    - self employed
+  income_band:
+    - teen lakh ke aas paas
+    - one to five lakh
+
+responses:
+  affirm: haan, sahi hai
+  deny: nahi, galat hai

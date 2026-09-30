@@ -116,7 +116,13 @@ class SessionMetrics:
 
 
 def _personas() -> dict[str, Persona]:
-    return {p.persona_id: p for p in load_all()}
+    # Both sets: a live session of an extended persona must be scored against
+    # its ground truth, not silently dropped into the unscored group.
+    from lucidform.config import get_settings
+
+    extended = get_settings().extended_personas_dir
+    pool = load_all() + (load_all(extended) if extended.is_dir() else [])
+    return {p.persona_id: p for p in pool}
 
 
 def _truth(persona: Persona | None, field_id: str) -> str:

@@ -1,0 +1,78 @@
+# ============================================================================
+# SYNTHETIC PERSONA -- NOT REAL PII
+#
+# This person does not exist. Every identifier below is fabricated. The Aadhaar
+# number satisfies the Verhoeff checksum by construction (synthetic_aadhaar,
+# seed 20260930); it was generated algorithmically. See METHODOLOGY M0.8.
+#
+# Extended set: used for live-model evaluation only.
+# ============================================================================
+
+persona_id: p08
+name: Ravi (asks before answering; city with two common names)
+lang: en
+
+profile:
+  literacy: medium
+  speech_style: question_first
+  notes: >
+    Asks a question about three fields before answering them, which exercises
+    the help agent mid-form without spending the retry budget. Lives in
+    Bengaluru, which a model may write as "Bangalore": well-formed, passes the
+    gate, and only the read-back can catch it.
+
+ground_truth:
+  full_name: Ravi Kumar Reddy
+  father_name: Venkat Reddy
+  dob: "1990-06-15"
+  gender: Male
+  pan: EKLPR9012G
+  aadhaar: "420607984402"
+  address_line: Koramangala 5th Block
+  city: Bengaluru
+  state: Karnataka
+  pin: "560034"
+  mobile: "8105550123"
+  email: ravi.reddy@example.invalid
+  occupation: Business
+  income_band: 5-10 Lakh
+
+turns:
+  full_name:
+    - ravi kumar reddy
+  father_name:
+    - venkat reddy
+  dob:
+    - fifteenth june nineteen ninety
+  gender:
+    - male
+  pan:
+    - pan card nahi hai toh kya karu?
+    - E K L P R nine zero one two G
+  aadhaar:
+    - what is aadhaar used for in this form?
+    - four two zero six, zero seven nine eight, four four zero two
+    - 4 2 0 6 0 7 9 8 4 4 0 2
+  address_line:
+    - koramangala fifth block
+    - koramangala 5th block
+  city:
+    - bengaluru
+    - bengaluru, B E N G A L U R U
+  state:
+    - karnataka
+  pin:
+    - five six zero zero three four
+  mobile:
+    - eight one zero five five five zero one two three
+  email:
+    - ravi dot reddy at example dot invalid
+  occupation:
+    - what counts as business here?
+    - business
+  income_band:
+    - five to ten lakh
+
+responses:
+  affirm: yes that is correct
+  deny: no that is not right

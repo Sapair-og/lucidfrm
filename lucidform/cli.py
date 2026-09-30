@@ -56,6 +56,37 @@ def help_build() -> None:
     typer.echo(f"embedded in {time.perf_counter() - started:.0f}s -> {out}")
 
 
+@help_app.command("eval")
+def help_eval(
+    pause: float = typer.Option(1.0, help="Seconds between questions (free-tier pacing)."),
+) -> None:
+    """Run the help agent over the 30-question set + 6 controls (live)."""
+    from lucidform.help import evaluate
+    from lucidform.help.answer import default_index_dir, load_agent
+    from lucidform.schema import loader
+
+    settings = get_settings()
+    agent = load_agent()
+    if agent is None:
+        typer.echo("no help index yet. Build it: lucidform help build")
+        raise typer.Exit(2)
+    items = evaluate.load_set(default_index_dir() / "eval_questions.yaml")
+    rows = evaluate.run(agent, loader.load(), items, pause_s=pause)
+    summary = evaluate.summarise(rows)
+    meta = {"help_model": agent.client.model, "embedder": agent.index.embedder.name, "k": agent.k}
+    rows_path, summary_path = evaluate.write(rows, summary, settings.results_dir, meta)
+
+    for r in rows:
+        flag = "hit " if r.hit else ("    " if r.kind == "control" else "MISS")
+        typer.echo(f"{r.qid} {flag} {r.source:5s} {r.fallback_reason:24s} {r.question[:60]}")
+    typer.echo("")
+    for key in ("retrieval_hit_at_k", "answer_rate", "gold_citation_rate", "control_refusal_rate",
+                "latency_ms_p50", "latency_ms_p95"):
+        typer.echo(f"  {key:22s} {summary[key]}")
+    typer.echo(f"  fallbacks              {summary['fallbacks']}")
+    typer.echo(f"\n  {rows_path}\n  {summary_path}")
+
+
 @help_app.command("ask")
 def help_ask(
     field: str = typer.Option(..., "--field", "-f", help="Field id, e.g. pan."),
@@ -110,6 +141,12 @@ def replay_cmd(
     fresh: bool = typer.Option(
         False, "--fresh", help="Delete existing run logs first."
     ),
+    extended: bool = typer.Option(
+        False, "--extended", help="Also run the live-only extended personas (needs --live)."
+    ),
+    runs_dir: Path = typer.Option(
+        None, "--runs-dir", help="Where to write session logs (keep live and offline apart)."
+    ),
 ) -> None:
     """Run personas through the whole pipeline and record the sessions.
 
@@ -122,20 +159,28 @@ def replay_cmd(
     from lucidform.schema import loader
 
     settings = get_settings()
+    if extended and replay:
+        # The extended set has no offline fixtures on purpose: its value is in
+        # what a real model does with it.
+        typer.echo("--extended personas have no offline corpus; add --live")
+        raise typer.Exit(2)
     schema = loader.load()
     client = _extraction_client(replay)
     helper = _help_agent(replay)
 
-    everyone = {p.persona_id: p for p in load_all()}
+    pool = load_all() + (load_all(settings.extended_personas_dir) if extended else [])
+    everyone = {p.persona_id: p for p in pool}
     chosen = list(personas) if personas else list(everyone)
     unknown = [p for p in chosen if p not in everyone]
     if unknown:
         typer.echo(f"unknown persona(s): {unknown}. Known: {list(everyone)}")
         raise typer.Exit(2)
 
+    out_dir = Path(runs_dir or settings.runs_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     if fresh:
         removed = 0
-        for old in settings.runs_dir.glob("*.jsonl"):
+        for old in out_dir.glob("*.jsonl"):
             old.unlink()
             removed += 1
         typer.echo(f"removed {removed} existing run log(s)")
@@ -144,7 +189,8 @@ def replay_cmd(
     for _ in range(repeat):
         for persona_id in chosen:
             run = run_persona(
-                everyone[persona_id], schema, client, lang=lang, echo=False, helper=helper
+                everyone[persona_id], schema, client, runs_dir=out_dir, lang=lang,
+                echo=False, helper=helper,
             )
             result = run.result
             escaped = run.escaped_errors
@@ -163,8 +209,8 @@ def replay_cmd(
             for field_id, truth, got in escaped:
                 typer.echo(f"    {field_id}: expected {truth!r}, committed {got!r}")
 
-    typer.echo(f"\nlogs in {settings.runs_dir}")
-    typer.echo("reduce them with: lucidform metrics")
+    typer.echo(f"\nlogs in {out_dir}")
+    typer.echo(f"reduce them with: lucidform metrics --runs {out_dir}")
     raise typer.Exit(1 if escaped_total else 0)
 
 
