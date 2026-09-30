@@ -69,6 +69,7 @@ class Turn:
     ambiguous: bool | None = None
     validation_status: str = ""
     validation_reason: str = ""
+    offered: bool = False  # a suggestion was offered after the gate rejected the proposal
     normalized_value: str = ""
     readback_value: str = ""
     confirmed: bool | None = None
@@ -211,11 +212,18 @@ def parse_session(
                 )
 
         elif event == Event.VALIDATION.value:
-            turn.validation_status = payload.get("status", "")
-            turn.validation_reason = payload.get("reason") or ""
+            # The first verdict in a turn is the gate's verdict on what the
+            # model proposed. A later one in the same turn is a suggestion the
+            # system offered after rejecting it (LF-005/LF-009): it decides
+            # what can be committed, but it is not a verdict on the model.
+            if not turn.validation_status:
+                turn.validation_status = payload.get("status", "")
+                turn.validation_reason = payload.get("reason") or ""
+                if turn.validation_status == "reject":
+                    outcome(field_id).rejections.append(turn.validation_reason)
+            else:
+                turn.offered = True
             turn.normalized_value = payload.get("normalized_value", "")
-            if turn.validation_status == "reject":
-                outcome(field_id).rejections.append(turn.validation_reason)
 
         elif event == Event.READBACK.value:
             turn.readback_value = payload.get("value", "")

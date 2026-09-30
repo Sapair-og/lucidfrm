@@ -107,6 +107,10 @@ keyless here and won't use it — Exa `web_fetch` worked for blocked pages).
   exactly after case-folding. That is reshaping. Adding a synonym the prompt does
   not offer ("mard", "kheti") or any fuzzy match is repairing -- don't. The loader
   refuses a name declared for two options.
+  **Offering** is different (docs/ISSUES.md LF-005/LF-009): `suggest_names`, edit
+  distance and amount→band only *suggest* a value after the gate rejects; it is
+  read back and committed only on an explicit yes. Never move a suggest_name into
+  enum_names.
 - The phone prefix strip only fires when removing it leaves exactly 10 digits,
   so a genuine `91`-prefixed subscriber number keeps its leading 9.
 - PAN's 5th character is the surname initial — that is a *cross-field* check

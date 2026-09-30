@@ -96,6 +96,12 @@ class FieldSpec:
     # Words a user may say to name this field at the final review ("change
     # city"). Human-authored, matched as whole phrases, longest wins.
     aliases: tuple[str, ...] = ()
+    # LF-009: words that suggest an option without being it ("housewife" ->
+    # Homemaker). Offered for an explicit yes, never accepted silently --
+    # unlike enum_names, which *are* the option.
+    suggest_names: dict[str, tuple[str, ...]] = field(default_factory=dict)
+    # LF-005: the options are amount ranges; a stated amount suggests one.
+    amount_bands: bool = False
 
     def name(self, lang: str) -> str:
         """What to call this field out loud.
@@ -166,12 +172,17 @@ class ValidationReport:
     detail: str = ""
     checks: tuple[Check, ...] = ()
     created_at: str = field(default_factory=_now)
+    # A value the user may have meant (kerela -> Kerala). Only on a rejection;
+    # it is offered as a new candidate, never written by the gate.
+    suggestion: str | None = None
 
     def __post_init__(self) -> None:
         if self.status is Status.REJECT and self.reason is None:
             raise ValueError("a rejection must carry a reason code")
         if self.status is Status.PASS and self.reason is not None:
             raise ValueError("a pass must not carry a reason code")
+        if self.status is Status.PASS and self.suggestion is not None:
+            raise ValueError("a pass must not carry a suggestion")
 
     @property
     def passed(self) -> bool:

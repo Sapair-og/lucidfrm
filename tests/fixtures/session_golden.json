@@ -88,7 +88,8 @@
       "field_id": "full_name",
       "normalized_value": "Ramesh Kumar Sharma",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -201,7 +202,8 @@
       "field_id": "father_name",
       "normalized_value": "Suresh Kumar Sharma",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -319,7 +321,8 @@
       "field_id": "dob",
       "normalized_value": "1987-03-14",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -427,7 +430,8 @@
       "field_id": "gender",
       "normalized_value": "Male",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -545,7 +549,8 @@
       "field_id": "pan",
       "normalized_value": "AKQPS3417M",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -663,7 +668,8 @@
       "field_id": "aadhaar",
       "normalized_value": "747910984992",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -776,7 +782,8 @@
       "field_id": "address_line",
       "normalized_value": "42 Nehru Marg, Bapu Nagar",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -894,7 +901,8 @@
       "field_id": "pin",
       "normalized_value": "302015",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -1012,7 +1020,8 @@
       "field_id": "city",
       "normalized_value": "Jaipur",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -1055,6 +1064,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Rajasthan"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -1090,7 +1108,8 @@
       "field_id": "state",
       "normalized_value": "Rajasthan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -1203,7 +1222,8 @@
       "field_id": "mobile",
       "normalized_value": "9812345607",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -1302,6 +1322,11 @@
         "passed": true
        },
        {
+        "detail": "not checked: no resolver",
+        "name": "email_domain",
+        "passed": false
+       },
+       {
         "detail": "",
         "name": "unambiguous",
         "passed": true
@@ -1316,7 +1341,8 @@
       "field_id": "email",
       "normalized_value": "ramesh.sharma@example.invalid",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -1414,48 +1440,14 @@
       "field_id": "occupation",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "business"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "occupation",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Business"
+      "status": "reject",
+      "suggestion": "Business"
      }
     },
     {
      "event": "validation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -1483,13 +1475,14 @@
       "field_id": "occupation",
       "normalized_value": "Business",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "I have Occupation as: Business. Is that correct?",
       "value": "Business"
@@ -1498,7 +1491,7 @@
     {
      "event": "user_utterance",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "yes that is correct"
@@ -1507,7 +1500,7 @@
     {
      "event": "confirmation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
       "explicit": true,
@@ -1581,48 +1574,14 @@
       "field_id": "income_band",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "five to ten lakh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "income_band",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "5-10 Lakh"
+      "status": "reject",
+      "suggestion": "5-10 Lakh"
      }
     },
     {
      "event": "validation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -1650,13 +1609,14 @@
       "field_id": "income_band",
       "normalized_value": "5-10 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "I have Annual income band as: 5-10 Lakh. Is that correct?",
       "value": "5-10 Lakh"
@@ -1665,7 +1625,7 @@
     {
      "event": "user_utterance",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "yes that is correct"
@@ -1674,7 +1634,7 @@
     {
      "event": "confirmation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
       "explicit": true,
@@ -2133,15 +2093,9 @@
     },
     {
      "speaker": "system",
-     "text": "What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.",
-     "kind": "prompt",
+     "text": "I think you meant Business.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "business",
-     "kind": "value",
-     "field_id": "occupation"
     },
     {
      "speaker": "system",
@@ -2181,15 +2135,9 @@
     },
     {
      "speaker": "system",
-     "text": "Roughly what is your yearly income — below one lakh, one to five lakh, five to ten lakh, ten to twenty-five lakh, or above twenty-five lakh?",
-     "kind": "prompt",
+     "text": "I think you meant 5-10 Lakh.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "five to ten lakh",
-     "kind": "value",
-     "field_id": "income_band"
     },
     {
      "speaker": "system",
@@ -2413,7 +2361,8 @@
       "field_id": "full_name",
       "normalized_value": "Lakshmi Devi Nair",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -2526,7 +2475,8 @@
       "field_id": "father_name",
       "normalized_value": "Krishnan Nair",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -2644,7 +2594,8 @@
       "field_id": "dob",
       "normalized_value": "1994-11-02",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -2752,7 +2703,8 @@
       "field_id": "gender",
       "normalized_value": "Female",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -2855,7 +2807,8 @@
       "field_id": "pan",
       "normalized_value": "",
       "reason": "format",
-      "status": "reject"
+      "status": "reject",
+      "suggestion": null
      }
     },
     {
@@ -2934,7 +2887,8 @@
       "field_id": "pan",
       "normalized_value": "BFTPN8206C",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3052,7 +3006,8 @@
       "field_id": "aadhaar",
       "normalized_value": "544211033660",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3165,7 +3120,8 @@
       "field_id": "address_line",
       "normalized_value": "7B Marine Drive, Ernakulam",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3283,7 +3239,8 @@
       "field_id": "pin",
       "normalized_value": "682016",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3401,7 +3358,8 @@
       "field_id": "city",
       "normalized_value": "Kollam",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3517,7 +3475,8 @@
       "field_id": "city",
       "normalized_value": "Kochi",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3560,6 +3519,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Kerala"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -3595,7 +3563,8 @@
       "field_id": "state",
       "normalized_value": "Kerala",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3708,7 +3677,8 @@
       "field_id": "mobile",
       "normalized_value": "7736540912",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3807,6 +3777,11 @@
         "passed": true
        },
        {
+        "detail": "not checked: no resolver",
+        "name": "email_domain",
+        "passed": false
+       },
+       {
         "detail": "",
         "name": "unambiguous",
         "passed": true
@@ -3821,7 +3796,8 @@
       "field_id": "email",
       "normalized_value": "l.nair@example.invalid",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -3929,7 +3905,8 @@
       "field_id": "occupation",
       "normalized_value": "Salaried",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -4037,7 +4014,8 @@
       "field_id": "income_band",
       "normalized_value": "10-25 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -4812,7 +4790,8 @@
       "field_id": "full_name",
       "normalized_value": "Abdul Rahim Khan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -4925,7 +4904,8 @@
       "field_id": "father_name",
       "normalized_value": "Mohammad Yusuf Khan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5043,7 +5023,8 @@
       "field_id": "dob",
       "normalized_value": "1979-06-21",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5151,7 +5132,8 @@
       "field_id": "gender",
       "normalized_value": "Male",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5312,7 +5294,8 @@
       "field_id": "pan",
       "normalized_value": "CJMPK1953R",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5430,7 +5413,8 @@
       "field_id": "aadhaar",
       "normalized_value": "771740876250",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5543,7 +5527,8 @@
       "field_id": "address_line",
       "normalized_value": "15 Hazratganj, Near Post Office",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5661,7 +5646,8 @@
       "field_id": "pin",
       "normalized_value": "226001",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5779,7 +5765,8 @@
       "field_id": "city",
       "normalized_value": "Lucknow",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5822,6 +5809,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Uttar Pradesh"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -5857,7 +5853,8 @@
       "field_id": "state",
       "normalized_value": "Uttar Pradesh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -5970,7 +5967,8 @@
       "field_id": "mobile",
       "normalized_value": "8299170453",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -6112,48 +6110,14 @@
       "field_id": "occupation",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "self employed"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "occupation",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Self-employed"
+      "status": "reject",
+      "suggestion": "Self-employed"
      }
     },
     {
      "event": "validation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -6181,13 +6145,14 @@
       "field_id": "occupation",
       "normalized_value": "Self-employed",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "I have Occupation as: Self-employed. Is that correct?",
       "value": "Self-employed"
@@ -6196,7 +6161,7 @@
     {
      "event": "user_utterance",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "haan, sahi hai"
@@ -6205,7 +6170,7 @@
     {
      "event": "confirmation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^haan sahi hai$'",
       "explicit": true,
@@ -6279,48 +6244,14 @@
       "field_id": "income_band",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "one to five lakh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "income_band",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "1-5 Lakh"
+      "status": "reject",
+      "suggestion": "1-5 Lakh"
      }
     },
     {
      "event": "validation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -6348,13 +6279,14 @@
       "field_id": "income_band",
       "normalized_value": "1-5 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "I have Annual income band as: 1-5 Lakh. Is that correct?",
       "value": "1-5 Lakh"
@@ -6363,7 +6295,7 @@
     {
      "event": "user_utterance",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "haan, sahi hai"
@@ -6372,7 +6304,7 @@
     {
      "event": "confirmation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^haan sahi hai$'",
       "explicit": true,
@@ -6837,15 +6769,9 @@
     },
     {
      "speaker": "system",
-     "text": "What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.",
-     "kind": "prompt",
+     "text": "I think you meant Self-employed.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "self employed",
-     "kind": "value",
-     "field_id": "occupation"
     },
     {
      "speaker": "system",
@@ -6885,15 +6811,9 @@
     },
     {
      "speaker": "system",
-     "text": "Roughly what is your yearly income — below one lakh, one to five lakh, five to ten lakh, ten to twenty-five lakh, or above twenty-five lakh?",
-     "kind": "prompt",
+     "text": "I think you meant 1-5 Lakh.",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "one to five lakh",
-     "kind": "value",
-     "field_id": "income_band"
     },
     {
      "speaker": "system",
@@ -7113,7 +7033,8 @@
       "field_id": "full_name",
       "normalized_value": "Ramesh Kumar Sharma",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7226,7 +7147,8 @@
       "field_id": "father_name",
       "normalized_value": "Suresh Kumar Sharma",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7344,7 +7266,8 @@
       "field_id": "dob",
       "normalized_value": "1987-03-14",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7452,7 +7375,8 @@
       "field_id": "gender",
       "normalized_value": "Male",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7570,7 +7494,8 @@
       "field_id": "pan",
       "normalized_value": "AKQPS3417M",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7688,7 +7613,8 @@
       "field_id": "aadhaar",
       "normalized_value": "747910984992",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7801,7 +7727,8 @@
       "field_id": "address_line",
       "normalized_value": "42 Nehru Marg, Bapu Nagar",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -7919,7 +7846,8 @@
       "field_id": "pin",
       "normalized_value": "302015",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -8037,7 +7965,8 @@
       "field_id": "city",
       "normalized_value": "Jaipur",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -8080,6 +8009,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Rajasthan"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -8115,7 +8053,8 @@
       "field_id": "state",
       "normalized_value": "Rajasthan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -8228,7 +8167,8 @@
       "field_id": "mobile",
       "normalized_value": "9812345607",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -8327,6 +8267,11 @@
         "passed": true
        },
        {
+        "detail": "not checked: no resolver",
+        "name": "email_domain",
+        "passed": false
+       },
+       {
         "detail": "",
         "name": "unambiguous",
         "passed": true
@@ -8341,7 +8286,8 @@
       "field_id": "email",
       "normalized_value": "ramesh.sharma@example.invalid",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -8439,48 +8385,14 @@
       "field_id": "occupation",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "business"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "occupation",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Business"
+      "status": "reject",
+      "suggestion": "Business"
      }
     },
     {
      "event": "validation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -8508,13 +8420,14 @@
       "field_id": "occupation",
       "normalized_value": "Business",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "आपका व्यवसाय है: Business। क्या यह सही है?",
       "value": "Business"
@@ -8523,7 +8436,7 @@
     {
      "event": "user_utterance",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "yes that is correct"
@@ -8532,7 +8445,7 @@
     {
      "event": "confirmation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
       "explicit": true,
@@ -8606,48 +8519,14 @@
       "field_id": "income_band",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "five to ten lakh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "income_band",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "5-10 Lakh"
+      "status": "reject",
+      "suggestion": "5-10 Lakh"
      }
     },
     {
      "event": "validation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -8675,13 +8554,14 @@
       "field_id": "income_band",
       "normalized_value": "5-10 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "आपका वार्षिक आय है: 5-10 Lakh। क्या यह सही है?",
       "value": "5-10 Lakh"
@@ -8690,7 +8570,7 @@
     {
      "event": "user_utterance",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "yes that is correct"
@@ -8699,7 +8579,7 @@
     {
      "event": "confirmation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^(yes )?(that|thats|that is|this|this is|it|it is|its) (is )?(correct|right)$'",
       "explicit": true,
@@ -9158,15 +9038,9 @@
     },
     {
      "speaker": "system",
-     "text": "आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।",
-     "kind": "prompt",
+     "text": "शायद आपका मतलब Business था।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "business",
-     "kind": "value",
-     "field_id": "occupation"
     },
     {
      "speaker": "system",
@@ -9206,15 +9080,9 @@
     },
     {
      "speaker": "system",
-     "text": "आपकी वार्षिक आय लगभग कितनी है — एक लाख से कम, एक से पाँच लाख, पाँच से दस लाख, दस से पच्चीस लाख, या पच्चीस लाख से अधिक?",
-     "kind": "prompt",
+     "text": "शायद आपका मतलब 5-10 Lakh था।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "five to ten lakh",
-     "kind": "value",
-     "field_id": "income_band"
     },
     {
      "speaker": "system",
@@ -9438,7 +9306,8 @@
       "field_id": "full_name",
       "normalized_value": "Lakshmi Devi Nair",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -9551,7 +9420,8 @@
       "field_id": "father_name",
       "normalized_value": "Krishnan Nair",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -9669,7 +9539,8 @@
       "field_id": "dob",
       "normalized_value": "1994-11-02",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -9777,7 +9648,8 @@
       "field_id": "gender",
       "normalized_value": "Female",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -9880,7 +9752,8 @@
       "field_id": "pan",
       "normalized_value": "",
       "reason": "format",
-      "status": "reject"
+      "status": "reject",
+      "suggestion": null
      }
     },
     {
@@ -9959,7 +9832,8 @@
       "field_id": "pan",
       "normalized_value": "BFTPN8206C",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10077,7 +9951,8 @@
       "field_id": "aadhaar",
       "normalized_value": "544211033660",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10190,7 +10065,8 @@
       "field_id": "address_line",
       "normalized_value": "7B Marine Drive, Ernakulam",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10308,7 +10184,8 @@
       "field_id": "pin",
       "normalized_value": "682016",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10426,7 +10303,8 @@
       "field_id": "city",
       "normalized_value": "Kollam",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10542,7 +10420,8 @@
       "field_id": "city",
       "normalized_value": "Kochi",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10585,6 +10464,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Kerala"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -10620,7 +10508,8 @@
       "field_id": "state",
       "normalized_value": "Kerala",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10733,7 +10622,8 @@
       "field_id": "mobile",
       "normalized_value": "7736540912",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10832,6 +10722,11 @@
         "passed": true
        },
        {
+        "detail": "not checked: no resolver",
+        "name": "email_domain",
+        "passed": false
+       },
+       {
         "detail": "",
         "name": "unambiguous",
         "passed": true
@@ -10846,7 +10741,8 @@
       "field_id": "email",
       "normalized_value": "l.nair@example.invalid",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -10954,7 +10850,8 @@
       "field_id": "occupation",
       "normalized_value": "Salaried",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -11062,7 +10959,8 @@
       "field_id": "income_band",
       "normalized_value": "10-25 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -11837,7 +11735,8 @@
       "field_id": "full_name",
       "normalized_value": "Abdul Rahim Khan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -11950,7 +11849,8 @@
       "field_id": "father_name",
       "normalized_value": "Mohammad Yusuf Khan",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12068,7 +11968,8 @@
       "field_id": "dob",
       "normalized_value": "1979-06-21",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12176,7 +12077,8 @@
       "field_id": "gender",
       "normalized_value": "Male",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12337,7 +12239,8 @@
       "field_id": "pan",
       "normalized_value": "CJMPK1953R",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12455,7 +12358,8 @@
       "field_id": "aadhaar",
       "normalized_value": "771740876250",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12568,7 +12472,8 @@
       "field_id": "address_line",
       "normalized_value": "15 Hazratganj, Near Post Office",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12686,7 +12591,8 @@
       "field_id": "pin",
       "normalized_value": "226001",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12804,7 +12710,8 @@
       "field_id": "city",
       "normalized_value": "Lucknow",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12847,6 +12754,15 @@
      }
     },
     {
+     "event": "field_asked",
+     "field_id": "state",
+     "turn_idx": 0,
+     "payload": {
+      "attempt": 0,
+      "proposal": "Uttar Pradesh"
+     }
+    },
+    {
      "event": "validation",
      "field_id": "state",
      "turn_idx": 0,
@@ -12882,7 +12798,8 @@
       "field_id": "state",
       "normalized_value": "Uttar Pradesh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -12995,7 +12912,8 @@
       "field_id": "mobile",
       "normalized_value": "8299170453",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
@@ -13137,48 +13055,14 @@
       "field_id": "occupation",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "occupation",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "self employed"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "occupation",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "Self-employed"
+      "status": "reject",
+      "suggestion": "Self-employed"
      }
     },
     {
      "event": "validation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -13206,13 +13090,14 @@
       "field_id": "occupation",
       "normalized_value": "Self-employed",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "आपका व्यवसाय है: Self-employed। क्या यह सही है?",
       "value": "Self-employed"
@@ -13221,7 +13106,7 @@
     {
      "event": "user_utterance",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "haan, sahi hai"
@@ -13230,7 +13115,7 @@
     {
      "event": "confirmation",
      "field_id": "occupation",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^haan sahi hai$'",
       "explicit": true,
@@ -13304,48 +13189,14 @@
       "field_id": "income_band",
       "normalized_value": "",
       "reason": "enum",
-      "status": "reject"
-     }
-    },
-    {
-     "event": "field_asked",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "attempt": 1
-     }
-    },
-    {
-     "event": "user_utterance",
-     "field_id": "income_band",
-     "turn_idx": 1,
-     "payload": {
-      "purpose": "value",
-      "text": "one to five lakh"
-     }
-    },
-    {
-     "event": "extraction",
-     "field_id": "income_band",
-     "turn_idx": null,
-     "payload": {
-      "alternatives": [],
-      "ambiguous": false,
-      "confidence": 0.94,
-      "error": null,
-      "grounded": true,
-      "grounding_detail": "",
-      "intent": "value",
-      "model": "expected",
-      "reported_confidence": 0.94,
-      "usage": {},
-      "value": "1-5 Lakh"
+      "status": "reject",
+      "suggestion": "1-5 Lakh"
      }
     },
     {
      "event": "validation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "checks": [
        {
@@ -13373,13 +13224,14 @@
       "field_id": "income_band",
       "normalized_value": "1-5 Lakh",
       "reason": null,
-      "status": "pass"
+      "status": "pass",
+      "suggestion": null
      }
     },
     {
      "event": "readback",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "spoken": "आपका वार्षिक आय है: 1-5 Lakh। क्या यह सही है?",
       "value": "1-5 Lakh"
@@ -13388,7 +13240,7 @@
     {
      "event": "user_utterance",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "purpose": "confirmation",
       "text": "haan, sahi hai"
@@ -13397,7 +13249,7 @@
     {
      "event": "confirmation",
      "field_id": "income_band",
-     "turn_idx": 1,
+     "turn_idx": 0,
      "payload": {
       "basis": "whole utterance matched '^haan sahi hai$'",
       "explicit": true,
@@ -13862,15 +13714,9 @@
     },
     {
      "speaker": "system",
-     "text": "आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।",
-     "kind": "prompt",
+     "text": "शायद आपका मतलब Self-employed था।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "self employed",
-     "kind": "value",
-     "field_id": "occupation"
     },
     {
      "speaker": "system",
@@ -13910,15 +13756,9 @@
     },
     {
      "speaker": "system",
-     "text": "आपकी वार्षिक आय लगभग कितनी है — एक लाख से कम, एक से पाँच लाख, पाँच से दस लाख, दस से पच्चीस लाख, या पच्चीस लाख से अधिक?",
-     "kind": "prompt",
+     "text": "शायद आपका मतलब 1-5 Lakh था।",
+     "kind": "explanation",
      "field_id": ""
-    },
-    {
-     "speaker": "user",
-     "text": "one to five lakh",
-     "kind": "value",
-     "field_id": "income_band"
     },
     {
      "speaker": "system",

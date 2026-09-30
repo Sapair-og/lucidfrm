@@ -65,3 +65,5 @@ review_unclear: >-
   name of the item to change.
 
 proposal: 'Your PIN code {pin} is in {place}.'
+
+suggestion: 'I think you meant {value}.'

@@ -396,13 +396,21 @@ def run_cmd(
         state, result = run.state, run.result
         typer.echo(f"\nlog: {run.log_path}")
     else:
+        from lucidform.netcheck import email_domain_ok
+
         log = EventLog(settings.runs_dir, meta={"lang": lang or settings.lang})
         channel = ConsoleChannel()
         state = FormState(log=log)
         session = Session(
             schema=schema,
             extractor=Extractor(client, schema, lang=lang or settings.lang, log=log),
-            gate=ValidationGate(schema, min_confidence=settings.min_confidence),
+            gate=ValidationGate(
+                schema,
+                min_confidence=settings.min_confidence,
+                # A live user: check that the email domain receives mail
+                # (LF-004). Persona replays keep their synthetic domains.
+                domain_check=None if replay else email_domain_ok,
+            ),
             state=state,
             input_channel=channel,
             output_channel=channel,

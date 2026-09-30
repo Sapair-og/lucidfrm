@@ -18,7 +18,7 @@ from __future__ import annotations
 import datetime as dt
 from typing import Mapping
 
-from lucidform.gate import crossfield, rules
+from lucidform.gate import crossfield, rules, suggest
 from lucidform.gate.checksums import aadhaar_valid
 from lucidform.models import (
     Candidate,
@@ -62,9 +62,16 @@ class ValidationGate:
         min_confidence: float = 0.55,
         *,
         today: dt.date | None = None,
+        domain_check=None,
     ) -> None:
         self.schema = schema
         self.min_confidence = min_confidence
+        # LF-004: `domain_check(domain) -> True | False | None` says whether a
+        # mail domain can receive email. Injected, because the gate itself
+        # reads no network: without one (offline tests, replays) the check is
+        # recorded as skipped. None from the checker (timeout, no DNS) also
+        # skips -- an unreachable resolver must never reject a real address.
+        self.domain_check = domain_check
         # Injectable so date-dependent rules are testable without freezing the
         # clock globally, and so a replayed session can be re-scored against
         # the date it actually ran on.
@@ -90,6 +97,11 @@ class ValidationGate:
         checks: list[Check] = []
 
         def reject(reason: Reason, detail: str) -> ValidationReport:
+            offer = None
+            if reason in (Reason.ENUM, Reason.FORMAT):
+                offer = suggest.suggest(candidate.value, field)
+                if offer is not None and offer == value:
+                    offer = None
             return ValidationReport(
                 status=Status.REJECT,
                 candidate_id=candidate.candidate_id,
@@ -98,6 +110,7 @@ class ValidationGate:
                 reason=reason,
                 detail=detail,
                 checks=tuple(checks),
+                suggestion=offer,
             )
 
         if field.decline_value and value == field.decline_value:
@@ -172,6 +185,26 @@ class ValidationGate:
             return None
         detail = rules.format_error(value, field)
         checks.append(Check("format", passed=detail is None, detail=detail or ""))
+        if detail is None and field.type is FieldType.EMAIL:
+            detail = self._email_domain(value, checks)
+        return detail
+
+    def _email_domain(self, value: str, checks: list[Check]) -> str | None:
+        domain = value.rpartition("@")[2]
+        typo = suggest.email_typo(domain)
+        if typo:
+            detail = f"{domain} looks like a misspelling of {typo}"
+            checks.append(Check("email_provider_typo", passed=False, detail=detail))
+            return detail
+        if self.domain_check is None:
+            checks.append(Check("email_domain", passed=False, detail="not checked: no resolver"))
+            return None
+        verdict = self.domain_check(domain)
+        if verdict is None:
+            checks.append(Check("email_domain", passed=False, detail="not checked: lookup failed"))
+            return None
+        detail = None if verdict else f"{domain} does not receive email; please check the address"
+        checks.append(Check("email_domain", passed=verdict, detail=detail or ""))
         return detail
 
     def _enum(self, value, field, candidate, committed, checks) -> str | None:

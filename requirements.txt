@@ -18,6 +18,9 @@ langgraph>=1.2
 rank-bm25>=0.2.2
 numpy>=2.0
 
+# Email domain check (LF-004), live sessions only
+dnspython>=2.6
+
 # CLI
 typer>=0.15
 

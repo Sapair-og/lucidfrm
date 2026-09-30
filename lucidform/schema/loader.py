@@ -204,6 +204,11 @@ def load(
                 decline_value=entry.get("decline_value"),
                 decline_offer=dict(entry.get("decline_offer", {})),
                 aliases=tuple(str(a) for a in entry.get("aliases", ())),
+                suggest_names={
+                    option: tuple(str(n) for n in names)
+                    for option, names in (entry.get("suggest_names") or {}).items()
+                },
+                amount_bands=bool(entry.get("amount_bands", False)),
             )
         )
 

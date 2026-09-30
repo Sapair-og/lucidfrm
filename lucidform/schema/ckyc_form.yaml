@@ -263,6 +263,15 @@ fields:
       Retired: [सेवानिवृत्त, sevanivritt]
       Agriculture: [कृषि, krishi]
       # No name for Other: the Hindi prompt does not offer it by name.
+    # Suggested (read back, needs a yes), never accepted as the option itself.
+    suggest_names:
+      Salaried: [job, naukri, service, employee, office, company, private job, government job, sarkari naukri]
+      Self-employed: [own work, apna kaam, freelancer, freelance, self employed]
+      Business: [shop, dukaan, dukan, trader, businessman, vyapari, dhandha]
+      Student: [studying, college, school, padhai]
+      Homemaker: [housewife, house wife, home maker, ghar ka kaam, gharelu]
+      Retired: [pension, pensioner, retire]
+      Agriculture: [farmer, farming, kheti, kisan, kheti baadi]
     prompt:
       en: What is your occupation? For example — salaried, self-employed, business, student, homemaker, retired, or agriculture.
       hi: आपका व्यवसाय क्या है? जैसे — नौकरीपेशा, स्वरोजगार, व्यापार, विद्यार्थी, गृहिणी, सेवानिवृत्त, या कृषि।
@@ -290,6 +299,7 @@ fields:
       5-10 Lakh: [पाँच से दस लाख, paanch se das lakh]
       10-25 Lakh: [दस से पच्चीस लाख, das se pachchees lakh]
       Above 25 Lakh: [पच्चीस लाख से अधिक, pachchees lakh se adhik]
+    amount_bands: true
     prompt:
       en: Roughly what is your yearly income — below one lakh, one to five lakh, five to ten lakh, ten to twenty-five lakh, or above twenty-five lakh?
       hi: आपकी वार्षिक आय लगभग कितनी है — एक लाख से कम, एक से पाँच लाख, पाँच से दस लाख, दस से पच्चीस लाख, या पच्चीस लाख से अधिक?

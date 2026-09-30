@@ -61,6 +61,7 @@ class TurnState(TypedDict, total=False):
     reviews: int
     approved: bool
     gone: bool  # the input channel ended (hang-up / EOF): nobody to revisit or review with
+    suggested: bool  # a suggestion was already offered for this utterance
 
 
 # Conditional edges: node -> {route label: destination}.
@@ -83,7 +84,7 @@ ROUTES: dict[str, dict[str, str]] = {
     },
     "explain": {"retry": "budget"},
     "decline": {"retry": "budget", "finish": "finish", "alternative": "gate"},
-    "gate": {"pass": "readback", "retry": "budget"},
+    "gate": {"pass": "readback", "retry": "budget", "suggest": "gate"},
     "listen_confirm": {"heard": "confirm", "gone": "finish"},
     "confirm": {"affirmed": "commit", "retry": "budget"},
 }
@@ -189,6 +190,13 @@ class SessionGraph:
         field, outcome = self._field(state), state["current"]
         outcome.proposed = True
         value = self._proposal(state)
+        # A proposal is a turn of its own: the user is asked something.
+        self.s.log.emit(
+            Event.FIELD_ASKED,
+            field_id=field.id,
+            turn_idx=outcome.attempts,
+            payload={"attempt": outcome.attempts, "proposal": value},
+        )
         self.s.output.say(
             self.s.strings.say("proposal", pin=self.s.state.get("pin"), place=value),
             kind=Kind.EXPLANATION,
@@ -241,7 +249,12 @@ class SessionGraph:
             route = "unclear"
         else:
             route = "value"
-        return {"extraction": extraction, "proposed": extraction.candidate, "route": route}
+        return {
+            "extraction": extraction,
+            "proposed": extraction.candidate,
+            "suggested": False,
+            "route": route,
+        }
 
     def explain(self, state: TurnState) -> dict:
         outcome = state["current"]
@@ -299,6 +312,22 @@ class SessionGraph:
             self.s.output.say(
                 self.s.strings.say("problem", detail=report.detail), kind=Kind.PROBLEM
             )
+            if report.suggestion and not state.get("suggested"):
+                # LF-005/LF-009: offer what they may have meant. It is a new
+                # candidate: through the gate again, read back, and saved only
+                # on an explicit yes. One suggestion per utterance, so a
+                # suggestion can never chain into another.
+                self.s.output.say(
+                    self.s.strings.say("suggestion", value=report.suggestion),
+                    kind=Kind.EXPLANATION,
+                )
+                offered = Candidate(
+                    field_id=field.id,
+                    value=report.suggestion,
+                    raw_utterance=candidate.raw_utterance,
+                    confidence=1.0,
+                )
+                return {"proposed": offered, "suggested": True, "report": report, "route": "suggest"}
             outcome.attempts += 1
             return {"candidate": None, "report": report, "route": "retry"}
         return {"candidate": candidate, "report": report, "route": "pass"}

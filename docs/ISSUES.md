@@ -25,12 +25,12 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-001 | Can't fill the official CKYC form | 5 | OPEN |
 | LF-002 | Weak Aadhaar validation (`999999999999` accepted) | 1 | FIXED |
 | LF-003 | PIN / city / state mismatch accepted | 2 | FIXED |
-| LF-004 | Email only syntax-checked | 3 | OPEN |
-| LF-005 | Income band not derived from a stated amount | 3 | OPEN |
+| LF-004 | Email only syntax-checked | 3 | FIXED |
+| LF-005 | Income band not derived from a stated amount | 3 | FIXED |
 | LF-006 | Session ends with required fields empty, no final review | 4 | FIXED |
 | LF-007 | Model silently drops/changes digits; grounding doesn't catch it | 1 | FIXED |
 | LF-008 | "I don't have a PAN" skips a required field | 1 | FIXED |
-| LF-009 | Near-miss answers (`kerela`, `housewife`) rejected with no suggestion | 3 | OPEN |
+| LF-009 | Near-miss answers (`kerela`, `housewife`) rejected with no suggestion | 3 | FIXED |
 
 ---
 
@@ -101,7 +101,19 @@ Source of the first batch: manual live run on 2026-09-30, session log
 - **Fix plan:** DNS lookup of the domain (MX, falling back to A). Unresolvable domains are rejected. Offline
   / DNS error → check skipped and logged (never a false reject). Typo suggestions for
   common providers (`gmial.com` -> `gmail.com?`). Mailbox existence is out of scope (needs OTP).
-- **Status:** OPEN
+- **Fix (branch `fix-3-email-income`):**
+  - `gate/suggest.email_typo`: a domain within 0.85 similarity of a common provider
+    (gmail.com, yahoo.co.in, rediffmail.com…) is rejected (`format`) and the corrected
+    address is **offered** (read back, needs yes).
+  - Domain check: `ValidationGate(domain_check=...)` is injected because the gate reads no network.
+    `lucidform/netcheck.email_domain_ok` requires an **MX record** (dnspython). NXDOMAIN or no MX →
+    reject ("does not receive email"). Timeout/DNS failure → skipped, never rejected.
+    `hhd.com` has a website but no MX, so it's rejected. Only the live interactive `run` injects it;
+    persona replays keep their synthetic `example.invalid` domains and record the check as skipped.
+  - `dnspython>=2.6` added to requirements.txt.
+- **Limit:** mailbox existence needs an OTP email (out of scope, decided 2026-09-30).
+- **Tests:** `tests/test_issues_phase3.py` (typo, no-MX reject, lookup failure passes, offline skip).
+- **Status:** FIXED
 
 ## LF-005 — Income band not derived from an amount
 - **Symptom:** `1 lakh`, `45 lakh` rejected as "not one of the options".
@@ -109,7 +121,16 @@ Source of the first batch: manual live run on 2026-09-30, session log
 - **Fix plan:** Deterministic amount parser (digits, `lakh`/`crore`/`hazaar`, Hindi/English
   number words, decimals) -> rupees -> band (lower bound inclusive). Read back as
   "45 lakh a year falls in Above 25 Lakh. Is that correct?"
-- **Status:** OPEN
+- **Fix (branch `fix-3-email-income`):** `gate/suggest.parse_amount` / `amount_band` (plain code):
+  digits with Indian grouping, decimals, English/Hindi number words, scales
+  (hundred/sau, thousand/hazaar/k, lakh/lac, crore/cr), and monthly → ×12 ("30 hazaar mahina").
+  A bare number word or a figure under 1,000 without a scale is not an amount (so "I **do** not
+  know" is not 2). Two numbers ("5 or 6 lakh") → no offer. Bands: upper bound inclusive
+  (1 lakh → 1-5 Lakh, 25 lakh → 10-25 Lakh, 45 lakh → Above 25 Lakh). Overlay flag
+  `amount_bands: true` on `income_band`. The gate still rejects the raw amount (`enum`) and
+  **offers** the band; it's saved only on yes.
+- **Tests:** `tests/test_issues_phase3.py`.
+- **Status:** FIXED
 
 ## LF-006 — Session ends incomplete, no final review
 - **Symptom:** PAN, mobile, and income left blank; the program ended and wrote the PDF anyway.
@@ -184,4 +205,18 @@ Source of the first batch: manual live run on 2026-09-30, session log
 - **Fix plan:** Deterministic synonym table (housewife -> Homemaker, kheti -> Agriculture…)
   plus edit-distance match against the enum, offered as a question ("Did you mean Kerala?").
   Commit only on an explicit yes.
-- **Status:** OPEN
+- **Fix (branch `fix-3-email-income`):** `ValidationReport.suggestion` (only on a rejection, never
+  on a pass). `gate/suggest.suggest`: (1) overlay `suggest_names` (human-written, e.g.
+  housewife→Homemaker, kheti→Agriculture, company→Salaried), matched as a whole phrase;
+  (2) `difflib` closest option at ≥0.8 with a unique best (kerela→Kerala). Graph: `gate
+  --suggest--> gate` with the offered `Candidate`, then read-back → yes. There's at most one offer per
+  utterance (`suggested` flag), and a denied offer is a normal attempt.
+  - `suggest_names` ≠ `enum_names`: enum_names *are* the option (accepted silently, reshaping);
+    suggest_names are only *offered*. Don't move entries between them.
+  - Metrics: the first `validation` in a turn is the gate's verdict on the model; a later one
+    is the offer (`Turn.offered`) and only updates the committable value. State proposals
+    (LF-003) now emit their own `field_asked`, so they're separate turns.
+  - Golden sessions re-recorded. Identical commits; p01/p03 own-words occupation/income
+    now resolve via the offer (two fewer turns each).
+- **Tests:** `tests/test_issues_phase3.py`.
+- **Status:** FIXED

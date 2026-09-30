@@ -63,3 +63,5 @@ review_unclear: >-
   नाम बताएँ।
 
 proposal: 'आपका पिन कोड {pin} {place} में है।'
+
+suggestion: 'शायद आपका मतलब {value} था।'
