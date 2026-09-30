@@ -1,1 +1,4 @@
 graphify-out/graph.json merge=graphify
+
+# Pinned corpus: hashed byte-for-byte in manifest.json, so never rewrite line endings
+data/help/sources/** -text
