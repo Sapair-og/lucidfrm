@@ -438,9 +438,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1790773199.635919,
-    "seen": 1790773223.8043792,
-    "ast_hash": "cef272977bdb0a7de9f695cf6c8956ee",
+    "mtime": 1790777216.9767187,
+    "seen": 1790777287.5712311,
+    "ast_hash": "a1185d3353ed9c24f73396711697a246",
     "semantic_hash": ""
   },
   "SPEC.md": {
@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "docs/paper-draft.md": {
-    "mtime": 1790775166.9384816,
-    "seen": 1790775885.8257031,
-    "ast_hash": "549d1f880960fe6684ed8d606797641e",
+    "mtime": 1790777097.243115,
+    "seen": 1790777287.5712528,
+    "ast_hash": "9ad5a7d019a555ce349913285a9024a5",
     "semantic_hash": ""
   },
   "lucidform/i18n/strings_en.yaml": {
@@ -660,15 +660,15 @@
     "semantic_hash": ""
   },
   "ROADMAP.md": {
-    "mtime": 1790772694.6198397,
-    "seen": 1790773223.8043802,
-    "ast_hash": "b17e2ad9c437fa0595a222ceb5e39526",
+    "mtime": 1790777221.6265864,
+    "seen": 1790777287.5712323,
+    "ast_hash": "e7b09dec751614fd2e33ca8e5c36b90a",
     "semantic_hash": ""
   },
   "docs/PROGRESS.md": {
-    "mtime": 1790772696.5827065,
-    "seen": 1790773223.8043904,
-    "ast_hash": "d5ddb2df7b2d063424cb3875c33473fd",
+    "mtime": 1790777234.4686036,
+    "seen": 1790777287.5712483,
+    "ast_hash": "c4c98c920f0c1e61edce90c3b3bcd139",
     "semantic_hash": ""
   },
   "docs/TEAM_GUIDE.md": {
@@ -723,6 +723,30 @@
     "mtime": 1790775197.7709045,
     "seen": 1790775885.825699,
     "ast_hash": "f5fee7617c771f092f4cd47e711195c3",
+    "semantic_hash": ""
+  },
+  "tools/paper/build.js": {
+    "mtime": 1790777154.6872718,
+    "seen": 1790777287.571212,
+    "ast_hash": "9644b9795c212c80838bd1170f52d095",
+    "semantic_hash": ""
+  },
+  "tools/paper/package.json": {
+    "mtime": 1790776311.3187048,
+    "seen": 1790777287.5712135,
+    "ast_hash": "83407c9694c5e13cb9e6984becda07f5",
+    "semantic_hash": ""
+  },
+  "docs/LucidForm_Paper_Draft.pdf": {
+    "mtime": 1790777183.422399,
+    "seen": 1790777287.5712628,
+    "ast_hash": "be752f356d4e3095483660337971e706",
+    "semantic_hash": ""
+  },
+  "tests/conftest.py": {
+    "mtime": 1790777479.8816009,
+    "seen": 1790777567.6140773,
+    "ast_hash": "7f1e82e75b86cfa7d5cf2f73ac7cfc18",
     "semantic_hash": ""
   }
 }
