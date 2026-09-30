@@ -45,3 +45,14 @@ Append-only. Newest entry at the bottom. Each entry: who, phase, done, left, got
   - The one live "false positive" is "5/1/87" flagged ambiguous (correct reading, intended re-ask).
   - Run-to-run nondeterminism: "pan card nahi hai toh kya karu?" was a decline once, a question once.
   - Free tier: `help build` ~5 min (paced); live run of 8 personas ~30 min.
+
+---
+### 2026-09-30 (night) · Shubh (+Claude) · Pre-push audit
+- **Hygiene:** no secrets in any commit; no caches/node_modules/.env tracked; no AI co-author lines.
+- **Fresh clone was broken** (246 errors): the blank form PDF is a gitignored artefact, and Windows
+  autocrlf changed the pinned corpus bytes. Fixed with `tests/conftest.py` (builds the PDF) and
+  `.gitattributes` (`data/help/sources/** -text`). A fresh clone now passes 489/489.
+- **Code review (10 findings), all fixed:** model-call failures no longer crash a session; retries
+  cover transport errors and 429 hints; help-eval scorer uses exact gold matching and excludes errored
+  controls (recorded numbers unchanged); enum-name validation hardened; help-isolation test closed.
+- **Next:** optional `/code-review ultra`; push once the team repo location is decided.
