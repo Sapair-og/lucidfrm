@@ -101,8 +101,23 @@ fields:
     depends_on: [full_name]
     decline_value: Form 60
     decline_offer:
-      en: If you do not have a PAN, you can give Form 60 instead. It is a signed declaration that you do not have a PAN, and the bank accepts it in place of the number.
-      hi: अगर आपके पास पैन नहीं है, तो आप उसकी जगह फॉर्म 60 दे सकते हैं। यह एक हस्ताक्षरित घोषणा है कि आपके पास पैन नहीं है, और बैंक इसे पैन नंबर की जगह स्वीकार करता है।
+      en: If you do not have a PAN, you can give Form 60 instead. It is a signed declaration that you do not have a PAN, and the bank accepts it in place of the number. If you do have a PAN but cannot find the number, say "no" and then "I can't find it".
+      hi: अगर आपके पास पैन नहीं है, तो आप उसकी जगह फॉर्म 60 दे सकते हैं। यह एक हस्ताक्षरित घोषणा है कि आपके पास पैन नहीं है, और बैंक इसे पैन नंबर की जगह स्वीकार करता है। अगर पैन है पर नंबर नहीं मिल रहा, तो "नहीं" कहें और फिर "नंबर नहीं मिल रहा" कहें।
+    find_help:
+      en: |-
+        You can find your PAN number in any of these ways.
+        One: open the DigiLocker app or digilocker.gov.in, sign in with your Aadhaar, search for "PAN Verification Record" and get it. Your PAN number is shown there.
+        Two: if your PAN is linked to your Aadhaar, go to incometax.gov.in, choose Instant e-PAN, then Check Status or Download PAN. Enter your Aadhaar number and the OTP sent to your phone. Your PAN is shown and you can download it.
+        Three: look at an old income tax return, a Form 16 from your employer, or your bank passbook. The PAN is often printed there.
+        Video help: https://www.youtube.com/results?search_query=download+e-PAN+using+Aadhaar+incometax.gov.in
+        When you have the number, tell me.
+      hi: |-
+        आप अपना पैन नंबर इनमें से किसी भी तरीके से पता कर सकते हैं।
+        एक: डिजीलॉकर ऐप या digilocker.gov.in खोलें, आधार से लॉग इन करें, "PAN Verification Record" खोजें और उसे प्राप्त करें। वहाँ आपका पैन नंबर दिखेगा।
+        दो: अगर आपका पैन आधार से जुड़ा है, तो incometax.gov.in पर जाएँ, Instant e-PAN चुनें, फिर Check Status या Download PAN। अपना आधार नंबर और फोन पर आया ओटीपी डालें। आपका पैन दिखेगा और आप उसे डाउनलोड कर सकते हैं।
+        तीन: कोई पुराना इनकम टैक्स रिटर्न, नौकरी देने वाले का फॉर्म 16, या बैंक पासबुक देखें। पैन अक्सर वहाँ छपा होता है।
+        वीडियो मदद: https://www.youtube.com/results?search_query=download+e-PAN+using+Aadhaar+incometax.gov.in
+        नंबर मिल जाए तो मुझे बताएँ।
     prompt:
       en: What is your PAN number?
       hi: आपका पैन नंबर क्या है?
@@ -119,6 +134,21 @@ fields:
     type: aadhaar
     required: true
     max_length: 12
+    find_help:
+      en: |-
+        You can find your Aadhaar number in any of these ways.
+        One: go to myaadhaar.uidai.gov.in/retrieve-eid-uid, enter your name and the mobile number linked to your Aadhaar, and verify the OTP. Your Aadhaar number is sent to you by SMS. It is free.
+        Two: open the mAadhaar app or DigiLocker and sign in; your Aadhaar card is shown there.
+        Three: call the UIDAI helpline 1947, or visit an Aadhaar centre with your ID.
+        Video help: https://www.youtube.com/results?search_query=retrieve+lost+aadhaar+number+uidai
+        When you have the number, tell me.
+      hi: |-
+        आप अपना आधार नंबर इनमें से किसी भी तरीके से पता कर सकते हैं।
+        एक: myaadhaar.uidai.gov.in/retrieve-eid-uid पर जाएँ, अपना नाम और आधार से जुड़ा मोबाइल नंबर डालें, और ओटीपी से पुष्टि करें। आपका आधार नंबर एसएमएस से आ जाएगा। यह मुफ़्त है।
+        दो: एमआधार ऐप या डिजीलॉकर खोलें और लॉग इन करें; वहाँ आपका आधार कार्ड दिखेगा।
+        तीन: यूआईडीएआई हेल्पलाइन 1947 पर कॉल करें, या पहचान पत्र लेकर आधार केंद्र जाएँ।
+        वीडियो मदद: https://www.youtube.com/results?search_query=retrieve+lost+aadhaar+number+uidai
+        नंबर मिल जाए तो मुझे बताएँ।
     prompt:
       en: What is your Aadhaar number?
       hi: आपका आधार नंबर क्या है?

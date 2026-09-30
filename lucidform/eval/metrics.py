@@ -204,7 +204,7 @@ def parse_session(
             turn.grounded = payload.get("grounded")
             turn.ambiguous = payload.get("ambiguous")
             turn.extraction_ms = record.get("latency_ms")
-            if turn.intent == "question":
+            if turn.intent in ("question", "find"):
                 outcome(field_id).questions += 1
             if persona and turn.proposed_a_value:
                 turn.proposal_correct = _is_correct(

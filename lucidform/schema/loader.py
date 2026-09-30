@@ -247,6 +247,7 @@ def _build(overlay: dict[str, Any], parsed: dict[str, dict[str, Any]], strict: b
                     for dep, allowed in (entry.get("ask_if") or {}).items()
                 },
                 date_future=bool(entry.get("date_future", False)),
+                find_help=dict(entry.get("find_help", {})),
             )
         )
 

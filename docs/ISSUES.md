@@ -33,6 +33,7 @@ Source of the first batch: manual live run on 2026-09-30, session log
 | LF-009 | Near-miss answers (`kerela`, `housewife`) rejected with no suggestion | 3 | FIXED |
 | LF-010 | A valid option the model was unsure of ("voter card") is re-asked blindly | 5 | FIXED |
 | LF-011 | Follow-ups found while fixing the above | — | OPEN |
+| LF-012 | User has a PAN/Aadhaar but can't find the number; no guidance | 6 | FIXED |
 
 ---
 
@@ -279,3 +280,31 @@ Source of the first batch: manual live run on 2026-09-30, session log
   the region check (LF-003).
 - Paper/README numbers: offline Table II is unchanged, but live figures predate these fixes
   and should be re-measured (`replay --live`).
+
+## LF-012 — "I have a PAN but can't find the number" gets no guidance
+- **Symptom (requested 2026-10-01):** the help agent explains *what* a PAN is, but a user who has
+  one and doesn't know the number got no way to find it. Worse, "I don't have the number" could be
+  classified as a decline, which offers Form 60 to someone who has a PAN.
+- **Fix (branch `fix-6-find-help`):**
+  - New extraction intent `find` (`extract/schema.py`, prompt rule): has the document but doesn't
+    know or can't find the number, or asks how to find or download it. It's distinct from `decline`
+    and `question`.
+  - Overlay key `find_help` (en/hi), human-written, **official links only**, checked reachable on
+    2026-10-01: PAN via DigiLocker ("PAN Verification Record"), incometax.gov.in → Instant e-PAN →
+    Check Status/Download PAN (Aadhaar + OTP), or old ITR/Form 16/passbook. Aadhaar via
+    myaadhaar.uidai.gov.in/retrieve-eid-uid, mAadhaar/DigiLocker, or helpline 1947. The NSDL e-PAN
+    page timed out and was left out.
+  - Video help is a **YouTube search link**, not a specific video: a single video can't be vetted
+    for accuracy or availability over time, and the search always works.
+  - Graph: `extract --find--> find_help --> budget`. It speaks the guide, logs `jargon_explained`
+    with `help: find`, and asks again. It shares the `max_questions` budget (help isn't a failed
+    attempt). A field without `find_help` falls back to the normal explanation. The PAN `decline_offer`
+    now tells people with a PAN to say "I can't find it".
+  - Metrics count `find` turns as help requests, like questions.
+- **Verified live:** Gemini returned `find` for "mere paas pan hai par number yaad nahi",
+  "I have a PAN card but I lost it" and "pan number kaise pata karu"; `decline` for "I don't have
+  a PAN"; `question` for "pan kya hota hai".
+- **Limit:** links are read out as text. For a voice-only user they should also be sent by
+  SMS/WhatsApp (future work). The Hindi text needs native review (LF-011).
+- **Tests:** `tests/test_issues_phase6.py`.
+- **Status:** FIXED

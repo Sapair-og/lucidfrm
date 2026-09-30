@@ -603,6 +603,7 @@ def extract_cmd(
         reason = {
             Intent.QUESTION: "the user asked what the field means; explain it and ask again",
             Intent.DECLINE: "the user declined this field",
+            Intent.FIND: "the user has one but cannot find the number; say how to look it up",
             Intent.UNCLEAR: "nothing usable was heard; ask again",
         }.get(ex.intent, "no value was proposed")
         typer.echo(f"\n  no candidate -- {reason}\n")

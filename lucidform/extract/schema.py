@@ -36,6 +36,10 @@ class Intent(str, enum.Enum):
     DECLINE = "decline"
     # Speech was heard but no value could be recovered from it.
     UNCLEAR = "unclear"
+    # The user has the document but does not know or cannot find the number
+    # (ISSUES.md LF-012). Not a decline: "I have a PAN but don't remember it"
+    # must not be offered Form 60. Answered with how to look the number up.
+    FIND = "find"
 
 
 class Extraction(BaseModel):
@@ -45,8 +49,10 @@ class Extraction(BaseModel):
         description=(
             "What the user was doing. 'value' only if they stated a value for "
             "this field. 'question' if they asked what the field means or how "
-            "to answer it. 'decline' if they said they do not have one or do "
-            "not wish to give it. 'unclear' if you cannot tell."
+            "to answer it. 'find' if they have one but do not know, remember "
+            "or cannot find the number, or ask how to find or download it. "
+            "'decline' if they said they do not have one or do not wish to "
+            "give it. 'unclear' if you cannot tell."
         )
     )
     value: str = Field(

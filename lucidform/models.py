@@ -109,6 +109,9 @@ class FieldSpec:
     ask_if: dict[str, tuple[str, ...]] = field(default_factory=dict)
     # A date that must lie in the future (a document's expiry), not the past.
     date_future: bool = False
+    # lang -> how to look the number up when the user has the document but
+    # cannot find it (LF-012). Human-written, with official links only.
+    find_help: dict[str, str] = field(default_factory=dict)
 
     def applies(self, values: Mapping[str, str]) -> bool:
         return all(values.get(dep) in allowed for dep, allowed in self.ask_if.items())

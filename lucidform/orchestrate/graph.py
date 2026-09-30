@@ -78,11 +78,13 @@ ROUTES: dict[str, dict[str, str]] = {
     "listen": {"heard": "extract", "gone": "finish"},
     "extract": {
         "question": "explain",
+        "find": "find_help",
         "decline": "decline",
         "unclear": "not_understood",
         "value": "gate",
     },
     "explain": {"retry": "budget"},
+    "find_help": {"retry": "budget"},
     "decline": {"retry": "budget", "finish": "finish", "alternative": "gate"},
     "gate": {"pass": "readback", "retry": "budget", "suggest": "gate"},
     "listen_confirm": {"heard": "confirm", "gone": "finish"},
@@ -100,7 +102,7 @@ EDGES: list[tuple[str, str]] = [
     ("propose", "gate"),
 ]
 NODES = (
-    "greet", "next_field", "budget", "propose", "ask", "listen", "extract", "explain",
+    "greet", "next_field", "budget", "propose", "ask", "listen", "extract", "explain", "find_help",
     "decline", "not_understood", "gate", "readback", "listen_confirm",
     "confirm", "commit", "finish", "wrap_up", "review", "listen_review", "close",
 )
@@ -245,7 +247,9 @@ class SessionGraph:
     def extract(self, state: TurnState) -> dict:
         field = self._field(state)
         extraction = self.s.extractor.extract(field.id, state["said"])
-        if extraction.asked_a_question:
+        if extraction.wants_to_find:
+            route = "find"
+        elif extraction.asked_a_question:
             route = "question"
         elif extraction.declined:
             route = "decline"
@@ -269,6 +273,21 @@ class SessionGraph:
             return {"route": "retry"}
         outcome.questions += 1
         self.s._explain(self._field(state), state["said"])
+        return {"route": "retry"}
+
+    def find_help(self, state: TurnState) -> dict:
+        # LF-012: they have the document but not the number. Say how to look
+        # it up (fixed text with official links, no model), then ask again.
+        # Shares the question budget: it is help, not a failed attempt.
+        field, outcome = self._field(state), state["current"]
+        text = field.find_help.get(self.s.lang) or field.find_help.get("en")
+        if not text or outcome.questions >= self.s.max_questions:
+            return self.explain(state)
+        outcome.questions += 1
+        self.s.log.emit(
+            Event.JARGON_EXPLAINED, field_id=field.id, payload={"help": "find", "text": text}
+        )
+        self.s.output.say(text, kind=Kind.EXPLANATION)
         return {"route": "retry"}
 
     def decline(self, state: TurnState) -> dict:

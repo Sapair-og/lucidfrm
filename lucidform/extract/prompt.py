@@ -77,6 +77,8 @@ score costs one repeated question. A confident wrong value goes to someone who \
 cannot check it.
 - If they asked what the field means, that is a question, not a value.
 - If they said they do not have one, that is a decline, not an empty value.
+- If they have one but do not know or cannot find the number, or ask how to \
+find it, that is "find" -- not a decline and not a question.
 - If two readings are possible, mark it ambiguous instead of choosing one.
 
 Do not validate. Do not correct a value you think is wrong -- report what you \

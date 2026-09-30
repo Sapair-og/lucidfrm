@@ -62,6 +62,10 @@ class ExtractionOutcome:
     def declined(self) -> bool:
         return self.intent is Intent.DECLINE
 
+    @property
+    def wants_to_find(self) -> bool:
+        return self.intent is Intent.FIND
+
 
 class Extractor:
     def __init__(
