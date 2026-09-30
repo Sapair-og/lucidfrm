@@ -2,7 +2,59 @@
 
 Accessibility-first form assistant. Read `SPEC.md` first — it holds the intent, the
 data model, and the gating contract. `METHODOLOGY.md` is the running record of *why*.
-This file is only working notes.
+This file is working notes plus the project's current state, so a new session can resume.
+
+## Where things stand (updated 2026-09-30)
+
+**What it is.** Shubh's idea and a 5-person VIT Bhopal B.Tech capstone (Shubh Pratap Singh,
+Yashvardhan Singh Sarangdevot, Lakshay Gupta, Kanishka Jain, Sanjith). Two jobs: (1) *explain*
+KYC form fields — a RAG help agent over official documents; (2) *fill* the form safely — the LLM
+proposes, a deterministic gate decides, read-back + explicit "yes" commits. The paper
+(`docs/paper-draft.md`) is the deliverable; the whole project is planned at 2–3 months.
+
+**Repo.** https://github.com/ShubhPS/LucidForm — **private**, pushed, CI (GitHub Actions, offline
+suite on Ubuntu) green. Default branch `main`. Commits carry **no AI co-author / session trailer**
+(user rule). Teammate Yash's separate earlier repo `Sapair-og/Capstone` (Phases 0–1 only, flat
+layout) is superseded; we took its graphify + team-workflow docs, then deleted the local clone.
+
+**Stack.** Python 3.13 `.venv` · Gemini `gemini-3.5-flash-lite` (extraction + help answers) ·
+`gemini-embedding-001` (768-d) · LangGraph state graph (orchestrator) · BM25 (`rank-bm25`) + dense,
+reciprocal rank fusion · pypdf/reportlab (AcroForm) · typer CLI · pytest (489 offline + 4 live) ·
+graphify knowledge graph · paper built with docx-js (`tools/paper/`) and exported to PDF via Word.
+
+**Status.** Done: gate + adversarial suites (59 gate / 49 confirmation cases), FormState/receipts,
+Gemini client (Anthropic still supported), LangGraph orchestrator, eval harness, RAG help agent,
+extended safety test, 8 personas (3 core offline + 5 extended live-only), two live runs, help eval,
+paper with live results, demo script, team docs, pre-push audit + 10 code-review fixes.
+
+**Headline numbers (cite these, they are verified).**
+- Live run 2 (after the Hindi enum fix): 11 wrong proposals → 8 gate, 3 read-back, **0 committed**;
+  gate FPR 0.9%; extraction accuracy 90.7% / 118 proposals; p50/p95 1.04 s / 2.84 s.
+- Live run 1: 11 → 10 gate, 1 read-back, 0 committed; FPR 1.8%; 90.8% / 120; p95 32 s (429 back-off).
+- Offline core (paper Table II): 6 wrong → 5 gate, 1 read-back, 0 committed.
+- Help eval (30 questions + 6 controls): hit@4 28/30, gold-cited 26/28 answers, controls refused 6/6.
+
+**Decisions already made — don't re-litigate.**
+- Gemini is the default provider (user's key); model ids are config only.
+- LangGraph replaces the plain loop; checkpoint-resume is **not** enabled (restoring FormState from
+  a checkpoint would be an unconfirmed write). Resume = replay commit receipts (roadmap phase 15).
+- RAG = own pipeline (approach A: embeddings + BM25 + RRF), not Gemini managed File Search.
+- The help agent explains; it never supplies a value. Enforced by the safety test.
+- Extended personas are live-only (no offline fixtures) so the offline numbers stay pinned.
+- Demo = terminal, typed, live Gemini (`docs/demo.md`). No voice/web UI this round.
+- ROADMAP owner column intentionally blank — the team claims phases.
+
+**Open items / next.** Team review of the paper · native-speaker review of Hindi prompts + digit
+pronunciation · deterministic display-case for text fields (case is inaudible at read-back) ·
+question-vs-decline for "pan card nahi hai toh kya karu?" (flip-flops across runs) · real-user study ·
+voice with real speech · model-tier sweep · optional `/code-review ultra` (run from *inside*
+`LucidForm/` — from the parent folder it reports "no commits") · decide public vs private and add
+teammates as collaborators · **rotate the Gemini and Firecrawl keys** (both were pasted in chat).
+
+**Resume a session.** Read `docs/PROGRESS.md` (last entry) and `ROADMAP.md`; `git log --oneline -15`;
+`.venv/Scripts/python -m pytest -q` (expect 489 passed). Keys live in `.env` (gitignored):
+`GEMINI_API_KEY`, `LUCIDFORM_GEMINI_MODEL`, `FIRECRAWL_API_KEY` (the Firecrawl MCP tool itself is
+keyless here and won't use it — Exa `web_fetch` worked for blocked pages).
 
 ## Non-negotiables
 
@@ -106,18 +158,30 @@ This file is only working notes.
 ## Commands
 
 ```bash
-.venv/Scripts/python -m pytest                      # full suite
+.venv/Scripts/python -m pytest                      # offline suite (489), no key, free
+.venv/Scripts/python -m pytest -m live              # 4 live Gemini contract tests (costs quota)
 .venv/Scripts/python -m pytest tests/test_no_silent_write.py   # the safety test
-.venv/Scripts/python -m lucidform.schema.make_form  # regenerate the target PDF
+.venv/Scripts/python -m lucidform.schema.make_form  # regenerate the target PDF (tests do it too)
 .venv/Scripts/python -m lucidform.cli schema show
 .venv/Scripts/python -m lucidform.cli gate-check --field pan --value ABCDE1234F
+.venv/Scripts/python -m lucidform.cli run [--persona p02 --replay] [--export out.pdf]
+.venv/Scripts/python -m lucidform.cli help build | help ask -f pan -q "..." [--lang hi] | help eval
+.venv/Scripts/python -m lucidform.cli replay --live --extended --runs-dir data/runs_live
+.venv/Scripts/python -m lucidform.cli metrics --runs data/runs_live --out data/results/live
+.venv/Scripts/python -m lucidform.cli graph          # LangGraph as Mermaid
+node tools/paper/build.js                            # paper md -> docs/LucidForm_Paper_Draft.docx
+graphify update .                                    # refresh the code graph (free)
 ```
 
 ## Environment
 
 Copy `.env.example` -> `.env`. Nothing is required for the gate or the offline
-suite; only the extraction layer touches the API. The SDK also resolves an
-`ant auth login` profile — run `ant auth status` before assuming a key is needed.
+suite; only extraction, the help agent and `help build` touch the API. Provider is
+`LUCIDFORM_EXTRACTION_PROVIDER` (default `gemini`). The Anthropic SDK also resolves an
+`ant auth login` profile. Project permissions allowlist is `.claude/settings.local.json`
+(gitignored); if prompts keep appearing, the user can Shift+Tab to accept-edits/auto.
+No pandoc/LibreOffice/pdftoppm on this machine: build docx with Node (`tools/paper`), export PDF
+through Word COM, and render pages with `pypdfium2` to check layout.
 
 ## Phase 3 notes
 
@@ -178,6 +242,87 @@ suite; only the extraction layer touches the API. The SDK also resolves an
   lifted into a document keeps its provenance.
 - The three layers (gate / read-back / escaped) must **sum** to wrong proposals.
   A test asserts it — if they don't, something is double-counted or unaccounted.
+
+## Extraction clients (Gemini)
+
+- `extract/client.py`: `GeminiExtractionClient` sends `response_json_schema=Extraction` and then
+  re-validates with Pydantic — a malformed reply raises, it is never coerced. AFC is disabled.
+- `make_client()` picks the provider; `lucidform/llm.py` holds the one `make_genai_client()`,
+  `with_retries()` (429/5xx + httpx transport errors, honours RetryInfo, capped at 60 s) and
+  `json_config()`. Nothing under `gate/`/`formstate/` may import `llm`.
+- **A failed model call is an UNCLEAR turn, not a crash**: `Extractor._extract` catches it,
+  logs `error` on the extraction event, and the user is asked again (one attempt spent).
+  `KeyError` (replay-corpus miss) and `AssertionError` (test double over-call) are re-raised.
+- `config.py`: SDK key names are read **without** the `LUCIDFORM_` prefix via `validation_alias`
+  (before this fix `.env` keys were silently ignored).
+
+## Orchestrator (LangGraph)
+
+- `orchestrate/graph.py` — 16 nodes, declared `EDGES` + conditional `ROUTES`; `Session.run()` is a
+  facade over `SessionGraph`. Nodes are thin wrappers; FormState is held by the runner, never in
+  graph state. `RECURSION_LIMIT` is large on purpose (a full form is hundreds of steps).
+- **Golden parity**: `tests/fixtures/session_golden.json` was recorded from the pre-LangGraph loop
+  (core personas p01–p03, en + hi). Any behaviour change must show up as a reviewed diff:
+  `python -m tests.golden_sessions` regenerates it — check `git diff --numstat` is only the change
+  you intended (so far: additive `"help": "gloss"` and `"error": null` keys).
+- Deliberate change from the old loop: a hang-up at read-back ends the field (old loop re-asked).
+- Test: `commit` is reachable only from `confirm` (read off the graph's edges).
+
+## Help agent (RAG)
+
+- `help/corpus.py`: 6 sources in `data/help/sources/`, pinned by SHA-256 in `manifest.json`
+  (test-verified). Stored byte-exact via `.gitattributes` (`-text`) — Windows autocrlf once broke
+  the hashes in a fresh clone. Two sources came via Exa web fetch (Income Tax 403, UIDAI moved).
+- Structural chunks (FAQ Q&A / numbered paragraph) → 557 chunks with citation labels.
+- `help/index.py`: Gemini embeddings + BM25, RRF top-4, duplicate passages dropped. Index files in
+  `data/help/` (`index.npz` gitignored, rebuild with `help build` ≈5 min — free tier limits tokens
+  per minute, so batches are 20 with a 4 s pause). Offline tests use `HashEmbedder` (bag-of-words
+  stand-in — tests wiring, not retrieval quality).
+- `help/answer.py`: reply schema `{answer, cited_ids, answerable}`; every citation must be a
+  retrieved passage, else fall back to the gloss with "not certain". Retrieval itself is inside the
+  fallback. The query appends the field's English label (helps terse questions, biases some).
+- Offline replays pass **no** helper (gloss only) so goldens stay deterministic; live `run`/`replay`
+  load it if the index exists.
+- `help/evaluate.py`: numbered golds ("RBI KYC FAQ, Q1") match **exactly**; phrase golds (UIDAI
+  questions) by substring. Errored controls are excluded from refusal rate and counted as `errors`.
+
+## Personas and live evaluation
+
+- Core `data/personas/p01–p03` (offline fixtures exist, numbers pinned by tests); extended
+  `data/personas/extended/p04–p08` (live-only): Hindi session with Hindi number words (p04),
+  self-correction + digit grouping (p05), vague answers + "5/1/87" (p06), embedded prompt injection
+  (p07), question-first + Bengaluru/Bangalore (p08). Aadhaars from `synthetic_aadhaar(seed 20260930)`.
+- Live logs: `data/runs_live_v1/` (run 1, kept as evidence of the Hindi enum gap) and
+  `data/runs_live/` (run 2); tables in `data/results/live_v1/`, `data/results/live/`. Always pass
+  `--runs-dir` and `--out` for live work or offline tables get overwritten.
+- **Letter case is inaudible**: the simulated user compares read-back character for character, so
+  it denies case-only differences a real listener would accept (2 of run 2's 3 read-back catches).
+  Don't "fix" the simulator to flatter numbers; the real fix is a display-case rule (roadmap 9b).
+- The one live "false positive" is "5/1/87" flagged ambiguous — correct reading, intended re-ask.
+- `metrics` counts a `correction` event as a read-back denial only if it has `value_rejected`;
+  `FormState.decline()` also emits `correction` (without it) — don't misread those as denials.
+
+## Paper
+
+- Source of truth: `docs/paper-draft.md` (title = option 1 in its preamble; 5 authors). Build:
+  `node tools/paper/build.js` → IEEE-style A4 docx (one-column title/authors, two-column body,
+  Times New Roman); export PDF via Word COM; preview pages with pypdfium2 into `tools/paper/preview/`
+  (gitignored). `Research paper sample.docx` (an unrelated Alzheimer's paper) was only a format
+  reference and has been deleted.
+- Sections added this round: III-F LangGraph, III-G help agent, IV-B extended personas, IV-E help
+  eval, VI results (offline + 2 live runs + help), VII limitations, VIII future work, refs 21–25.
+- The draft previously claimed "56 gate cases, eleven categories" — wrong; the real suite is 59/13.
+  Recount from `tests/adversarial/*.yaml` before quoting any suite size.
+
+## Repo hygiene (checked in the pre-push audit)
+
+- A fresh clone must pass: `git clone . /tmp/x && cd /tmp/x && pytest` — `tests/conftest.py`
+  builds the gitignored blank form PDF; the corpus is byte-exact.
+- No secrets in history (`git log -p --all | grep` for the key prefixes before any push).
+- The graphify post-commit hook rebuilds `graphify-out/` after every commit, so those three files
+  always show as modified — harmless; include them in the next commit.
+- `.claude/settings.json` wires graphify PreToolUse hooks; teammates without graphify installed see
+  hook errors until they install it (CONTRIBUTING covers it).
 
 ## graphify
 
